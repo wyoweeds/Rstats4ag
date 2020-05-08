@@ -1,0 +1,190 @@
+# Analysis of Covariance (ANCOVA)
+
+In an ANOVA the interest lies in the differences among means. In a linear regression the interest lies in the intercept and slope parameters of regression lines, or perhaps other parameters of biological interest, e.g. asymptotic and effective doses (e.g, $latex LD_{50}$ levels in the nonlinear case. The combination of ANOVA and regression is called Analysis of Covariance (ANCOVA). It is an underutilized method that makes sequential tests for testing various hypotheses. Usually it is confined to linear regressions but can be equally powerful when used in nonlinear relationships. However, in this section we only consider the linear ANCOVA.
+
+## Example 1: Mechanical Weed Control
+
+A mechanical weed control experiment ([Rasmussen et al. 2008](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-3180.2008.00661.x/full)] tested the effect of intensity of harrowing (1, 2, 3, or 4 times), either along or across the direction of sowing (factors) on the weed cover left after the harrowing. 
+
+
+```{r}
+Harrowing<- read.csv2("http://rstats4ag.org/data/Harrowing.csv")
+head(Harrowing,3)
+```
+
+Lets look at the relationships in Figure \@ref(fig:figharrowpanel).
+
+(ref:figharrowpanelcap) _The relationship between weed cover and intensity of harrowing either across or along the direction of sowing._
+
+```{r figharrowpanel, fig.asp=0.5, fig.cap='(ref:figharrowpanelcap)'}
+library(lattice)
+xyplot(weeds ~ int | direction, data = Harrowing,
+       ylab="Weed Cover",xlab="Intensity of Harrowing"  )     
+```
+
+The relationships above does not look very linear, it looks like an exponential decreasing leaf cover. If this assumption is correct we can make the relationship linear by taking the logarithm of weed cover.
+
+(ref:figharrowpanellogcap) _Same data as in \@ref(fig:figharrowpanel) using the logarithm of weed cover (y-axis) gives a relationship that looks linear on the intensity of harrowing within the directions of harrowing._
+
+```{r figharrowpanellog, fig.asp=0.5, fig.cap='(ref:figharrowpanellogcap)'}
+xyplot(log(weeds) ~ int | direction, data = Harrowing,
+       ylab="Log(Weed Cover)",xlab="Intensity of Harrowing",
+       panel = function(x,y)
+       {panel.xyplot(x,y)
+        panel.lmline(x,y)})
+```
+
+
+Apparently, the assumption of a straight line relationship looks good, but we have to do statistics to substantiate this hypothesis. It is of interest to know whether the harrowing direction (across or along the rows) had the same effect on weed cover. Statistically, we want to know if the two regression lines are similar in term of regression slopes. This can be done by sequential testing:
+
+* Ordinary ANOVA where `int` is turned into a factor `factor(int)`
+* ANCOVA with interaction; meaning that the regression lines can have both different slopes and intercepts
+
+
+```{r}
+Harrowing$Log.weeds <- log(Harrowing$weeds)
+m1 <- lm(Log.weeds ~ factor(int) * direction, data = Harrowing)
+m2 <- lm(Log.weeds ~ int * direction, data = Harrowing)
+anova(m1, m2)
+```
+
+
+`m1`, an ordinary ANOVA, is the most general model with no assumption of any particular relationship. `m2`is the ANCOCVA, which assumes there is a linear relationship between harrowing direction and intensity. The  `int * direction` in `m2` means that there is an interaction between the slopes depending on the direction of harrowing. Or in other words the slopes of the regression lines are different.   The test for lack of fit is not significant (p=0.42) so we can assume a linear relationship applies to the log-transformed response variable. 
+
+We can further refine the analysis through sequential testing:
+* Assuming similar slope but different intercept depending of direction of harrowing
+* Assuming that the directions of harrowing does not influence regression lines, e.i, similar line
+
+To do this, we first test the regression model with an interaction term, `m2`, with a regression model where we assume no interaction,`m3`, which mean the slopes of the regression lines are similar:
+
+
+```{r}
+m3 <- lm(Log.weeds ~ int + direction, data = Harrowing)
+anova(m2,m3)
+```
+
+The lack of fit test is again not significant so we can assume that there is no interaction, and conclude that the regression slopes are similar. The final test will determine whether the direction of harrowing influences the relationship between log(Weed Cover) and intensity of harrowing?
+
+
+```{r}
+m4 <- lm(Log.weeds ~ int, data = Harrowing)
+anova(m4, m3)
+```
+
+Again, no significance here either (p=0.77); so we end up from the most general model (ANOVA) to the most simple ANCOVA: direction of harrowing does not matter and the relationship between `log(weeds)`and intensity of harrowing is linear.
+
+
+```{r}
+summary(m4)
+```
+
+In order to illustrate the result we use the code below to create Figure \@ref(fig:ancovaplot1). For illustration purposes we have separated the means into direction across and along even though it is not necessary.
+
+(ref:ancovaharrowplotcap) _Summary plot of the harrowing experiments. There is no difference between the direction of harrowing and, therefore, only one regression line is necessary._
+
+```{r ancovaplot1, fig.asp=0.6, fig.cap='(ref:ancovaharrowplotcap)'}
+library(dplyr)
+Plot.means <- Harrowing %>%
+  group_by(int, direction) %>%
+  summarise(count = n(), Log.Weeds = mean(Log.weeds))
+
+par(mgp=c(2,.7,0), mar=c(3.2,3.2,.5,.5))
+plot(Log.Weeds~int, data = Plot.means, bty="l",
+     pch = as.numeric(direction),
+     xlab="Harrowing intensity",
+     ylab="Log(weed cover)")
+abline(m4)
+legend("bottomleft", c("Across", "Along"), pch = c(2,1))
+```
+
+The slope is -1.11 (0.04) which means that with an increase in harrowing intensity the logarithm of weed cover decreases by -1.11. In fact the relationship is an exponential decay curve where the relative rate of change is exp(-1.11)= 0.3296 wherever we are on the curve. 
+
+## Example 2: Duration of competition
+
+In 2006 and 2007, field studies were conducted near Powell, Wyoming to determine the effects of <i>Salvia reflexa</i> (lanceleaf sage) interference with sugarbeet. This data was published in [Odero et al. 2010](http://www.bioone.org/doi/abs/10.1614/WT-D-10-00015.1). <i>Salvia reflexa</i> was seeded alongside the sugarbeet crop at a constant density, and allowed to compete for time periods ranging from 36 to 133 days after sugarbeet emergence. Yields (`Yield_Mg.ha`) were determined at the end of the season.
+
+
+```{r}
+lanceleaf.sage<-read.csv("http://rstats4ag.org/data/lanceleafsage.csv")
+head(lanceleaf.sage,n=3)
+```
+
+(ref:figsagepanelcap) _Duration of_ Salvia reflexa _competition effect on yield of sugar beet in two years._
+ 
+```{r figsagepanel, fig.asp=0.6, fig.cap='(ref:figsagepanelcap)'}
+library(lattice)
+xyplot(Yield_Mg.ha~Duration|factor(Year),data=lanceleaf.sage,
+        ylab= "Sugarbeet root yield (t/ha)",
+        xlab="Duration of competition from _Salvia reflexa_",
+        panel = function(x,y)
+       {panel.xyplot(x,y)
+        panel.lmline(x,y)})
+```
+
+As was the case with the harrowing experiment we do sequential testing. First, we compare the ANCOVA with the most general model, an AVOVA:
+
+
+```{r}
+lm1 <- lm(Yield_Mg.ha ~ factor(Duration) * factor(Year), data = lanceleaf.sage) # ANOVA
+lm2 <- lm(Yield_Mg.ha ~ Duration * factor(Year), data = lanceleaf.sage) # Regression
+anova(lm1, lm2) # Lack of fit test
+```
+
+
+The test for lack of fit shows that we can safely assume a linear regression (p=0.84). The next step is to test if we can assume similar slopes for the regression in the two years.
+
+
+```{r}
+lm3 <- lm(Yield_Mg.ha ~ Duration + factor(Year), data = lanceleaf.sage)
+anova(lm2, lm3) 
+```
+
+
+Again we can confidently assume that the slopes are the same irrespective of year (p=0.86). The next question: are the regression lines identical?
+
+
+```{r}
+lm4 <- lm(Yield_Mg.ha ~ Duration, data = lanceleaf.sage)
+anova(lm4, lm3) 
+```
+
+
+
+We get a extremely low p value (p<0.0001). Therefore, the  reduced model significantly reduces the fit. In other words, the `lm3` model is the model that should be used to summarize the experiment.
+
+
+```{r}
+summary(lm3)
+```
+```
+
+The slopes are similar but not the intercepts and the summary of the experiment can be neatly presented graphically in Figure \@ref(fig:figsageresults).
+
+(ref:figsageresultscap) _Sugarbeet yield in response to duration of_ Salvia reflexa _competition._
+
+```{r figsageresults, fig.asp=0.6, message=FALSE, fig.cap='(ref:figsageresultscap)'}
+library(dplyr)
+averages<-lanceleaf.sage %>%
+  group_by(Duration, Year) %>%
+  summarise(count = n(), YIELD = mean(Yield_Mg.ha))
+
+par(mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(YIELD ~ Duration, data = averages, bty="l",
+     pch = as.numeric(factor(Year)), ylim=c(10, 80), 
+     ylab="Sugarbeet root yield (t/ha)",
+     xlab="Duration of competition from Salvia reflexa")
+x <- c(0, 300)#dummy intensities
+lines(x, predict(lm3, newdata = data.frame(Year = "2006",
+                                        Duration = x)), lty = 2)
+lines(x, predict(lm3, newdata = data.frame(Year = "2007",
+                                          Duration = x)), lty = 1)
+legend("topright", c("2006", "2007"), lty = c(2, 1),
+       pch = c(1,2),   merge = TRUE)
+```
+
+
+Note the codes to obtain the regression lines for each year are more involved that in the harrowing example in Figure \@ref(fig:ancovaplot1). You must separate the regression lines on the basis of `Year` and define an independent variable `x`. Since it is a strait line you only need two `x's within year to draw the lines.
+
+Even though the maximum yield (y-intercept) was different between years (72.1 in 2006 compared with 63.6 in 2007), yield reduction was similar in response to duration of weed competition. Each day of competition reduced the yield by 0.21 tons/ha (slope= -0.215 (0.025)).
+
+*****

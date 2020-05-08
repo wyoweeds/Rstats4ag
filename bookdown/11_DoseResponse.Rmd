@@ -1,0 +1,603 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Dose-Response curves
+
+We are surrounded by synthetic and natural substances that have both positive and negative effects upon humans, other animals, and the environment. It is difficult to estimate effects of a substance without testing it on living organisms. Chemical and physical properties of a substance can tell us about the molecules themselves, but living organisms may react in unpredictable ways. Therefore, we use biological assay to estimate effects. It means the design of bioassay experiments and the modelling of the response as a function of the dose is crucial for the classification of chemical compounds. In order to understand the principles of bioassay it is imperative to link results with the real world exposure to chemicals. In this chapter, chemicals used to illustrate bioassay are pesticides, but the principles are the same whatever the chemical.
+
+[Finney 1976]("http://www.jstor.org/stable/1403201?origin=crossref&seq=1#page_scan_tab_contents") wrote: "As a branch of applied statistics, biological assay appears to have a somewhat specialized appeal. Although a few statisticians have worked in it intensively, to the majority it appears as a topic that can be neglected, either because of its difficulties or because it is trivial.......    I am convinced that many features of bioassay are out-standingly good for concentrating the mind on important parts of biometric practice and statistical inference."
+
+In biology there are four general curves that describe many biological phenomena. Two of them, the rectangular hyperbola (of which Michaelis-Menten is a notable example) and sigmoid curves have either one or two asymptotes; that is, they have upper and/or lower limits as the independent variable approaches very small or very large values.
+
+In most text books, non-linear regression is not very well explained although it is easy for practitioners to implement. The difference between linear and non-linear regression can often be boiled down to the very fact:  linear regression can be solved analytically by least square analysis, whereas the nonlinear regression cannot.
+
+Before fitting a nonlinear regression model, one has to do some guesstimates about the initial regression parameters before fitting. In some cases a nonlinear relationship can be converted to a linear one. The most common one is the exponential curve (<b>Figure 1</b> that turns into a linear relationship when taking the logarithm of the `y`. For the rectangular hyperbola it is usually with no lower limit and then it can also be linearize by manipulating as in  ezymeology and biochemistry.The rectangular hyperbola is in other disciplines called the Michaelis Menten model.
+
+This chapter will be devoted to the use of the add-on package `drc? and will illustrate some of the facilities built in the package so far.
+
+(ref:figcommonmodel4panelcap) _Common regressions models in the biological sciences._
+
+```{r figcommonmodel4panel,  echo=FALSE, fig.cap='(ref:figcommonmodel4panelcap)', fig.asp=1}
+op <- par(mfrow = c(2, 2), # 2 x 2 pictures on one plot
+          mar=c(2.2,2.2,2,.5), # margins
+          mgp=c(.5,.1,0)) # axis label positions
+          
+
+curve(1+2*x,0,10,ylab="y",xlab="x",axes=FALSE, main="Straight line")
+box(col="black")
+curve(exp(.4*x),0,10, ylab="y",xlab="x",axes=FALSE,, main="Exponential")
+box(col="black")
+curve(1*x/(1+x),0,10,ylab="y",xlab="x",axes=FALSE, main="Rectangular Hyperbola")
+box(col="black")
+curve(.1+(1-.1)/(1+(1/x)^3),.1,10, log="x", ylab="y",xlab="log(x)",axes=FALSE, 
+      main="Sigmoid")
+box(col="black")
+```
+
+For the sigmoid curves, which can take several forms, we have to use nonlinear regression. One of the most common curves is the symmetric log-logistic model:
+
+$$y = c+\frac{d-c}{1+exp(b(log(x)-log(ED50)))} .$$
+
+`y` is the response, `c` denotes the lower limit of the response when the dose `x` approaches infinity; `d` is the upper limit when the dose `x` approaches 0. `b` denotes the slope around the point of inflection, which is the $ED_{50}$, i.e. the dose required to reduce the response half-way between the upper and lower limit.
+
+Guessing the parameters of a sigmoid curve can, for the less experienced person, be tiresome and frustrating. This has now been overcome by the development of a package named `drc`, which was developed at the University of Copenhagen. The purpose of the `drc` package was to ease the analysis of dose-response curves from greenhouse and field experiments in Weed and Pesticide Science courses and to assess the selectivity of herbicides and efficacy of pesticides. Similar dose-response curves are commonly used in ecotoxicology and general toxicology, and  the `drc` package is used in various other disciplines. 
+
+Gradually, `drc` has been extended with numerous nonlinear curves commonly used in the life sciences and elsewhere. The engine of `drc` is the `drm(y~x, fct=...)` function with self-starter that automatically calculates initial parameters. The `fct=`argument identifies the particular dose-response curve to be used. An overview of the various functions available can be accessed, after loading the `drc` package, by typing `?getMeanFunctions()`.
+
+## One Dose-Response Curve
+
+Let us look at how to fit a dose-response curve using a training data set in the `drc` package. 
+
+```{r message=FALSE}
+library(drc)
+```
+
+Before curve fitting, it is important to get an idea of how the data look. Below we create a plot with the x variable both on original scale and on log scale.
+
+(ref:figdrrootlpanelcap) _There are two ways of plotting dose-response data, the default in the `drc` package is to use a logarithmic scale for x. Note with the logarithmic dose scale the untreated control, 0, is not defined. That is why we add 0.1 to the concentration before taking the logarithm._
+
+```{r figdrrootlpanel, fig.cap='(ref:figdrrootlpanelcap)', fig.asp=.5}
+head(ryegrass,3) 
+op <- par(mfrow = c(1, 2), mar=c(3.2,3.2,2,.5), mgp=c(2,.7,0)) #make two plots in two columns 
+plot(rootl ~ conc, data = ryegrass, main="Original Dose Scale")
+plot(rootl ~ log(conc+.1), data = ryegrass, main="Logarithmic Dose Scale")
+```
+
+
+Below we fit a four-parameter log-logistic model with user-defined parameter names. The default names of the parameters (*b*, *c*, *d*, and *e*) included in the `drm()` function might not make sense to many weed scientists, but the `names=c()` argument can be used to facilitate sharing output with less seasoned `drc` users. The four parameter log-logistic curve has an upper limit, `d`, lower limit, `c`, the $ED_{50}$ is denoted `e`, and finally the slope, `b`, around the $ED_{50}$.
+
+```{r}
+ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, 
+                   fct = LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")))
+summary(ryegrass.m1)
+```
+
+The summary of the curve fitting  shows the estimates of each of the four parameters and their standard errors. The p-values tell us if the parameters are different from zero. In this instance all four parameters are significantly different from zero and as seen on the graph the log-logistic curve seems to fit well to data.
+
+(ref:figrootpanelmodelcap) _Plot of regression and averages of observations within each concentration (left), and all observation (right)._
+
+```{r figrootpanelmodel, fig.cap='(ref:figrootpanelmodelcap)', fig.asp=.5}
+op <- par(mfrow = c(1, 2), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(ryegrass.m1, broken=TRUE, bty="l",
+     xlab="Concentration of Ferulic Acid", ylab="Length of Roots")
+plot(ryegrass.m1, broken=TRUE, bty="l",
+     xlab="Concentration of Ferulic Acid", ylab="Length of Roots",type="all")
+```
+
+The slope of the dose-response curve at $ED_{50}$ has the opposite sign as compared to the sign of the parameter `b`. This is the consequence of the parameterization used in `drc` for the log-logistic model, a choice that is in part rooted in what was commonly used in the past. The actual slope of the tangent of the curve at $ED_{50}$ is determined :
+
+$$\frac{-b}{(d-c)/(4*e)}$$ 
+
+
+So apart from the sign there is a scaling factor that converts the parameter `b` into the slope, Therefore, the use of the word "relative". Note that the scaling factor may be viewed as a kind of normalization factor involving the range of the response. As a consequence estimated `b` values often lie in the range 0.5 to 20 in absolute value, regardless of the assay or experiment generating the data.
+
+
+ Note at the end of the ryegrass help file `?ryegrass` you can see examples, which give you some ideas of what can be done. The ryegrass help provides examples of various sigmoid curves to show the differences among them (see later). Note that we use the argument `broken=TRUE` to break the x-axis, because on a logarithmic scale, which is the default in `drc`, there is no such thing as a zero dose.
+
+There are various ways to check if a regression model gives a satisfactory picture of the variation in data. Before doing further analysis, the best way to judge it is to look at the graph to see if there are some serious discrepancies between the regression and mean values. Being satisfied with the results of the fit, one way of checking is to test for lack of fit against the most general model, an ANOVA. It is done automatically in drc with the function `modelFit()`.
+
+```{r}
+#Test for lack of fit
+modelFit(ryegrass.m1)
+```
+
+Obviously, the test for lack of fit is non-significant and therefore we can tentatively entertain the idea that the regression analysis was just as good to describe the variation in data as was an ANOVA. The test for lack of fit is not enough to ensure the fit is reasonable, because of few degrees of freedom, in this instance only 3 degrees of freedom. Another issue is that the more doses we use the less likely it is that the test for lack of fit would become non-significant; the mere fact being that the log-logistic curve, like any other sigmoid curve, is just an approximation of the real relationship. 
+
+The distribution of the residuals and the hopefully normal distribution of residuals are  informative to make sure that  the prerequisites for doing a regression in the first place are not violated. The assumptions we must consider include:
+
+1. Correct regression model
+2. Variance Homogeneity 
+3. Normally distributed measurement errors
+4. Mutually independent measurement error $\varepsilon$
+
+Number 1 can always be discussed and we will not go too much into detail. This is generally determined by  researchers familiar with the phenomena being described. Number 2 is important if you want to infer on the variability of parameters. Normally, the parameter estimates do not change much whether there are homogeneous variance or not; it is the standard errors that change and that is why we want to come so close to homogeneity of variance as possible. This is important when comparing curves, or evaluating the certainty we have about various parameters (like the effective dose or upper limit). Number 3 can be graphically shown and is only in some instances critical. Number 4 is important because we assume the observations for doses are independent of each other, a question that also can be debated. When we do dose-response experiments  we often use the same stock solution. It means that any systematic error can be carried all the way though the dilution process and be part of the dose. Below we illustrate items 2 and item 3.
+
+(ref:rootdiagcap) _Model esiduals diagnostic plots: Left: distribution of residuals against the fitted value (variance homogeneity); Right: normal q-q plot illustrating whether the residuals are normally distributed (normally distributed measurement errors)._
+
+```{r rootdiag, fig.cap='(ref:rootdiagcap)', fig.asp=.5}
+#Graphical analysis of residuals
+op <- par(mfrow = c(1, 2), mar=c(3.2,3.2,2,.5), mgp=c(2,.7,0)) #put two graphs together
+    plot(residuals(ryegrass.m1) ~ fitted(ryegrass.m1), main="Residuals vs Fitted")
+abline(h=0)
+qqnorm(residuals(ryegrass.m1))
+ qqline(residuals(ryegrass.m1))
+```
+
+The residual plot indicates that the model was able to catch the variation in data. The distribution of residuals should look like a shotgun shot on a wall. Apparently, there are some  systematic violations in the residual plot, At small fitted values the residuals are close to zero than at high fitted values the variation is much more pronounced. This is called a funnel type pattern. We also see it in the graphs with the fit and all the observations (Figure \@ref(fig:rootdiag)). The  normal Q-Q plot looks all right, no serious deviation from the assumption of normal distribution of residuals. Later we will look at this problem, which is a statistical problem not a biological one.
+
+## Note on use of $R^2$
+
+One of the most popular ways of assessing goodness of fit in regression, be it linear or nonlinear, is to use $R^2$. The higher the better, but the $R^2$ does *not* tell you  how well the curve fits to the data. In fact, if there are large differences between the maximum and the minimum observation, the $R^2$ will be larger than if the differences are small. It is also important to note that the most common interpretation of $R^2$ for linear regression does not hold true for nonlinear regression; in the nonlinear case, the $R^2$ value is *not* the amount of variability in Y explained by X. At its core, the [$R^2$ is a comparison of 2 models](http://www.jstor.org/stable/2684259); in linear regression the two models being compared are the regression model and a null model indicating no relationship between X and Y. For nonlinear regression, the choice of a 'null' model is not as simple, and therefore the $R^2$ type measure will be different depending on the chosen reduced model. The appropriate 'null' model may differ (and perhaps *should* differ) depending on the nonlinear model being used. Therefore, the $R^2$ is not part of the output from `drc`. To give an example we fit a linear model to the ryegrass data.
+
+(ref:figr2excap) _Linear regression y=-.25x+6.24 with highly significant parameters (left) and residual plot (right). The $R^2$ is not negligable ($R^2$ = 0.6), but the model is obviously not correct._
+
+```{r figr2ex, fig.cap='(ref:figr2excap)', fig.asp=.5}
+op <- par(mfrow = c(1, 2), mar=c(3.2,3.2,0,.5), mgp=c(2,.7,0)) #put two graphs together
+plot(rootl ~ conc, data = ryegrass, bty="l")
+linear.m1 <- lm(rootl ~ conc, data = ryegrass)
+summary(linear.m1)
+abline(linear.m1)
+plot(linear.m1, which=1, bty="l")
+```
+
+The regression parameters are highly significantly different from zero so it looks good as does $R^2$ of 0.62 . This is not a small value, but obviously the goodness of fit is not good, let alone the systematic distribution of residuals. When trying to determine whether the nonlinear model is better or worse than the linear model, Akaike Information Criterion (AIC) can be used. Smaller values of AIC indicate better fit to the data.
+
+```{r}
+AIC(ryegrass.m1, linear.m1)
+```
+
+The AIC value for the nonlinear model `ryegrass.m1` is much lower than the linear fit `linear.m1` that definitely violated item 1. This confirms that the nonlinear model is a better fit to the data compared with the linear model. 
+
+
+
+## Which Dose-Response Model?
+
+There exists numerous sigmoid curves of which the log-logistic is the most common one. It is symmetric and the $ED_{50}$ is a parameter of the model. Several other models exist, particularly, the non symmetric ones where $ED_{50}$ is not a "natural"  parameter. For example the Weibull-1 model. 
+
+$$y = c+(d-c)exp(-exp(b(log(x)-log(e)))) .$$
+
+
+The parameter `b` is the steepness of the curve and the
+parameter `e` is the dose where the inflection point of the dose-
+response curve is located, which is *not* the $ED_{50}$.The Weibull-1 descends slowly from the upper limit `d` and approach the lower limit `c` rapidly.
+
+Another model, Weibull-2 is somewhat different from Weibull-1, because it has a different asymmetry, with a rapid descent from the upper limit `d` and a slow approach toward the lower limit (Figure \@ref(fig:fignlinmodelcomp)).
+
+$$y = c+(d-c)(1-exp(-exp(b(log(x)-log(e))))) .$$
+
+
+[Ritz 2009](http://onlinelibrary.wiley.com/doi/10.1002/etc.7/abstract) has in detailed described those asymmetric dose-response curves  and also illustrated it as shown in Figure \@ref(fig:fignlinmodelcomp).
+
+(ref:fignlinmodelcompcap) _Comparison among the two asymmetric Weibull models and the log-logistic model. The differences in this instance are at either the upper limit or the lower limit of the curves._
+ 
+```{r fignlinmodelcomp, fig.cap='(ref:fignlinmodelcompcap)', fig.asp=.6}
+library(drc)
+## Comparing log-logistic and Weibull models
+## (Figure 2 in Ritz (2009))
+ryegrass.m0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
+ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, fct = W1.4())
+ryegrass.m2 <- drm(rootl ~ conc, data = ryegrass, fct = W2.4())
+
+par(mfrow=c(1,1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(ryegrass.m0, broken=TRUE, xlab="Dose (mM)", ylab="Root length (cm)", lwd=2, 
+     cex=1.2, cex.axis=1.2, cex.lab=1.2, bty="l")
+plot(ryegrass.m1, add=TRUE, broken=TRUE, lty=2, lwd=2)
+plot(ryegrass.m2, add=TRUE, broken=TRUE, lty=3, lwd=2)
+
+arrows(3, 7.5, 1.4, 7.5, 0.15, lwd=2)
+text(3,7.5, "Weibull-2", pos=4, cex=1.2)
+
+arrows(2.5, 0.9, 5.7, 0.9, 0.15, lwd=2)
+text(3,0.9, "Weibull-1", pos=2, cex=1.2)
+```
+
+ 
+ The $ED_{50}$ for the Weibull-1 and Weibull-2  model has to be derived from the fit  by using the function`ED()`.
+ 
+```{r}
+ ED(ryegrass.m1,50,interval="delta")
+```
+ 
+A relevant questions would be how do the $ED_{x}$ change when fitting the different sigmoid curves?
+
+To illustrate this we use the ggplot2 package and a function to combine graphs. First we have to calculate the $ED_{x}$ and combine the results in a data.frame as done below.
+
+```{r}
+edLL<-data.frame(ED(ryegrass.m0,c(10,50,90),interval="delta", 
+                    display=FALSE),ll="Log-logistic")            
+edW1<-data.frame(ED(ryegrass.m1,c(10,50,90),interval="delta", 
+                    display=FALSE),ll="Weibull 1")
+edW2<-data.frame(ED(ryegrass.m2,c(10,50,90),interval="delta", 
+                    display=FALSE),ll="Weibull 2")
+CombED<-rbind(edLL,edW1,edW2)
+```
+
+Then we can use `plot_grid()` from the `cowplot` package, which is a function that combines various independent ggplots into one plot. 
+
+(ref:figEDcompcap) _Comparison of $ED_{10}$, $ED_{50}$ and $ED_{90}$ for  various sigmoid dose-response curves with associated 95% confidence intervals._
+
+```{r figEDcomp, message=FALSE, fig.cap='(ref:figEDcompcap)', fig.asp=1.4}
+library(ggplot2)
+library(cowplot)
+
+p1 <- ggplot(data=CombED[c(1,4,7),], aes(x=ll, y=Estimate))+
+ geom_bar(stat="identity", fill="lightgreen", colour="black")+
+  geom_errorbar(aes(ymin=Lower, ymax=Upper), width=0.1) +
+  ylab("ED10")+
+  xlab("")
+p2 <- ggplot(data=CombED[c(2,5,8),], aes(x=ll, y=Estimate))+
+  geom_bar(stat="identity", fill="lightgreen", colour="black")+
+  geom_errorbar(aes(ymin=Lower, ymax=Upper), width=0.1) +
+  ylab("ED50")+
+  xlab("")
+
+p3 <- ggplot(data=CombED[c(3,6,9),], aes(x=ll, y=Estimate))+
+geom_bar(stat="identity", fill="lightgreen", colour="black")+
+  geom_errorbar(aes(ymin=Lower, ymax=Upper), width=0.1) +
+  ylab("ED90")+
+  xlab("Sigmoid four parameter models")
+
+plot_grid(p1,p2,p3, ncol=1)
+```
+
+
+Obviously, the ED-levels in Figure \@ref(fig:figEDcomp) in this instance did not change much among the three sigmoid curves. Sometimes they do and residual plots show that one of the asymmetrical curves is more appropriate than the common log-logistic, although it can not be substantiated by an ordinary test for lack of fit.`drc`also has a function where you can test the differences between the $ED_{x}$ as shown below
+
+```{r}
+comped(CombED[c(1,4),1],CombED[c(1,4),2],log=F,operator = "-")
+comped(CombED[c(1,7),1],CombED[c(1,7),2],log=F,operator = "-")
+comped(CombED[c(3,6),1],CombED[c(3,6),2],log=F,operator = "-")
+comped(CombED[c(6,9),1],CombED[c(6,9),2],log=F,operator = "-")
+comped(CombED[c(3,9),1],CombED[c(3,9),2],log=F,operator = "-")
+comped(CombED[c(6,9),1],CombED[c(6,9),2],log=F,operator = "-")
+```
+
+None of the differences are significantly different form zero, lower limits are negative in all instance and upper limits of the differences are positive.
+
+
+
+## More Dose-Response Curves
+
+When it comes to assessment of herbicide selectivity, one dose-response curve does not tell you anything. Selectivity of a herbicide is always dose-dependent and a bioassay with a pre-fixed harvest day only gives a snapshot of the effect of a herbicide. When comparing dose-response curves of say two herbicides on the same plant species or one herbicide on two plant species, it is imperative that the curves you compare were run at the same point in time or at least close to and at the same stage of plant development. The training data set `S.alba` in the `drc` package consists of two dose-response curves, one for bentazon and one for glyphosate.
+
+```{r}
+head(S.alba,n=2)
+tail(S.alba,n=2)
+## Fitting a log-logistic model with
+S.alba.m1 <- drm(DryMatter ~ Dose, Herbicide, data=S.alba, fct = LL.4())
+```
+
+Note that the the variable, Herbicide, identifies the herbicides, Therefore, the third argument in the `drm()` is the classification variable `Herbicide`.
+
+```{r}
+modelFit(S.alba.m1)
+summary(S.alba.m1)
+```
+
+The test for lack of fit shows non-significance, and furthermore, the summary shows that the upper limits `d`s are very close to each other and the same applies to the lower limit `c`s. Consequently, we could entertain the idea that they are similar for both curves. We use the argument in the `drm()` function  `pmodels=data.frame(..)`to make the upper limit and the lower limit similar for both curves. The argument follows the alphabetical order of the names of the parameters, `b,c,d,e`. Below, we will allow the `b` parameter to vary freely between the two herbicides, whereas `c` and `d`  will be held the same for both herbicides (they have the same identification `1,1`). Finally the `e` parameters can vary freely.
+
+(ref:figglybentnlincap) _The two fits, one without assuming common upper and lower limits for the two curves (black) and one where the curves have the same upper and lower limits (red)._
+
+```{r figglybentnlin, fig.cap='(ref:figglybentnlincap)', fig.asp=.6}
+##  common lower and upper limits
+S.alba.m2 <- drm(DryMatter ~ Dose, Herbicide, data=S.alba, fct = LL.4(),
+                 pmodels=data.frame(Herbicide, 1, 1, Herbicide)) 
+summary(S.alba.m2)
+par(mfrow=c(1,1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(S.alba.m1, broken=TRUE, bty="l")
+plot(S.alba.m2, col="red", broken=TRUE, add=TRUE, legend=FALSE)
+```
+
+
+
+```{r}
+anova(S.alba.m1, S.alba.m2) # Test for lack of fit not signifiancant
+```
+
+A test for lack of fit   was non-significant and, therefore, we presume that the curves  have similar upper an lower limits.  Now we have the ideal framework for comparing the relative potency between the two herbicides with similar upper and lower limit, we have the same reference for both curves.
+
+Comparing the fit without freely estimated upper and lower limit and with common upper and lower limit did not change the $ED_{50}$ much but did reduce the standard errors somewhat.
+
+
+The next step could be to assume that the two curves also have the same slope, i.e.  the two curves are similar and only differ in their relative displacement along the x-axis.
+
+```{r}
+##  common lower and upper limits and slope
+S.alba.m3 <- drm(DryMatter~Dose, Herbicide, data=S.alba, fct = LL.4(),
+                 pmodels=data.frame(1, 1, 1, Herbicide)) 
+anova(S.alba.m2, S.alba.m3)
+```
+
+Although the 'parallel' curves in Figure \@ref(fig:figglybentslope) seem reasonable, the test for lack of fit now is significant, so the assumption  of similar curves except for the $ED_{50}$ is not supported. We should prefer, instead, the model with independent slopes (Figure \@ref(fig:figglybentnlin)).
+
+(ref:figglybentslopecap) _The two curves are similar except for their relative displacement on the x-axis - this is often called a parallel slopes model._  
+
+```{r figglybentslope, fig.cap='(ref:figglybentslopecap)', fig.asp=.6}
+par(mfrow=c(1,1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(S.alba.m3, broken=TRUE, bty="l")
+```
+
+
+Comparing Figures \@ref(fig:figglybentnlin) and \@ref(fig:figglybentslope) shows that the fits are forced so they do not capture the responses properly at the lower limits. As seen below  the relative potency with common upper and lower limit but different slopes yield different relative potencies: $ED_{10}$, $ED_{50}$, and $ED_{90}$.
+
+
+```{r}
+#EDcomp(S.alba.LL.4.1, c(10, 50, 50), interval = "delta")
+EDcomp(S.alba.m2, c(10, 10), interval="delta", reverse=TRUE)
+EDcomp(S.alba.m2, c(50, 50), interval="delta", reverse=TRUE)
+EDcomp(S.alba.m2, c(90, 90), interval="delta", reverse=TRUE)
+```
+
+
+It is noted above that the relative potency varies depending of the ED-level. This is of course due to the fact that the two curves have different slopes, `b` parameters. From a biological point of view the herbicides have different mode of action and experience shows that contact PS II herbicides, such as bentazon, would have a steeper slope than does the EPSP inhibitor, glyphosate.
+
+In `drc` there is a function `relpot()` that can illustrate the relationship between changes of the relative potency and the predicted responses.
+
+(ref:figglybenrelpotcap) _The relative potency varies depending of response level, with the 95% confidence intervals. The dashed horizontal line shows the relative potency at the $ED_{50}$  for glyphosate and bentazon._
+
+```{r figglybenrelpot, fig.cap='(ref:figglybenrelpotcap)', fig.asp=.6}
+par(mfrow=c(1,1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+relpot(S.alba.m2, interval = "delta", bty="l")
+```
+
+The most precise ED-level is at the $ED_{50}$; towards the extremes close to the upper and lower limit the variation becomes huge. This is a general trend and explains why we often wish to quantify toxicity of a compound by  using $ED_{50}$.
+
+## When Upper and Lower Limits are not similar
+
+In real life, e.g., when testing herbicide tolerant/resistant biotypes of weeds and different weed species, we cannot expect that the upper and lower limits are similar among curves and that the curves have the same slopes. On the contrary, if there is a penalty for acquiring resistance (fitness cost) then the untreated control for each biotype would be expected to have different biomass. Depending on the time from spraying and ambient growth condition at harvest; the lower limit may also differ. 
+
+Whatever the purpose of assessing potencies among plants the problem of different upper and lower limits is often "solved" in the literature by scaling the raw data to percentage of untreated control. <b>This "solution" often results in smaller but incorrect standard error of $ED_{50}$ being inflated by the scaling.</b> 
+
+In general, we do not want  to go for low standard error, but go for the *correct* standard error. Therefore, we recommend to do all the curve-fitting on original raw data!
+
+Below we have two accessions of *Echonichlora oryzoides* where both the upper limit and the lower limits are different.
+
+(ref:figbisrscap) _Fit of regression for two accessions._
+
+```{r figbisrs, fig.cap='(ref:figbisrscap)', fig.asp=.6}
+op <- par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+TwoCurves<-read.csv("http://rstats4ag.org/data/twoCurves.csv")
+head(TwoCurves,3)
+Bispyribac.sodium.m1 <- drm(Dry.weight.per.pot ~ Dose, Accesion,
+                            data = TwoCurves, fct=LL.4())
+modelFit(Bispyribac.sodium.m1)
+summary(Bispyribac.sodium.m1)
+plot(Bispyribac.sodium.m1, broken=TRUE, bp=.1, ylab="Dry Matter(g/pot)",
+     xlab="Bispyribac sodium (g/ha)", bty="l")
+
+# drawing lines on the plot
+ED.SAM.E.8 <- 0.24591 + (2.24201 - 0.24591) * 0.5
+ED.TEK.E.10 <- -0.05308 + (1.82755 +- 0.05308) * 0.5
+arrows(0.1, ED.SAM.E.8, 21.7, ED.SAM.E.8, code=0)
+arrows(21.7, ED.SAM.E.8, 21.7, 0, code=0)
+arrows(0.1, ED.TEK.E.10, 2.67, ED.TEK.E.10, code=0, lty=2)
+arrows(2.67, ED.TEK.E.10, 2.67, 0, code=0, lty=2)
+```
+
+The fit looks reasonable and the test for lack of fit is non-significant and the $ED_{50}$s are shown. Everything seems to be all right, but we notice that distribution of observations for TEK-E-10 could be better to describe the mid range of the responses. The summary above reveals that the lower limit, `c`, for TEK-E-10 is less than zero, not much and not different from zero though, but still illogical. We can re-fit the model using the `lowerl=` argument which will allow us to restrict model parameters to biologically relevant estimates. In this case, we will restrict the lower limit to values of zero or greater. All other parameters will still be allowed to vary without restriction.
+
+```{r}
+Bispyribac.sodium.m2 <- drm(Dry.weight.per.pot ~ Dose, Accesion,
+                            data = TwoCurves, fct=LL.4(),
+                            lowerl=c(NA,0,NA,NA))
+summary(Bispyribac.sodium.m2)
+```
+
+We see that the standard error dropped and now we will use the fit and calculate the selectivity factor at $ED_{50}$:
+
+```{r}
+EDcomp(Bispyribac.sodium.m2, c(50, 50),interval="delta")
+```
+
+The resistance factor is about 8 and significantly greater than 1. Note this is one of the few times we do not test the null hypothesis but the hypothesis, that the potency is the same for the two accessions; that is, the relative potency is 1.0. Another important issue is that the dry matter for the $ED_{50}$ differs because of the different upper and lower limits. This will not be solved by scaling the observation to the individual accessions' untreated control. 
+
+Obviously, the $ED_{50}$ is not at the same response level, and the relative potency of 8 is significantly different form 1.00. 
+
+When using absolute dry matter of say 1.24, the response at $ED_{50}$ for SAM-E-8  and TEK-E-10 is seen below.
+
+```{r}
+ED(Bispyribac.sodium.m2, 1.24, type="absolute", interval="delta")
+```
+
+Looking at the distribution of observation for TEK-E-10, there are no observations to determine the shape of the curve above the $ED_{50}$.
+
+If this is the right way to compare absolute response level we could use $ED_{1.24}$ (Figure \@ref(fig:figbisrsabs)).
+
+(ref:figbisrsabscap) _Comparison of the two dose-response curves; red vertical lines show the dose of bispyribac sodium resulting in 1.24 g of dry matter (horizontal line) for the two biotypes._
+
+```{r figbisrsabs, fig.cap='(ref:figbisrsabscap)', fig.asp=.6}
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(Bispyribac.sodium.m2, broken=TRUE, bp=.1, bty="l",
+     ylab="g Dry Matter/pot",
+     xlab="Dose (g Bispyribac sodium/ha)")
+arrows(  0.1, 1.24, 21.79, 1.24, code=0, lty=1, col="red")
+arrows(21.79, 1.24, 21.79,    0, code=0, lty=1, col="red")
+arrows(  1.31, 1.24,   1.31,    0, code=0, lty=2, col="red")
+```
+
+Now the resistance factor below  becomes huge, but so does the confidence interval and consequently the resistance factor is not statistically different from 1.0 at an alpha ov 0.05. The villain is the poor precision of TEK-E-10 $ED_{1.24}$ that is not significantly different form 0.0. 
+
+```{r}
+EDcomp(Bispyribac.sodium.m2, c(1.24, 1.24), type="absolute",interval="delta")
+```
+
+The problems described above is virtually never mentioned in the weed science journals, even though it is instrumental to understand what we actually compare. The researcher must choose, and the choice has nothing to do with statistics but with  biology.
+
+On the basis of the fit above we can actually scale data on the basis of the regression parameters of the `d` and the `c` parameters. 
+
+(ref:figbisrsscaledcap) _Regression fit of scaled responses with similar upper limit, `d`,  and lower limit set to zero._
+
+```{r figbisrsscaled, fig.cap='(ref:figbisrsscaledcap)', fig.asp=.6}
+SAM.E.8.C<-coef(Bispyribac.sodium.m1)[3]
+TEK.E.10.C<-coef(Bispyribac.sodium.m1)[4]
+SAM.E.8.d<-coef(Bispyribac.sodium.m1)[5]
+TEK.E.10.d<-coef(Bispyribac.sodium.m1)[6]
+
+Rel.Y<-with(TwoCurves,
+            ifelse(Accesion=="SAM-E-8", 
+                   ((Dry.weight.per.pot-SAM.E.8.C)/(SAM.E.8.d-SAM.E.8.C)),
+                   ((Dry.weight.per.pot-TEK.E.10.C)/(TEK.E.10.d-TEK.E.10.C))))
+
+Scaled.m1<-drm(Rel.Y ~ Dose, Accesion, pmodels=data.frame(Accesion, 1, Accesion),
+        data=TwoCurves, fct=LL.3())
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(Scaled.m1, broken=TRUE, bp=.1, bty="l", 
+     ylab="Relative Dry Matter", ylim=c(0,1.2),
+     xlab="Bispyribac-sodium dose (g/ha)")
+arrows(  0.1, .5, 21.7,.5, code=0, lty=1, col="red")
+arrows(21.79, 0.5, 21.79,    0, code=0, lty=1, col="red")
+arrows(  2.66, .5,   2.66,    0, code=0, lty=2, col="red")
+```
+
+The summary  of the fit in Figure \@ref(fig:figbisrsscaled) shows that we get almost the same parameters for the scaled  $ED_{50}$'s and the selectivity factor is the same but what is concealed by fitting the scaled responses is that the dry matter production is not the same for the two curves, because the scales are originally different. In essence, scaling the data in this way removes the valuable information contained in the _d_ parameter without adding benefit. 
+
+```{r}
+summary(Scaled.m1)
+EDcomp(Scaled.m1, c(50, 50),interval="delta")
+```
+
+In summary, fitting on raw data the relative potency is 7.96 (2.93) with a coefficient of variation of 37% with the fit on scaled data on the basis of the upper limits of the regression fit on raw data the relative potency also is 8.14 (2.84) with a coefficient of variation of 32%. In this instance not dramatically different, except that for the raw data the relative potency is significantly different from zero on the 2% level whereas for the fit on relative data it is significant on the 1% level.  However, if we go for an absolute ED at the dry matter of 1.24 the the relative potency is 16, but not significantly different from zero. In the literature the differences between  untreated controls among accessions can be much larger than here.
+
+
+## Remedy for heterogeneous variance
+
+Turning back to the ryegrass dataset the plot of the fit with  all observations and the residual plot suggest we should do some kind of transformation or weighing. Because the log-logistic relationship is on the original scale, we cannot just make a transformation of response without doing the same  on the right hand side of the equation. `drc` has a function that can do a a BoxCox transform-both-side regression.   You can get more information by executing `?boxcox.drc`.
+ 
+ * Fit the original model
+ * update the fit with the function boxcox()
+
+(ref:figryeboxcox1cap) _Search for optimum $\lambda$ with confidence intervals. The chosen $\lambda$ is 0.42._
+ 
+```{r figryeboxcox1, fig.cap='(ref:figryeboxcox1cap)'}
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+ryegrass.BX <- boxcox(ryegrass.m1,method="anova")
+```
+
+The summary below give the parameters with the BoxCox transformation.  
+```{r}
+summary(ryegrass.BX)
+ED(ryegrass.BX,50,interval="delta")
+```
+
+The changes in parameters and their standard deviations in relation to the original fit are not dramatic. Normally, if the heterogeneity of variance is moderate and the response curve is well described by responses covering the response range, the changes in the parameters would be small, but perhaps there will be changes in the standard errors. Consequently, if the objective is to compare potency among compounds the prerequisite for constant variance may be important to draw the optimal conclusions.
+
+The residuals after the BoxCox update look a bit better now, compared to the original one.
+
+(ref:figryeboxcoxdiagcap) _Residual plots of BoxCox transformed-both-sides.The funnel type distribution of the residuals now has  disappeared._
+
+```{r figryeboxcoxdiag, fig.cap='(ref:figryeboxcoxdiagcap)', fig.asp=.5}
+#Graphical analysis of residuals
+op <- par(mfrow = c(1, 2), mar=c(3.2,3.2,2,.5), mgp=c(2,.7,0)) #put two graphs together
+    plot(residuals(ryegrass.BX) ~ fitted(ryegrass.BX), main="Residuals vs Fitted")
+abline(h=0)
+qqnorm(residuals(ryegrass.BX))
+ qqline(residuals(ryegrass.BX))
+```
+
+
+## Dose-responses with binomial data
+
+Survival of plant or ability to germinate in response to herbicides is a classical underlying construct in toxicology. In weed science it also is important because  *the only good weed is a dead weed*. Particularly, in these ages of detecting herbicide resistance/tolerance the dead or alive response is important. In insecticide research and in general toxicology the binomial response, dead or alive or affected not affected is fundamental  for classifying toxic compounds.
+
+A prerequisite is that we know how to properly classify the demise of a plant. We are  far away from  the normal distribution. The data, however, can still be analysed with the function `drm()` but a new argument must be included in the `drm()`  function, viz `type="binomial`.
+
+
+### Example 1: Herbicide susceptibility
+
+Below we have an experiment with putative glyphosate sensitive and tolerant biotypes of *Chenopodium album* and the survival as response, which takes two values: 0 means dead and 1 means alive. In fact, every plants is an experimental unit. We assume that all plants survived in the untreated control and at infinite high rates all plants die. It is important to note, though, that this assumption may not always hold; for example, some triazine-resistant biotypes may not be killed by atrazine, even at exceptionally high doses. But for this example, the data suggest that even the tolerant biotype can be killed at high doses.
+
+(ref:figchealstcap) _Dose-response curves for survival of_ Chenopodium album _classified **a priori** as either sensitive or tolerant to glyphosate based on field history._
+
+```{r figchealst, message=FALSE, fig.cap='(ref:figchealstcap)', fig.asp=.6}
+library(drc)
+read.csv("http://rstats4ag.org/data/chealglyph.csv")->cheal.dat
+head(cheal.dat,n=3)
+
+drm(survival ~ glyph.rate, biotype, fct=LL.2(names=c("Slope", "LD50")),
+    type=("binomial"), data=cheal.dat, na.action=na.omit)->cheal.drm
+
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(cheal.drm, broken=TRUE, xlim=c(0,10000), bty="l",
+     xlab="glyphosate rate", ylab="P(survival)")
+```
+
+
+```{r}
+modelFit(cheal.drm)
+summary(cheal.drm)
+```
+
+ The data from the tolerant biotypes are not as 'clean' as for the sensitive biotype, and this is reflected in the standard error of the $LD_{50}$. This variability is often to be expected when a population is still segregating for a resistance trait, and individual organisms are being used as experimental units. The ?EDcomp()` function can be used to test whether the $LD_{50}$ is statistically different between biotypes. 
+
+```{r}
+EDcomp(cheal.drm,c(50,50), reverse=TRUE)
+````
+
+The two biotypes exhibit an approximately 3-fold difference in susceptibility to glyphosate, and this difference is statistically different from 1. 
+
+Another important issue here, is that the response range goes between 0 to 1.0, which is in contrast to the use of continuous response variables such as biomass. Generally, you get more information using biomass or other continuous responses, but also more difficult choices for interpretation, as mentioned before about, e.g. how to deal with different upper limit and lower limits among dose response curves.
+
+
+### Example 2: Earthworm toxicity
+
+The next example is from an ecotoxicological experiment with earthworms. A number of earthworms is distributed uniformly in a container where one half of the container surface is contaminated by  a toxic substance (not disclosed). If the earthworms do not like the substance they will flee to the uncontaminated part of the container.
+
+In this dataset the arrangement for data is somewhat different from the one with the sensitive and tolerant <i>Chenopodium album</i>. For each container we have a dose, a total number of earthworms, and the number of earthworms that migrated away form the contaminated part of the container. Consequently, we now need to use an additional argument in `drm()`, a weighing argument `weights=total`. 
+
+(ref:figworms10cap) _Standard 2 parameter log-logistic dose-response regression with upper and lower limits set to 1 and 0, respectively._
+
+```{r figworms10, fig.cap='(ref:figworms10cap)', fig.asp=.6}
+head(earthworms,n=3)
+## Fitting a logistic regression model
+earthworms.m1 <- drm(number/total ~ dose, weights = total, data = earthworms,
+                     fct = LL.2(), type = "binomial")
+modelFit(earthworms.m1)  # a crude goodness-of-fit test
+summary(earthworms.m1)
+
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(earthworms.m1, broken=TRUE, bty="l")
+```
+
+The regression above is a standard the with an upper limit of 1 and apparently the goodness of fit is not significant, even though the untreated control is around 0.6. From a biological point of view the earthworms can move freely after half of the container is contaminated with toxic materials. In the untreated control with  no contamination we expect that around 0.5 would be present in the part where we count. Therefore, a 2-parameter model with the upper limit fixed at 1.0 does not seem appropriate here. Consequently, we will introduce a three parameter log-logistic model with an upper limit being estimated on the basis of data. 
+
+(ref:figworms0cap) _Regression fit with the upper limit being estimated instead of fixed at 1.0._
+
+```{r figworms0, fig.cap='(ref:figworms0cap)', fig.asp=.6}
+## Fitting an extended logistic regression model 
+##  where the upper limit is estimated
+earthworms.m2 <- drm(number/total ~ dose, weights = total, data = earthworms,
+                     fct = LL.3(), type = "binomial")
+modelFit(earthworms.m2)  # goodness-of-fit test
+summary(earthworms.m2)
+
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(earthworms.m2, broken=TRUE, bty="l")
+```
+
+The goodness of fit was also here acceptable, so on the basis of the statistics we cannot pick the "best model". However, we could compare the AIC for the two models and pick the lowest value.
+
+```{r}
+AIC(earthworms.m1, earthworms.m2)
+```
+
+The model with the estimated upper limit has an AIC that is `r round(AIC(earthworms.m1)/
+AIC(earthworms.m2))` times smaller than the 2-parameter model. This also corresponds with what we biologically expected. 
+
+The $LD_{50}$ changed somewhat because the upper limit changed, not because there is much difference of the mid part of the curves as snow below.
+
+(ref:figwormsbothcap) _Comparison between the two curves fittings on with standard `d`=1 and one with a `d` determined by  data._
+
+```{r figwormsboth, fig.cap='(ref:figwormsbothcap)', fig.asp=.6}
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(earthworms.m1, broken=TRUE,  col="red", lty=2, bty="l")
+plot(earthworms.m2, broken=TRUE, add=TRUE)
+legend("topright",c("2-parameter model (d = 1)", "3-parameter model (d = estimated)"),
+       lty=2:1, col=c("red",1))
+```
+
+The earthworm example is a good one, because the biological knowledge of the set up of the experiment is instrumental to understanding which model to use. In fact the $LD_{50}$ ranged from 0.04 with the 2 parameter log-logistic fit to 0.29 while the 3 parameter log-logistic fit, which was the correct one from a biological point of view. We do expect that the earthworms would evenly distribute themselves in the untreated control with about 50% in each part of the box.
+
+***** 

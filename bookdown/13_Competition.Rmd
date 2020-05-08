@@ -1,0 +1,263 @@
+# Plant Competition Experiments
+
+Competition experiments are a staple of weed science. Typically, we often want to assess the effect of weed density or duration of competition on crop yield. There is an ongoing debate about the appropriateness of using density and not for example plant cover. We will not go into this debate, but stick to density of plant, because the methods of analyzing data remain the same whether the independent variable, `x`, is density or plant cover.
+
+One of the important questions is,how do we assess competition and when does it start. In principle competition starts at germination and is a question of the resources:
+
+* Light
+* Nutrients
+* Water
+* "Space"
+
+The three first factors are rather easy to quantify, but the fourth one is more intangible it is dependent on the growth habits of the weeds, e.g. prostrate, erect and the ability of the crop to outgrow the weeds. Whatever the reason for competition, it often boils down to the relationship in Figure \@ref(fig:figcompshape); when will the relationship divert from a straight line.
+
+## Yield, Density and Yield Loss
+
+The general plant competition and crop yield loss relationships are consider the same, a rectangular hyperbola. In Figure \@ref(fig:figcompshape) we have a classical intra-specific competition relationship (A), and a yield loss relationship (B). Competition materializes when the curve diverts from the straight line. The initial straight line means that putting a new plant into the system just increases the yield the same way as all the other individuals contribute initially. When individual plants begin compete  with each other for resources, because of high density, then the curves diverts from the straight line.
+
+In Figure \@ref(fig:figcompshape)B, the percentage yield loss is based upon the yield without the presence of weeds. The competition (inter-specific competition) for resources  materializes itself immediately. When the line diverts from the straight line relationship there will also be some intra-specific competition among the weeds. If there is no competition between crop and weeds at all, then the slope of the curve in Figure \@ref(fig:figcompshape)B would be zero, or no change in yield whatever the density of weeds.
+
+(ref:figcompshapecap) _Competition within the same species, often denoted intra-specific competition (A). Yield loss function based on the percentage yield loss relative to the yield in weed free environment (B)._
+
+```{r figcompshape, echo=FALSE, fig.cap='(ref:figcompshapecap)', fig.asp=0.5}
+op <- par(mfrow = c(1, 2), mar=c(2.2,2.2,2,.5), mgp=c(.3,.1,0))
+c<-curve(1*x/(1+x),0,8,ylab="Crop Yield per Unit Area",
+      xlab="Crop Density per Unit Area",axes=FALSE, main="A",
+      xaxs="i",yaxs="i")
+box(col="black")
+m1<-lm(y[1:5]~x[1:5],data=c)
+abline(m1,lty=2)
+c<-curve(1*x/(1+x),0,8,ylab="% Yield Loss per Unit Area",
+      xlab="Weed Density per Unit Area",axes=FALSE, main="B",
+      xaxs="i",yaxs="i")
+box(col="black")
+m1<-lm(y[1:5]~x[1:5],data=c)
+abline(m1,lty=2)
+```
+
+If the yield is a crop and the density is  weeds per unit area then the the competition (inter-specific competition) materializes in exactly the same way. But now the competition begins from the very start. If there is no competition between crop and weed then the slope of the curve would be zero, viz no change in yield whatever the density of weeds.
+
+The first example is a study conducted near Lingle, Wyoming over two years. In this study, volunteer corn densities ranging from 0 to 2.4 plants/$m^2$ were planted along with dry edible beans to document the bean yield loss from increasing volunteer corn density. 
+
+```{r}
+read.csv("http://rstats4ag.org/data/volcorn.csv")->VolCorn
+VolCorn$yr<-as.factor(VolCorn$yr)
+VolCorn$reps<-as.factor(VolCorn$reps)
+
+head(VolCorn,n=3)
+```
+
+The variable 'yr' is the year the study was completed (either 2008 or 2009), `reps` denotes the replicate (1 through 4), 'dens' is the volunteer corn density in plants/$m^2$ (0 to 2.4), 'y.pct' is the percentage dry bean yield loss as compared with the zero volunteer corn density, and 'y.kg' is the dry bean yield in kg/ha. 
+
+[Cousens 1985](http://onlinelibrary.wiley.com/doi/10.1111/j.1744-7348.1985.tb01567.x/pdf) proposed a re-parameterization of a rectangular hyperbola (perhaps better known as Michaelis-Menten) model as a tool to analyze competition experiments, and the `drc` is well suited for this type of analysis [Ritz and Streibig 2005](http://www.jstatsoft.org/v12/i05/paper). This package  must be loaded with the code:
+
+```{r, message=FALSE}
+library(drc)
+```
+
+The `drm()` function can be used to fit a variety of non-linear models, including the Michaelis-Menten model. The code to fit the Michaelis-Menten model to the volunteer corn data is for one of the two years, 2009, by using the argument `data=VolCorn, subset=yr==2009,`
+
+```{r}
+drm(y.pct ~ dens, fct=MM.2(names=c("Vmax","K")), data=VolCorn, 
+    subset=yr==2009, na.action=na.omit)->y2009.MM2
+summary(y2009.MM2)
+```
+
+Obviously, the `Vmax` and `K` parameter of the Michaelis-Menten model were non-significant, the reason is that the range of density of weeds were not large enough, we only catch the linear part (Figure \@ref(fig:figvolcornextrapolate)).
+
+(ref:figvolcornextrapolatecap) _Yield loss curve with a two parameter Michaelis-Menten's curve (the argument in `drm()` is `fct=MM.2()`. The `Vmax` is the upper limit, shown with the broken horizontal line, and `k` is the rate constant._
+
+```{r figvolcornextrapolate, fig.cap='(ref:figvolcornextrapolatecap)', fig.asp=0.6}
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(y2009.MM2,log="", 
+     ylab= "Percent Sugarbeet Yield Loss",
+     xlab="Volunteer Corn Density",
+     ylim=c(0,70), xlim=c(0,10), bty="l")
+abline(h=66.7, lty=2)
+```
+
+All functions in the `drc` package are defined in the `getMeanFunctions()`  by writing `?MM.3` or `?MM.2` you can see the help on the curve fitting function. 
+
+$$y=c + \frac{d-c}{1+(e/x)} .$$
+
+The suffix 3 or 2 defines how many asymptotes we use. The most common one is `MM.2` where there is only one upper limit _d_, in this context often referred to as _Vmax_. If you compare the model above with the log-logistic models, used in the selectivity and dose-response chapter, they look almost identical except that _b_ in the log-logistic does not exist in `MM.2` or `MM.3`, because for this case _b_=1. The standard error of the parameter estimates reveals that none of the two parameters are significantly different from zero. This is due to the fact that only the first part of the curve is supported by experimental data as seen in Figure \@ref(fig:figvolcornextrapolate); there is no data to support the upper limit of the curve. 
+
+The tradition in  weed science, as mentioned above, is to reparametrizise the Michaelis-Menten model and use:
+
+$$Y_L = \frac{Ix}{1+Ix/A} .$$
+
+which was proposed by Cousens (1985), where `A` now is the upper limit and `I` is the initial slope of the curve as shown Figure \@ref(fig:figcompshape). This reparametrization is available in the 'drc' package by using the 'yieldLoss()' function as shown below:
+
+```{r}
+yieldLoss(y2009.MM2, interval="as")
+```
+
+The upper limit, which is called `Vmax` in the Michaelis-Menten and `A` in the yieldLoss function is the same 67% and the rate constant in the Michaelis-Menten is 2.64 (corresponding to ED50 in the Log-logistic), but for the Cousens rectangular hyperbola the initial slope is 25. Of course the parameters of the `yieldLoss()` function were not different from zero either.
+
+Looking at the yield loss curve one could suspect that a straight line relationship applies. We test the regression against the most general model an ANOVA:
+
+```{r }
+lm.Y2009<-lm(y.pct ~ dens,data=VolCorn, subset=yr==2009)
+ANOVA.Y2009<-lm(y.pct ~ factor(dens), data=VolCorn, subset=yr==2009)
+anova(lm.Y2009,ANOVA.Y2009)
+```
+
+The test for lack of fit is non-significant (p=0.36) so we can confidently assume the straight line gives a good description of the relationship.
+
+```{r }
+summary(lm.Y2009)
+```
+
+Sugarbeet yield loss increases by 13% with each volunteer corn plant/m$^2$ that is added into the system.
+
+(ref:figvolcornmodelcompcap) _The linear model fit with a slope of 13 meaning that for every unit density of corn we get a yield decrease of 13%. The broken line is the nonlinear fit from shown in Figure \@ref(fig:figvolcornextrapolate)._
+
+```{r figvolcornmodelcomp, message=FALSE, fig.cap='(ref:figvolcornmodelcompcap)', fig.asp=0.6}
+library(dplyr)
+Yield.m<-subset(VolCorn,yr==2009) %>%
+  group_by(dens) %>%
+  summarise(Yieldloss=mean(y.pct))
+
+par(mfrow = c(1, 1), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(Yieldloss ~ dens,data=Yield.m, 
+     ylab="Percent Sugarbeet Yield Loss", 
+     xlab="Volunteer corn density", bty="l")
+abline(lm.Y2009)
+plot(y2009.MM2,log="", add=T, lty=2)
+```
+
+The assumption of a straight line relationship in Figure \@ref(fig:figvolcornmodelcomp) is justified by the test for lack of fit and we can conclude we loose 13% yield per each volunteer corn plant. However, it is important to recognize that the further we extrapolate beyond the volunteer corn densities used in the study, the more likely the linear fit is to provide nonsensical yield loss estimates.
+
+One issue with expressing yield loss as a function of the weed-free is it relies heavily on the weed-free control treatments from a particular study. When regression is used, it is possible to use the density relationship (in addition to the weed-free control treatment) to provide a more robust estimate of crop yield in the absence of weed competition. The weed-free yield can be estimated by using the following re-parameterization of the rectangular hyperbolic model (also proposed by Cousens 1985):
+
+$$Yield = Y_0(1-(\frac{Ix}{100(1+Ix/A)})) $$
+
+where _Y~0~_ is the intercept with the yield axis when weed density is zero. Of course it requires that the curve is well described over the range of relevant weed densities [Ritz, Kniss and Streibig 2015](http://www.wssajournals.org/doi/pdf/10.1614/WS-D-13-00159.1).
+
+## Replacement Series
+
+The replacement series can assess interference, niche differentiation, resource utilization, and productivity in simple mixtures of two species. Of course more than two species can be used as long as the total density remains the same, but the interpretation of results becomes very difficult. The species are growing at the same total density, but the proportion between the two species vary. One of the good things about replacement series is that if the replacement graphs looks like the one in <b>Figure 5</b>, it could be the reference, because with linear relationships in <b>Figure 5</b> shows no competition; the two species do not interfere with each others growth. As discuss earlier, when there is a straight line relationship between yield and density of a species (<b> Figure 1</b>), the second species does not interfere. If there is a curved relationship there is intraspecific and/or inter specific competition. The intraspecific competition can only be assessed if a species is grown in pure stand.
+
+The  density dependence, maximum density determined by experimenter, impedes generalization for a replacement series. And as always, we only get a snapshot of what is going on in an otherwise dynamic competition scenario. In order to avoid criticisms, however, researchers should appreciate the assumptions and limitations of this methodology [Jollife 2000](http://onlinelibrary.wiley.com/doi/10.1046/j.1365-2745.2000.00470.x/pdf)
+
+(ref:figrepsercap)  _The frame of reference for replacement series with two species where there is no competition between species and the  Yield Total (YT) does not change which ever the combination of the two species is. The two species do not need to have the same maximum yield in monoculture._
+
+```{r figrepser, echo=FALSE, fig.cap='(ref:figrepsercap)', fig.asp=0.6}
+par(mfrow = c(1, 1), mar=c(3.2,2.2,.5,2.2), mgp=c(2,.7,0))
+curve(1*x,0,100,ylab="",   xlab="", axes=FALSE )
+axis(1,at=c(0,50,100))
+mtext("Yield of species 1",side=2)
+mtext("Pct of Species 1 --->",side=1,line=2)
+mtext("<---Pct of Species 2>",side=1,line=3)
+curve(100-1*x,0,100,lty=2,add=TRUE)
+lines(c(100,100)~c(0,100),col="red")
+box(col="black")
+mtext("Yield of species 2",side=4)
+legend(60,60, c("Species 1","Species 2"), lty=c(1,2), bty="n")
+text(50,95, "Yield Total (YT)")
+```
+
+The philosophy of the replacement series is that the carrying capacity, in terms of say biomass, on a unit of land is constant whatever the proportion of the species.
+
+The  example uses a barley crop grown together with the weed <i>Amsinckia menziesii</i>. The experiment was run in greenhouse with the intention of having 20 plants in total in pots of 20 cm in diameter. After 20 days the plants were harvested and the actual number of plants were counted and the biomass per species measured.
+
+The dataset `Replacement series.csv` is a mixture of `csv` and `csv2` files, because the students who did the experiments came form continental Europe or Australia. It means the  continental Europeans use the semicolon as variable separator mixed with the Australian's decimal separator of dot. This mess is taken care of by using the `read.table()` function. 
+
+As we have to use the percent of either species as independent variable to fit regression models we have to define new variables `Pct.Amsinckia` and `Pct.Barley`.
+
+```{r}
+Replace.1<-read.table("http://rstats4ag.org/data/ReplacementSeries.csv",
+                      header=TRUE, sep=";", dec=".")
+Replace.1$Pct.Amsinckia<-with(Replace.1,D.Amsinckia*100/(D.Amsinckia+D.Barley))
+Replace.1$Pct.Barley<-   with(Replace.1,D.Barley*100/(D.Amsinckia+D.Barley))
+head(Replace.1,n=3)
+````
+
+First we try straight line relationships and illustrate the fit and with an analysis of residuals.
+
+(ref:figrelserlmcap) _Straight line relationships do not appear to capture the variation in the species. The analysis of residuals shows systematic departure form the expected shotgun distribution of residuals._
+
+```{r figrelserlm, fig.cap='(ref:figrelserlmcap)', fig.asp=.8}
+lm.Amsinckia<-lm(B.Amsinckia ~Pct.Amsinckia,data=Replace.1)
+lm.Barley<-lm(B.Barley ~Pct.Barley,data=Replace.1)
+
+par(mfrow = c(2, 2), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,.0))
+plot(B.Amsinckia ~Pct.Amsinckia,data=Replace.1, ylab="Yield of Amsinckia",
+     xlab="Percent of Amsinckia")
+  legend("topleft", "A", bty="n")
+abline(lm.Amsinckia)
+plot(B.Barley ~Pct.Barley,data=Replace.1,ylab="Yield of Barley",
+     xlab="Percent of Barley",pch=16)
+  legend("topleft", "B", bty="n")
+abline(lm.Barley,lty=2)
+plot(lm.Amsinckia,which=1, caption=NA)
+  legend("topleft", "C", bty="n")
+plot(lm.Barley,which=1, caption=NA)
+  legend("topleft", "D", bty="n")
+```
+
+Obviously, the relationships in Figure \@ref(fig:figrelserlm) for both species look like a curved relationship. We are not sure of which relationship to use and resort to a second degree polynomial.
+
+$$Yield = a+bx+cx^2 .$$
+
+where _a_ is the intercept with the y-axis and _b_ and _c_ are parameters for the _x_ and the _x_^2^.
+The biological meanings of polynomial parameters in general are not often of interest because they can be hard to interpret. To fit the polynomial we use the `lm()`function because it is essentially a linear model we are fitting by adding a parameter for the _x_^2^  by writing `I(x^2)`. However, we cannot use the `abline()` function since there is now more than one 'slope' parameter.
+
+To plot a line, first we generate predicted values using the polynomial model to get smooth fits. It is done with the `predict()`function `predict(Pol.B.Amsinckia,data.frame(Pct.Amsinckia=seq(0,100,by=1)))`
+where  
+
+* `Pol.B.Amsinckia` the results of the second degree polynomial fit for <i>Amsinckia</i> 
+* `data.frame(Pct.Amsinckia=seq(0,100,by=1))` generates a sequence of 'x' values from 0 to 100 by 1 (for a total of 101 values).
+
+The same procedure applies to  barley.
+
+(ref:figcomppolycap) _Fitting second degree polynomials to data._ 
+
+```{r figcomppoly, fig.cap='(ref:figcomppolycap)', fig.asp=0.5}
+Pol.B.Amsinckia<-lm(B.Amsinckia ~Pct.Amsinckia+I(Pct.Amsinckia^2),data=Replace.1)
+line.Pol.B.Amsinckia<-predict(Pol.B.Amsinckia,data.frame(Pct.Amsinckia=seq(0,100,by=1)))
+
+Pol.B.Barley<-lm(B.Barley ~Pct.Barley+I(Pct.Barley^2),data=Replace.1)
+line.Pol.B.Barley<-predict(Pol.B.Barley,data.frame(Pct.Barley=seq(0,100,by=1)))
+
+par(mfrow = c(1, 2), mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,.0))
+plot(B.Amsinckia ~Pct.Amsinckia,data=Replace.1,ylim=c(0,100), bty="l",
+     ylab="Amsinckia yield", xlab="Percent Amsinckia")
+lines(line.Pol.B.Amsinckia~seq(0,100,by=1),col="red")
+plot(B.Barley ~Pct.Barley,data=Replace.1,pch=16,ylim=c(0,100), bty="l",
+     ylab="Barley yield", xlab="Percent Barley")
+lines(line.Pol.B.Barley~seq(0,100,by=1),col="red",lty=2)
+```
+
+Overall the second degree polynomials describe the variation reasonably well (Figure \@ref(fig:figcomppoly)). However,  there is a catch to it, the minimum for the <i>Amsinckia</i> second degree polynomial is at low percent of <i>Amsinckia</i> and the maximum for the second degree polynomial for barley is at rather high proportion of  barley. If we can live with that  we can use the fit to summarize the experiment by calculation the Yield Total (_YT_) as shown in the graph in Figure \@ref(fig:figrepser).
+
+This is a good example of the problem with polynomials. A Second degree polynomial is symmetric with either a minimum or a maximum depending of the parameters. A third degree polynomial does not have this symmetric property, it becomes much more complex, and it is definitely not advisable to use with interpolations. In order to summarize the experiment on the basis of the fits, we can combine the two curves for the two species and  calculate the _YT_.
+
+We want to use the  `line.Pol.B.Amsinckia` and the `line.Pol.B.Barley` that define the smooth lines and calculate _YT_. In order to calculate the YT we must sum the two predicted yields, but we must be carevul to reverse the order of one of the species (in this case we'll reverse using the function `rev(line.Pol.B.Barley)`. For this example, the maximum yield is `r round(max(line.Pol.B.Amsinckia + rev(line.Pol.B.Barley)))`, which occurs when the percentage of _Amsinckia_ is `r which.max(line.Pol.B.Amsinckia + rev(line.Pol.B.Barley))-1`% (found by using the `which.max()` function). 
+   
+(ref:figrepselYTcap) _Summary of the replacement series experiment with barley and_ Amsinckia. _Solid and dotted black lines represent theoretical linear and estimated actual YT, respectively; red solid line and filled circles represent Amsinckia yield; blue dashed line and open circles represent barley yield._
+
+```{r figrepselYT, fig.cap='(ref:figrepselYTcap)', fig.asp=0.6}
+max(line.Pol.B.Amsinckia + rev(line.Pol.B.Barley))
+which.max(line.Pol.B.Amsinckia + rev(line.Pol.B.Barley))-1
+
+par(mfrow = c(1, 1), mar=c(5.2,3.2,0.5,.5), mgp=c(2,.7,.0))
+plot(c(line.Pol.B.Amsinckia[101],line.Pol.B.Barley[101])~c(100,0),type="l",
+     ylim=c(0,120), xlab="", ylab="Yield", bty="l")
+mtext("Amsinckia (%) --->",side=1,line=2)
+mtext("<--- Barley (100-%)",side=1,line=3)
+Pred.RYT<-line.Pol.B.Amsinckia[1:101]+line.Pol.B.Barley[seq(101,1,by=-1)]
+lines(Pred.RYT~seq(0,100,by=1),lty=3,lwd=2)
+lines(line.Pol.B.Barley~seq(100,0,by=-1),col="blue",lty=2)
+lines(line.Pol.B.Amsinckia~seq(0,100,by=1),col="red",lty=1)
+points(B.Amsinckia ~Pct.Amsinckia,data=Replace.1,pch=19,ylim=c(0,100), col="red")
+points(B.Barley ~Pct.Amsinckia,data=Replace.1,pch=1,ylim=c(0,100), col="blue")
+```
+
+It seems in Figure \@ref(fig:figrepselYT) that if <i>Amsinckia</i> gains with its convex curve, and barley suffers with its concave curve, but gain and suffering still leave the YT below the theoretical value of YT. 
+
+Another issue is that that we do  not test the regressions statistically, but use the fit to illustrate the relationships. In order to apply test statistics it requires more systematic designs with fixed number of plants per unit area, which unfortunately was not the case here. In the first example we had genuine replication with several replicates of the number of volunteer corn per unit area and therefore we could test which model could be used.
+
+It also shows that when fitting curves we can derive predicted values, which can be used to calculate derived parameters such as  YT. In replacement series analysis, one often scales the results so that the theoretical maximum yield is equal to 1.0 and then calculate the Relative yield Total (RYT), which in mixed cropping research is called Land Equivalent Ratio (LER).
+
+*****

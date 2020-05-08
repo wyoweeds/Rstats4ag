@@ -1,0 +1,109 @@
+# Mixed Models - ANOVA
+
+There are many examples in agronomy and weed science where mixed effects models are appropriate. In ANOVA, everything except the intentional (fixed) treatment(s), reflect random variation. This includes soil variability, experimental locations, benches in the greenhouse, weather patterns between years; many things can affect experimental results that simply cannot be controlled. In many cases, we can try to account for these sources of variation by blocking. We can consider the selection of the blocks to take place at random in the sense that we usually cannot tell in advance whether or not the next block will exhibit a low, high, or more moderate response level. In this context, we can describe random effects as effects that cannot be controlled and therefore cannot be explained by the treatment structure of the experiment. In many designed experiments, we are not inherently interested in these random effects, but in an adequate analysis we need to acknowledge the variation that they contribute. We can do so using a mixed effects model that contains both fixed and random effects. 
+
+To illustrate mixed effects ANOVA, we will use the same dry bean herbicide data set that was used in the ANOVA section to allow for comparison; please read the ANOVA section for details on the study. We will need to load the `lme4` and `multcomp` packages for this analysis.
+
+```{r, message=FALSE}
+library(lme4)
+read.csv("http://rstats4ag.org/data/FlumiBeans.csv")->flum.dat
+flum.dat$yrblock  <- with(flum.dat, factor(year):factor(block))
+```
+
+First, we can look at group means (in plants per acre, and plants per hectare) using the `dplyr` package.
+
+```{r, message=FALSE}
+library(dplyr)
+beansum <- flum.dat %>%
+  group_by(year, treatment) %>%
+  summarize( Pop.plantsA  = round(mean(population.4wk),-2),
+             Pop.plantsHa = round(mean(population.4wk*2.47),-2))
+beansum
+```
+
+## Mixed Effects Model using the lme4 Package
+
+In the ANOVA section, we considered year, block, and treatment all as fixed effects. However, because the number of replicates was different by year, analyzing the combined data from all three years is problematic. The effect of year is unbalanced; we have more observations for 2010 and 2011 than for 2009. We can deal with the unbalanced nature of the data by using a mixed effects model. There are other good reasons for analyzing the data as a mixed effect model. The hope is that the results of this experiment can be generalized beyond the three years the study was conducted. The three years in which we conducted the experiment represent 3 possible years out of many when the experiment could have been done, and therefore, we can assume the impact of year to be a random variable. Same goes for the blocking criteria within a year. However, the treatments were selected specifically to determine their impact on the dry bean crop. Therefore, we will consider the treatments as fixed effects, but the year and blocking criteria within a year random effects.
+
+```{r}
+# Mixed Effects ANOVA
+lmer(population.4wk ~ treatment+(1|year/block), data=flum.dat, REML=F)->flum.lmer
+anova(flum.lmer)
+```
+
+### Model Comparison and Obtaining P-values
+
+One of the most frustrating things to many researchers analyzing mixed models in R is a lack of p-values provided by default. The calculation of P-values for complex models with random effects and multiple experimental unit sizes is not a trivial matter. Certain assumptions must be made, and it is difficult to generalize these assumptions from experiment to experiment. Therefore, the authors of the `lme4` package have chosen not to print P-values by default. We can get a P-value for the fixed effect of treatment in two different ways. First, we can compare our model with a reduced model that does not contain the treatment effect. The P-value that results, then, is effectively the P-value for the treatment effect. When comparing `lmer()` models, it is important to specify the argument `REML=F` in both models so that the model is fit using full maximum likelihood (rather than the default restricted maximum likelihood). 
+
+```{r, message=FALSE}
+lmer(population.4wk ~ (1|year/block), data=flum.dat, REML=F)->flum.null # reduced model
+anova(flum.null, flum.lmer) # anova function to compare the full and reduced models
+```
+
+A second method for getting a p-value for fixed effects is to use the `Anova()` (note the different capitalization) from the `car` package. This will provide an anova table of the full model that is complete with p-values. By deault, the `Anova()` function will provide p-values from a Chi-square test.
+```{r, message=FALSE}
+# Mixed Effects ANOVA - with p-values from Chisq test:
+library(car)
+Anova(flum.lmer) # Chi-square
+```
+
+To get a p-value from an F-test, the model must be fit using restricted maximum likelihood.
+
+```{r, message=FALSE}
+# re-fit the model with REML, and get F-test:
+lmer(population.4wk ~ treatment+(1|year/block), 
+     data=flum.dat, REML=T)->flumREML.lmer #note REML = TRUE
+Anova(flumREML.lmer, test="F") # F-test
+```
+
+For this example, treatment effect produces a very low p-valueregardless of method we use to get it, indicating there appears to be a strong effect of treatment on dry bean emergence Therefore, we will want to look at the treatment means to determine which treatments affected dry bean stand. First, though, it is often of interest to look at the random effects. 
+
+### Random Effects
+
+The `summary()` function can be used to print most of the relevant information from the mixed model fit `summary(flum.lmer)`. We can selectively print only the certain parts of the model fit. Adding `$varcor` to the summary function of the fit will print out the variance components for the random terms as well as the residual variance.
+
+```{r}
+summary(flum.lmer)$varcor
+```
+
+The random 'year' effect appears to be contributing substantially to the model, but the blocking criteria within a year does not. When reporting results of a random effects model for publication, it is important that these results be included so that a full accounting of variability is provided. The `ranef()` function returns estimates for the random effects of year:
+
+```{r}
+ranef(flum.lmer)$year
+```
+
+On average, bean populations were lowest in 2011, and highest in 2010. Using `tapply()` results in a similar conclusion, and helps put the random effects estimates into context.
+
+```{r}
+tapply(flum.dat$population.4wk, flum.dat$year, mean) 
+```
+
+### Fixed Effects & Mean Separation
+
+In most designed agricultural experiments, the fixed effects (and specifically differences between fixed effects treatments) are of most interest to the researcher. We can use the `glht()` function in the `multcomp` package to separate treatment means if we conclude there is a significant treatment effect. The p-values below are adjusted using Tukey's method. 
+
+```{r, message=FALSE, results='hide'}
+library(multcomp)
+summary(glht(flum.lmer, linfct=mcp(treatment="Tukey")))->flum.glht
+flum.glht # print all pairwise comparisons
+```
+
+Printing all pairwise comparisons is valuable to get P-values, estimates of differences, etc. for reporting (not shown here due to space). But we can also plot the 95% confidence intervals to allow better visualization of differences. In Figure \@ref(fig:figmixedglht), the comparison is listed on the left in the format (treatment1 - treatment2). If the confidence interval bars do not include zero (the vertical dotted line) then one could conclude that difference between treatments is significantly different according to the Tukey adjusted p-values (at the 5% confidence level). 
+
+(ref:figmixedglhtcap) _Model estimates of treatment differences with 95% confidence intervals._
+
+```{r figmixedglht, fig.asp=.8, fig.cap='(ref:figmixedglhtcap)'}
+par(mar=c(5,22,3,1), mgp=c(2,.7,0)) # set wide left margin 
+plot(flum.glht)
+```
+
+The `glht()` function will not allow for unadjusted comparisons, since multiple testing tends to inflate the likelihood of a Type I error. If for some reason unadjusted Fisher LSD p-values are required (similar to the default in SAS) the `emmeans()` function in the `emmeans` package can be used. The estimated mrginal means (or least-square means) cna be printed along with the mean separation groups using the `cld()` function from the `multcomp` package, and the pairwise comparisons of estimated marginal means can be printed by calling the 'contrasts' of the estimated marginal means.
+
+```{r, message=FALSE}
+library(emmeans)
+emmeans(flum.lmer, pairwise ~ treatment, data=flum.dat, adjust="none") -> flum.emm
+multcomp::cld(flum.emm$emmeans) 
+flum.emm$contrasts
+```
+
+*****

@@ -1,0 +1,51 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# Logistic Regression (Binary Response)
+
+Determination of the effective dose of a herbicide under field, greenhouse, or laboratory conditions is a common goal of weed science experiments. Although the response variable in some cases is continuous (dry weight) or percent (visual injury), in many cases the response variable of interest is a binary response, such as mortality (the plant is alive or dead). This type of data is important in many types of toxicology and pest management, and weed science is no exception. In many ways the analysis of binary response data is analogous to using ANOVA followed by non-linear regression.
+
+## Generalized Linear Model
+
+Instead of fitting a linear model using the lm() function, analysis of binary response data requires the use of a generalized linear model with the glm() function. For this example, the data set has mortality observations collected 21 days after treatment with six rates of imazamox with and without six different growth regulator herbicides.
+
+```{r}
+rye.dat <- read.csv("http://rstats4ag.org/data/2012_RyeGH.csv")
+rye.glm <- glm(mort.21dat ~ imaz.rate + gr, data = rye.dat, 
+               family = binomial(link = "logit"))
+anova(rye.glm, test = "Chisq")
+```
+
+Using `anova()` on the `glm()` fit results in an analysis of deviance table with a similar interpretation as an ANOVA table for continuous response data. Both the imazamox rate and growth regulator herbicide significantly affected the mortality of feral rye, which was the expected result. The drc package can be used to quantify the response of feral rye to imazamox in the presence and absence of the growth regulator herbicides.
+
+```{r, message=FALSE}
+library(drc)
+rye.drc <- drm(mort.21dat ~ imaz.rate, gr, data = rye.dat, fct = LL.2(), 
+               type = "binomial", na.action = na.omit)
+summary(rye.drc)
+EDcomp(rye.drc, c(50,50))
+```
+```{r, echo=FALSE, results='hide', error=FALSE, message=FALSE}
+### This example not working, but might in future version of drc ###
+#R.Potent <- EDcomp(rye.drc, c(50,50))
+### We are only interested in significantly different relative potencies
+#OBA.i <- which(R.Potent$SIdisplay[,4] < .05) # get only significant comparisons
+#OBA.i <- which(R.Potent$SIdisplay[,4] < .05) # get only significant comparisons
+#new.a <- R.Potent$SIdisplay[OBA.i,] # create yhrm
+#new.a
+```
+
+Please note that the test for significant relative potency is not a null hypothesis, but that the relative potency SI is different from unity.
+
+(ref:figlogisticryecap) _The effect of imazamox rate with and without auxin-mimic herbicides on rye survival._ 
+
+```{r figlogisticrye, fig.asp=0.8, fig.cap='(ref:figlogisticryecap)'}
+par(mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
+plot(rye.drc, legendPos=c(10,0.6), col=T, xt=unique(rye.dat$imaz.rate),
+     broken=T, bp=1.5, xlim=c(0,100),xlab="Imazamox rate", bty="l",
+     ylab="Probability of survival 21 DAT")
+```
+
+*****

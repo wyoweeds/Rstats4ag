@@ -1,0 +1,76 @@
+# Student's t-test
+
+## One-sample t-test
+
+One of the most basic statistical analyses involves testing whether a group of data is statistically similar to a known value. For example, a researcher may want to know whether the yield data from a wheat experiment was similar to the state-wide average wheat yield for that year. In the example below, yield data (in kg/ha) from 10 different plots is entered manually, and stored in an object named “yield”. The state-wide dryland wheat average for the same year was 1812 kg/ha. Summary information of the wheat yield, and the differences between the experiment yields and the state average (“yld.diff”) are calculated. The `t.test()` function is used to calculate the one-sample Student's t-test.
+
+```{r}
+yield <- c(2280, 2690, 2080, 2820, 1340, 2080, 2480, 2420, 2150, 1880)
+yld.diff <- yield - 1810
+yld.dat<-data.frame(yield, yld.diff)
+yld.dat
+colMeans(yld.dat)
+```
+
+The mean wheat yield in the experiment was `r mean(yield)` kg/ha, `r mean(yld.diff)` kg/ha greater than the state-wide average. There are several possible methods to conduct the one-sample t-test. The first is to subtract the state-wide mean from each observation from the experiment, then test whether the mean difference in yield is different from zero. This is done simply by running the `t.test()` function on the “yld.diff” object calculated above.
+
+```{r}
+t.test(yld.diff)
+```
+
+The `t.test()` output specifies that the alternative hypothesis is that the true mean is not equal to zero, and gives a P-value of `r round(t.test(yld.diff)$p.value, 3)`; there is fairly strong evidence that the wheat yield in the experiment is different from the state-wide average. The `t.test()` function also allows the user to specify a value other than zero to test. This eliminates the need to first calculate the difference of each mean from the state-wide average, and instead, specify the state-wide average within the `t.test()` function using the `mu` argument. `mu` is a common statistical symbol for the population mean.
+
+```{r}
+t.test(yield, mu=1810)
+```
+
+Results are identical to testing whether the difference between experiment yields and the state-wide average yield is different from zero. In both of the above cases, a two-sided alternative hypothesis is tested; that is, the alternate hypothesis being tested is that the experimental average is different from the state-wide average yield. In some cases, though, a one-sided alternative hypothesis would make more practical sense. Perhaps it is assumed *a priori* that the treatments in this experiment will improve wheat yields. Therefore it would be more logical to test whether the wheat yield in the experiment was greater than (not simply different from) the state-wide average. This can be done using the `alternative` argument in the `t.test()` function. The `alternative` argument can be set to either 'greater' or 'less'. 
+
+```{r}
+t.test(yield, alternative="greater", mu=1810)
+```
+
+As expected, the one-sided alternative produces a p-value of exactly one-half of the two-sided alternative. It appears that there is strong evidence that the experimental mean wheat yield is greater than the state-wide average wheat yield.
+
+## Two-sample t-Test
+
+The two-sample t-test is more common than the one-sample test in designed agricultural experiments. In a two-sample t-test, there are two groups (often experimental treatments) on which data is collected. Some examples where the two-sample t-test would be used might include testing isogenic crop varieties to test for yield drag, or comparing two herbicide formulations for absorption or efficacy. Another example from the published literature can be found in [Kniss et al. (2011)](http://assbt-jsbr.org/JSBR/Vol47/JSBRVol473and4p127to134CompasisonofConventionalandGlyphosate-ResistanSugarbeettheYarofCommercialInductioninWyoming.pdf), where glyphosate-resistant sugarbeet was compared with conventional sugarbeet varieties. For this study, 11 fields in Wyoming were split, with one side planted to glyphosate-resistant varieties, and the other side planted to conventional varieties. The two sides of the field were then managed as the grower thought best for the rest of the year.
+
+```{r}
+sbeet.dat <- read.csv("http://rstats4ag.org/data/sugarbeet.csv")
+sbeet.dat$Yield <- round(sbeet.dat$Yield * 2.24, 1) # Convert data to SI units
+head(sbeet.dat)
+```
+
+In the “sugarbeet.csv” file, each field is represented in two data rows: one row for the glyphosate-resistant ('R') side, and a second row for the conventional side ('C'). Therefore, prior to running the t.test function, the data is divided into two separate data frames using the subset function. The subset function takes the `sbeet.dat` data frame, and copies only the observations (rows) where the column “Type” matches an argument; ”R” for the first, and ”C” for the second. This results in one data frame that contains only the glyphosate-resistant observations (“RR”) and one data frame that contains only the conventional observations (“CON”).
+
+```{r}
+RR <- subset(sbeet.dat, sbeet.dat$Type == "R")
+CON <- subset(sbeet.dat, sbeet.dat$Type == "C")
+t.test(RR$Yield, CON$Yield)
+```
+
+The t.test function then compares the “Yield” column from the RR data frame to yield data in the the CON data frame. The t-test output provides the mean yield for each group (`r round(t.test(RR$Yield, CON$Yield)$estimate[[1]], 1)` tons/ha for glyphosate-resistant, and `r round(t.test(RR$Yield, CON$Yield)$estimate[[2]], 1)` tons/ha for the conventional). In this case it appears that due to the variability in the data, there is not strong evidence for a difference between the two systems (P=`r round(t.test(RR$Yield, CON$Yield)$p.value,3)`). Since there are only two groups in the "Type" column, we can simplify the code above by not subsetting the data ahead of time. We can simply use the `t.test()` function and specify that Type contains the relevant treatment information by using the formula `response ~ groups`, specifically in this case: `Yield ~ Type`.
+
+```{r, results='hide'}
+t.test(Yield ~ Type, data=sbeet.dat)
+```
+
+## Paired t-Test
+
+A special case of the two-sample t-test is the paired t-test. In this sugarbeet example, the two-sample t-test assumes the 11 observations on the glyphosate-resistant fields are independent from the 11 observations on the conventional fields. In reality, this was not the case. The way the study was carried out, conventional sugarbeet varieties were planted in the same (or immediately adjacent) field as the glyphosate-resistant varieties. Therefore, the glyphosate-resistant observation was not actually independent from the observation on the conventional side of the field. For each field, weather, irrigation, fertility, etc. were all the same for both sides of the field. We can therefore assume that most of the variability between the conventional and glyphosate-resistant portions of the first field is due to the varieties, or the way each side of the field was managed (herbicides, tillage, etc.), and not due to unrelated external factors. Because the purpose of the study was to compare the glyphosate-resistant and conventional systems, it is more desirable to consider the two sides of the same field as “paired” samples, to which different treatments were applied. This can be achieved by adding the argument `paired=T` to the `t.test()` function.
+
+```{r}
+t.test(Yield ~ Type, data=sbeet.dat, paired=T)
+```
+
+In this case, we reach a very different conclusion; that within a field pair, there is very strong evidence that the difference between group means is different from zero (P=`r round(t.test(Yield ~ Type, data=sbeet.dat, paired=T)$p.value,3)`); or that within each field, yield in the glyphosate-resistant system was different from conventional sugarbeet yields. On average, the glyphosate-resistant system resulted in `r round(mean(RR$Yield - CON$Yield),1)` tons/ha greater yield than the conventional system. Notice that the paired t-test provides the exact same result as if we subtract the conventional yields from the glyphosate-resistant yields for each pair, then conduct a one-sample t-test on the difference.
+
+```{r, results = 'hide'}
+RR$Yield - CON$Yield -> diff.Yield
+t.test(diff.Yield)
+```
+
+In this example, there was no *a priori* expectation that the glyphosate-resistant system would yield more or less than the conventional system, and therefore the two-sided alternative hypothesis is appropriate.
+
+*****

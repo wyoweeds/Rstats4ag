@@ -1,0 +1,55 @@
+--- 
+title: "Statistical Analysis of Agricultural Experiments using R"
+author: "Andrew Kniss & Jens Streibig"
+date: "Last Updated on `r Sys.Date()`"
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    includes:
+      in_header: Analytics.html
+      after_body: disqus.html
+cover-image: "Rstats4agLogo76px.png"
+download: ["pdf"]
+documentclass: book
+papersize: letter
+margin-left: 1.25in
+margin-right: 0.75in
+margin-top: 1in
+margin-bottom: 1in
+description: "Using the R language to analyze agricultural experiments."
+---
+
+# <img src="Rstats4agLogo76px.png" /> {-}
+
+> Kniss AR, Streibig JC (2018) Statistical Analysis of Agricultural Experiments using R.  https://Rstats4ag.org. 
+
+# Preface {-}
+
+## What is this text? {-}
+
+> "Statistics, like all other disciplines, is dynamic; it is not a fixed set of unchanging rules passed down from Fisher and company." -[W. Stroup](https://dl.sciencesocieties.org/publications/aj/articles/107/2/811)
+
+There are many excellent books and websites available to students and practitioners who would like to learn the R statistical language. Even so, there are few resources that specifically address the type of designed experiments common in the plant and weed science disciplines. Statistics, and the R language, evolves over time. It is not uncommon for a textbook about R or statistics to become out of date within only a few years. So we decided to develop this material for the web rather than a printed textbook so that it could be more easily kept up to date.
+
+This text is not meant to be a complete reference for all the capabilities of the R language, nor should it be used as as a substitute for consultation with a well-trained statistician. This text will not cover many of the underlying statistical concepts for the examples provided, and as such, this is certainly not a standalone statistics resource. The purpose of this text is simply to provide information and examples on how to use the R language to analyze statistical designs that are commonly used in agricultural experiments.
+
+A majority of agricultural research uses a small subset of experimental designs, and thus, there is a high probability that the examples presented here will provide a framework for analysis of many agricultural experiments. It is important, though, that the researcher understands their own data and the experimental designs that were employed in the research so that these examples are not used inappropriately. As of this writing, the examples presented here are heavily focused on agronomic and weed science experiments, as that is the primary expertise of the authors. We welcome additional contributions from related disciplines to broaden the scope and usefulness of this text.
+
+Apart from the differences in the structure of SAS and R languages, there is another important difference: SAS is a commercial product whereas R is an open source language. Although the underlying code for SAS is not in the public domain, history tells us that the SAS Institute does a good job and was in fact developed for analysis of agricultural experiments in the first place. Their contribution to agricultural statistics cannot be overstated. 
+
+R, on the other hand is an open source language where all codes are in the public domain and can be checked by anyone with the inclination to do so. There are many capable statisticians that develop the language and add-on packages. But anyone with the ability to code can contribute functions to R. To rephrase: R is written by statisticians and practitioners, and is meant to be used by statisticians and practitioners. An analogy to every day life could be that with SAS or other commercial programs you have a king choose the menu, and hope the chef is a good cook. With R you are given all the ingredients to make a good menu with the bits and pieces. In both cases, it is quite possible to have either a delightful meal, or an unpleasant evening.
+
+While there are many texts already available for learning R, they are typically aimed broadly at statisticians, or targeted at a specific discipline ranging from ecology to the social sciences. The chapters in this text are primarily focused on providing data and code examples for analyzing the most common experimental designs used by agronomists and weed scientists, and thus it will hopefully be useful to students and practitioners as they attempt to learn how to use a new statistical analysis environment. The philosophy of learning by example is that we do not go into much detail about the R functions, or the statistical theory behind each function. In fact we think that the way you learned your mother tongue was to listen to adults and repeat without prior knowledge of the grammar and syntax. The same applies to R. See, do, repeat, and gradually understand the grammar and syntax.
+
+Last but not least, a great many documents and books on R are freely available on the R website and elsewhere on the web.  Because R is open source the changes in the language make it difficult to find up-to date commercial books. Consequently, we will not recommend any, but suggest [this listing on the R homepage](http://cran.r-project.org/other-docs.html) as a starting point for more information.
+
+## Cite this text {-}
+
+If you have found this resource useful and would like to cite this as a reference, we suggest using the following citation:
+
+> Kniss AR, Streibig JC (2018) Statistical Analysis of Agricultural Experiments using R. https://Rstats4ag.org. <span id="datetime"></span>
+
+<script>
+var dt = new Date();
+document.getElementById("datetime").innerHTML = dt.toLocaleDateString();
+</script>

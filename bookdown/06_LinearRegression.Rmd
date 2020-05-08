@@ -1,0 +1,82 @@
+# Linear Regression
+
+## Simple Linear Regression
+
+Linear regression in R is very similar to analysis of variance. In fact, the mathematics behind simple linear regression and a one-way analysis of variance are basically the same. The main difference is that we use ANOVA when our treatments are unstructured (say, comparing 5 different pesticides or fertilizers), and we use regression when we want to evaluate structured treatments (say, evaluating 5 different rates of the same pesticide or fertilizer). In linear regression, we will use the `lm()` function instead of the `aov()` function that was used in the [ANOVA chapter.](#anova) However, it should be noted that the `lm()` function can also be used to conduct ANOVA. The primary advantage of `aov()` for ANOVA is the ability to incorporate multi-strata error terms (like for split-plot designs) easily.
+
+To illustrate linear regression in R, we will use data from ([Kniss et al. 2012](http://www.bioone.org/doi/abs/10.1614/WT-D-11-00125.1)), quantifying the sugar yield of sugarbeet in response to volunteer corn density. The response variable is sucrose production in pounds/acre (LbsSucA), and the independent variable is volunteer corn density in plants per foot of row. The `lm()` function syntax (for the purpose of regression) requires a formula relating the response variable (Y) to independent variable(s), separated by a `~`, for example: `lm(Y ~ X)`.
+
+```{r}
+beets.dat <- read.csv("http://rstats4ag.org/data/beetvolcorndensity.csv")
+head(beets.dat)
+density.lm <- lm(LbsSucA ~ Density, data = beets.dat)
+```
+
+### Model Diagnostics
+
+The assumptions can be checked in the same manner as with the fitted aov object (see ANOVA section for full details). Quick diagnostic plots can be obtained by plotting the fitted lm object.
+
+(ref:beetdensdiagcap) _Model diagnostic plots for linear model of sugarbeet yield as a function of volunteer corn density._
+```{r figbeetdensdiag, fig.asp=.5, fig.cap='(ref:beetdensdiagcap)'}
+par(mfrow=c(1,2), mgp=c(2,.7,0), mar=c(3.2,3.2,2,.5))
+plot(density.lm, which=1:2)
+```
+
+We can also conduct a lack-of-fit test to be sure a linear model is appropriate. The simplest way to do this is to fit a linear model that removes the linear structure of the independent variable (treating it as a factor variable). The models can then be compared using the `anova()` function. 
+
+```{r}
+density.lm2 <- lm(LbsSucA ~ as.factor(Density), data = beets.dat)
+anova(density.lm, density.lm2)
+```
+
+When 2 linear models are provided to the `anova()` function, the models will be compared using an F-test. This is only appropriate when the models are nested; that is, one model is a reduced form of the other. The highly non-significant p-value above (p = `r round(anova(density.lm,density.lm2)$"Pr(>F)"[[2]],2)`) indicates that removing the structured nature of the density variable does not increase the model fit. Therefore, we will proceed with the regression analysis.  
+
+### Model Interpretation
+
+Using the `anova()` function on a a single fitted lm object produces output similar to the `aov()` function. The ANOVA table indicates strong evidence that volunteer corn density has an effect on the sugar production, as expected. To get the regression equation, we use the `summary()` function on the fitted lm model:
+
+```{r}
+anova(density.lm)
+summary(density.lm)
+```
+
+The resulting output provides estimates for the intercept (`r round(summary(density.lm)$coefficients[[1]])`), and slope (`r paste(round(summary(density.lm)$coefficients[[2]]))`) of the regression line under the heading "Coefficients." The `summary()` function also prints standard errors, t-statistics, and P-values, and fit statistics such as the R^2^ for these estimates are also provided. The regression line for this example would be:
+
+<strong>Y = 8678 - 20645*X</strong>
+
+To plot the data along with the fitted line:
+
+(ref:figbeetdenscap) _Effect of volunteer corn density on sugarbeet yield._ 
+```{r figbeetdens, fig.asp=0.6, fig.cap='(ref:figbeetdenscap)'}
+par(mfrow=c(1,1), mar=c(3.2,3.2,2,.5), mgp=c(2,.7,0))
+plot(beets.dat$LbsSucA ~ beets.dat$Density, bty="l",
+     ylab="Sugar yield (lbs/A)", xlab="Volunteer corn density (plants/ft row)",
+     main="Lingle, WY 2009", ylim=c(0,10000))
+  abline(density.lm) # Add the regression line
+# to add the regression equation into the plot:
+  int<-round(summary(density.lm)$coefficients[[1]]) # get intercept
+  sl<- round(summary(density.lm)$coefficients[[2]]) # get slope
+  reg.eq<-paste("Y =", int, sl, "* X") # create text regression equation
+  legend("bottomleft",reg.eq, bty="n")
+```
+
+The sugar yield was decreased by 20,600 lbs/A for each volunteer corn plant per foot of sugarbeet row; this seems unintuitive since the Y-intercept was only 8,678 lbs/A. The maximum volunteer corn density used in the study was only 0.15 plants per foot of sugarbeet row, so the units of the slope are not directly applicable to the data observed in the study. Although the linear regression model is appropriate here, it is extremely important *not* to extrapolate the linear model results to volunteer corn densities outside the observed data range (densities greater than 0.15 plants per foot of row). This can be illustrated by changing the Y and X limits on the figure. If extrapolation is absolutely necessary, a nonlinear model would be more appropriate (although still not ideal). The ideal situation would be to repeat the study with weed densities that caused crop yield to drop close to the minimum yield.
+
+(ref:figbeetlmvsnlincap) _Linear model vs nonlinear model for sugarbeet response to volunteer corn density._
+
+```{r figbeetlmvsnlin, fig.asp=0.7, echo=FALSE, message=FALSE, fig.cap='(ref:figbeetlmvsnlincap)'}
+par(mar=c(4.5,4.5,0.5,0.5), mgp=c(2,.7,0))
+plot(beets.dat$LbsSucA ~ beets.dat$Density, bty="l",
+     ylab="Sugar yield (lbs/A)", xlab="Volunteer corn density (plants/ft row)",
+     ylim=c(-10000,10000), xlim=c(0,1))
+  abline(density.lm) # Add the regression line
+  abline(h=0, lty=1, col="red")
+library(drc)
+drm(LbsSucA ~ Density, data=beets.dat, fct=LL.3())->dnl
+ newd<-data.frame(Density=seq(0.01,1,0.01))
+ dnlp<-data.frame(Density=newd,Yield=predict(dnl, newd))
+ lines(dnlp, col="blue", lty=2)
+legend("topright", legend=c("Linear model", "Nonlinear model"), col=c(1,"blue"), lty=1:2)
+```
+
+*****
