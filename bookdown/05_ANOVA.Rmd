@@ -153,6 +153,7 @@ bean2.lsd$groups
 
 Alternatively, we can use the `emmeans` package, to get the confidence intervals and pairwise comparisons.
 
+<<<<<<< HEAD
 ```{r, results='hide', warning=FALSE, message=FALSE}
 emmeans(bean2.aov2, specs = pairwise ~ year:treatment)
 ```
