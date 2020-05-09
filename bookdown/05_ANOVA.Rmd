@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Analysis of Variance (ANOVA) {#anova}
 
 ## One-Way Analysis of Variance
@@ -17,6 +22,7 @@ It is important to note that some of our factor variables have been expressed in
 ```{r}
 bean.dat$year<-as.factor(bean.dat$year)
 bean.dat$block<-as.factor(bean.dat$block)
+bean.dat$treatment <- as.factor(bean.dat$treatment)
 summary(bean.dat)
 ```
 
@@ -95,15 +101,18 @@ bean.lsd$statistics
 
 To get standard deviations and confidence limits, we could type `bean.lsd$means`. The `agricolae` package can also calculate Tukey's HSD using the `HSD.test()` function. The syntax above is the same, simply changing `LSD.test` to `HSD.test`. 
 
-### Mean Separation - multcomp package
+### Mean Separation - emmeans and multcomp packages
 
-The `multcomp` package is also useful for separating means, and has the advantage that it can be used for linear, nonlinear, and mixed effects models. 
+The `emmeans` and `multcomp` packages are also useful for separating means, and has the advantage that it can be used for linear, nonlinear, and mixed effects models. 
 
 ```{r, message=FALSE, results='hide'}
+library(emmeans)
 library(multcomp)
-b09.tukey <- summary(glht(b09.aov, linfct=mcp(treatment = "Tukey")))
-b09.tukey # prints out all pairwise comparisons
-cld(b09.tukey) # prints out the compact letter display (cld)
+b09.emm <- emmeans(b09.aov, ~ treatment)
+pairs(b09.emm) # prints out all Tukey-adjusted pairwise comparisons
+multcomp::cld(b09.emm, Letters=LETTERS) # corresponding compact letter display (cld)
+pairs(b09.emm, adjust="none") # prints out all unadjusted pairwise comparisons
+multcomp::cld(b09.emm, Letters=LETTERS, adjust="none") # corresponding compact letter display (cld)
 ```
 
 ## Multi-Factor ANOVA
@@ -139,6 +148,12 @@ bean2.lsd<-LSD.test(bean2.dat$population.4wk,
                     with(bean2.dat, year:treatment), 
                     36, 2.11e+08)
 bean2.lsd$groups
+```
+
+Alternatively, we can use the `emmeans` package, to get the confidence intervals and pairwise comparisons.
+
+```{r}
+emmeans(bean2.aov2, specs = pairwise ~ year:treatment)
 ```
 
 It seems there is general trend for treatments containing flumioxazin to have fewer bean plants. But having the different years mixed together makes it difficult to see, so an alternative approach would be to simply calculate the means using `tapply()` and print out the LSD value.
