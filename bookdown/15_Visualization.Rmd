@@ -164,9 +164,9 @@ If we have more than one relationship within a data set, we can separate them as
 ```{r harrowSingle, fig.asp=0.6, fig.cap="_The leaf area of weeds and crop in relation of the intensity of harrowing either across or along the crop rows. Note how we changed Across and Along to numerical values by using the function `as.numeric()` in order to get different symbols._"}
 par(mar=c(3.2,3.2,.5,.5), mgp=c(2,.7,0))
 plot(Leaf~Intensity, data = leafCover, bty="l",
-     pch = as.numeric(Direction),
+     pch = as.numeric(as.factor(Direction)),
      xlab="Harrow intensity", ylab="Leaf area")
-legend("bottomleft", levels(leafCover$Direction), pch=c(1,2))
+legend("bottomleft", levels(factor(leafCover$Direction)), pch=c(1,2))
 ```
 
 Obviously, there is a relationship, and this will be properly addressed in the ANCOVA chapter. There are also other plotting facilities that can be used the `xyplot()` in the package,lattice, which comes with basic R.
