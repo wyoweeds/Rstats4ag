@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Introduction {#intro}
 
 ## How to get help? {#help}
@@ -8,15 +13,15 @@ Learning a new language can be frustrating - especially when you're not even sur
 
 If you know the name of a function, but do not know or remember how to use it you can bring up the documentation for that function by typing a question mark in front of the function: `?lm()`. This will work for any function in a currently loaded package. You can do a broader search by typeing two question marks. For example, if you know the name of a function, but are not sure which package you need to load to see it: `??drm()`.
 
-The help pages for most `R` functions start out with <b>usage</b>, saying `lm(...)` which details the arguments available in that function. These are mainly written for people who know the function (or at the very least are familiar with `R` documentation) to begin with. If you are new to `R` we recommend you scroll down to the examples at the bottom of the help page to see if you can use some of the examples that fit your purpose. Unfortunately, some help pages are better than others, and for the developer one of the most tedious jobs is to  write help pages in an understandable way for others than already seasoned R users. 
+The help pages for most `R` functions start out with <b>usage</b>, saying `lm(...)` which details the arguments available in that function. These are mainly written for people who know the function (or at the very least are familiar with `R` documentation) to begin with. If you are new to `R` we recommend you take a look at this section, but also scroll down to the examples at the bottom of the help page to see if you can use some of the examples that fit your purpose. Some help pages are better than others, and for the developer one of the most tedious jobs is to  write help pages in an understandable way for others than already seasoned R users. 
 
 ### Online help
 
-Nearly every question related to using `R` has been already asked, and in many cases, has an answer online. So if the installed help files aren't sufficient, there are several locations to search on the web. A simple Google is sometimesall you'll need. For example, searching `How to do regression with R` will bring tens of thousands of hits, some better than others. There are also numeous YouTube clips in various languages for many common analyses.
+Nearly every question related to using `R` has been already asked, and in many cases, has an answer online. So if the installed help files aren't sufficient, there are several locations to search on the web. A Google search is sometimes all you'll need. For example, searching `How to do regression with R` will bring tens of thousands of hits (varying widely in quality). There are also numeous YouTube clips in various languages for many common analyses.
 
-One difficulty, however, is that the language name `R` sometimes makes it difficult to find the most relevant information. If Google fails for this reason, the site [Rseek](http://www.rseek.org/), searches only sites with relevant R information, and can be helpful for both the novice and the seasoned user.
+One difficulty, however, is that the language name `R` sometimes makes it difficult to find the most relevant information. This is less of a problem now that `R` is a widely used lanugage, but if Google fails for this reason, the site [Rseek](http://www.rseek.org/), searches only sites with relevant R information, and can be helpful for both the novice and the seasoned user.
 
-There are many hard-copy texts that you can purchase, and many are of very high quality. However, R is so dynamic that books on specific topics can often contain code that is not functioning even just a couple of years after publication. We recommend caution when purchasing books, and also hesitate to recommend specific titles. 
+There are many hard-copy texts that you can purchase, and many are of very high quality. However, R is so dynamic that books on specific topics can often contain code that is not functioning even just a couple of years after publication. We recommend caution when purchasing books, and also hesitate to recommend specific titles, especially if the primary goal is finding examples to work through. 
 
 ## Downloading and Installing R {#install}
 
@@ -26,7 +31,7 @@ Instructions for downloading and installing R vary depending on the operating sy
 
 One of the most notable benefits of the R language is the fact that many add-on packages have been written by other statisticians. If there is a common need for some type of analysis or calculation of a common statistic, chances are good that someone has already written code to automate the process. In many cases, this code is contributed to the R user community as an add-on package that can be freely downloaded and used by others. There are currently over 5,000 contributed packages available for free download from the [Comprehensive R Archive Network (CRAN)](http://cran.r-project.org/web/packages/). The procedure for installing contributed packages also differs between operating systems. Instructions for installing contributed packages in R can be found in the [online R documentation](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages).
 
-The following packages are used for some of the examples in this text, and some will need to be installed to run all of the code provided. Some of the packages below are installed by default with the base R installation, but others will need to be installed afterwards. When a package needs to be loaded, we have tried to include the coe to load the library within the relevant chapter.
+The following packages are used for some of the examples in this text, and some will need to be installed to run all of the code provided. Some of the packages below are installed by default with the base R installation, but others will need to be installed afterwards. When a package needs to be loaded, we have tried to include the code to load the library within the relevant chapter.
 
 - `dplyr`
 - `lattice`
@@ -41,24 +46,25 @@ The following packages are used for some of the examples in this text, and some 
 
 ### RStudio {#rstudio}
 
-We suggest installing [RStudio](http://www.rstudio.com/) as a useful and consistent interface for R. The default appearance of R differs greatly between Windows, Mac, and Linux operating systems. RStudio is available for all 3 platforms and provides several useful features in addition to a consistent interface. One of the great benefits ot RStudio is the ability to easily use R Markdown - a version of the markdown markup language that can help greatly in conducting reproducible research and creating print and web reports. This website, for example, was created entirely in RStudio using the R Markdown language.
+We suggest installing [RStudio](http://www.rstudio.com/) as a useful and consistent interface for R. The default appearance of R differs greatly between Windows, Mac, and Linux operating systems. RStudio is available for all 3 platforms and provides several useful features in addition to a consistent interface. One of the great benefits ot RStudio is the ability to easily use R Markdown - a version of the markdown markup language that can help greatly in conducting reproducible research and creating print and web reports. This website, for example, was created entirely in RStudio using the R Markdown language (as well as the [`bookdown`](https://bookdown.org/) package).
 
 ## Conventions {#conventions}
-Several typographical conventions will be used throughout this text. References to `R` packages (such as the `drc` package) will be highlighted. Functions will be highlighted similarly, but followed by open parentheses, for example, `aov()`. Example code that is meant to be typed or copied directly into the R console will be enclosed in a shaded box in a monospace font. Where appropriate, code will be followed by the resulting output, preceded by "##".
+Several typographical conventions will be used throughout this text. References to `R` packages (such as the `drc` package) will be highlighted. Functions will be highlighted similarly, but followed by open parentheses, for example, `aov()` or `lm()`. Example code that is meant to be typed or copied directly into the R console will be enclosed in a shaded box in a monospace font. In most cases, code will be followed by the resulting output, preceded by "##".
 ```{r, results='hide', echo=FALSE}
 Input.statement<-"This is the output"
 ```
 ```{r}
 Input.statement
 ```
+
 ## Basics of using R {#basics}
-At its most basic, R can be used as a calculator. You can enter any mathematical operation, and R will solve it for you.
+At its most basic, R can be used as a calculator. You can enter a mathematical operation, and R will solve it for you.
 ```{r, results='hide'}
 1+1
 2*10
 2.3 * 10^4
 ```
-As with any good scientific calculator, R has the capability to store results as an object to be called upon later. This functionality will be used extensively as you learn to use R efficiently. To build on the previous example, the results of the three mathematical operations above will be stored as objects named “a”, “b”, and “c”:
+As with any good scientific calculator, R can store the results of those operations as an object to be called upon later. This functionality will be used extensively as you learn to use R efficiently. To build on the previous example, the results of the three mathematical operations above will be stored as objects named “a”, “b”, and “c”:
 ```{r}
 1 + 1 -> a
 2 * 10 -> b
@@ -75,7 +81,7 @@ x <- c(1:10)
 y <- c(10,12,13,15,16,18,19,21,23,24)
 fake.data <- data.frame(x, y)
 ```
-The vector `x` was created using 1:10; the colon in this context is shorthand to generate all consecutive integers between 1 and 10. Notice that we can name a stored object as a single letter or as a string of letters. The period is recognized by R as just another textual character in this case, therefore naming the object `fake.data` would be no different than if we had chosen to name the object `fake_data` or `fakeData`. To see the full data frame, simply type the object name into the R console. Additionally, we can get various information about the vectors in the data frame by using other functions such as `summary()`, and `colMeans()`.
+The vector `x` was created using 1:10; the colon in this context is shorthand to generate all consecutive integers between 1 and 10. Notice that we can name a stored object as a single letter or as a string of letters. The period is recognized by R as just another textual character in this case (as long as it is not the first character in the string), therefore naming the object `fake.data` would be acceptable, as would `fake_data` or `fakeData`. To see the full data frame, simply type the object name into the R console. Additionally, we can get various information about the vectors in the data frame by using other functions such as `summary()`, and `colMeans()`.
 ```{r}
 fake.data
 summary(fake.data)
@@ -90,13 +96,15 @@ sd(fake.data$y)
 
 ## Loading Data from External Sources
 
-`R` can read data from many sources and file types. However, the goal here is not to provide a comprehensive list of available methods for reading data into R. For all data sets used in this book, we will use the `read.csv()` or `read.table()` functions. The `read.csv()` function is designed to read comma separated value (.csv) files. Comma separated value files can be read by almost any spreadsheet program (including MS Excel, Lotus 1-2-3, OpenOffice.org) or text editor, and thus it is a common file type that almost any researcher should be able to read and save. Most research software and database software will export data to a .csv format, including the commonly used ARM from Gylling Data Management, Inc. The `read.csv()` syntax is rather simple. If the csv file is in your current working directory, you can simply type `read.csv("filname.csv")`. It is also possible to specify the full path to the file, but this will differ depending on the operating system (Windows, Mac, Linux). All of the data sets used in this text can be downloaded here as a zip file: [http://rstats4ag.org/data/Rstats4ag_data.zip](http://rstats4ag.org/data/Rstats4ag_data.zip). But for simplicity, we have provided the code in each chapter to read the csv files directly from the web by specifying the URL in the `read.csv()` function. For example:
+`R` can read data from many sources and file types. However, the goal here is not to provide a comprehensive list of available methods for reading data into R. For all data sets used in this book, we will use the `read.csv()` or `read.table()` functions. The `read.csv()` function is designed to read comma separated value (.csv) files. Comma separated value files can be read by almost any spreadsheet program (including MS Excel^[Researchers managing data in MS Excel are encouraged to look into the `read_excel()` function from the `readxl` package.], Lotus 1-2-3, OpenOffice.org) or text editor, and thus it is a common file type that almost any researcher should be able to read and save.   
+
+Most research software and database software will export data to a .csv format, including the commonly used ARM from Gylling Data Management, Inc. The `read.csv()` syntax is similar to other functions used to get data from external files into `R`. If the csv file is in your current working directory, you can simply type `read.csv("filname.csv")`. It is also possible to specify the full path to the file (but this will differ depending on the operating system, Windows, Mac, or Linux). All of the data sets used in this text can be downloaded as a zip file: [http://rstats4ag.org/data/Rstats4ag_data.zip](http://rstats4ag.org/data/Rstats4ag_data.zip). But for simplicity, we have provided the code in each chapter to read the csv files directly from the web by specifying the URL in the `read.csv()` function. For example:
 
 ```{r}
 corn.dat <- read.csv("http://rstats4ag.org/data/irrigcorn.csv")
 ```
 
-The default behavior of the `read.csv()` function considers periods (`.`) as a decimal point, and commas (`,`) as the symbol used to separate values within a row. Depending on geography, though, this may not be a standard format. In many areas of Europe and Lating America, the decimal seperator is a comma (`,`) and the semicolon (`;`) is the variable separator.  The `read.csv()` can still be used with alternate formats by specifying the `sep` and `dec` arguments for separator and decimal symbols, respectively. 
+The data sets are small (the largest file is 19 KB), so even a moderate internet connection should be sufficient. The default behavior of the `read.csv()` function considers periods (`.`) as a decimal point, and commas (`,`) as the symbol used to separate values within a row. Depending on geography, though, this may not be the standard format. In many areas of Europe and Latin America, the decimal seperator is a comma (`,`) and the semicolon (`;`) is the variable separator.  The `read.csv()` can still be used with alternate formats by specifying the `sep` and `dec` arguments for separator and decimal symbols, respectively. 
 
 ```{r, eval=FALSE}
 newdata <- read.csv("filename.csv", sep=";", dec=",")
@@ -112,20 +120,21 @@ corn2.dat <- read.csv2("http://rstats4ag.org/data/irrigcorn.csv")
 knitr::include_graphics("csvFiles.png")
 ```
 
-Experience tells us that this is unfortunately not a trivial matter, because in some instances the two csv systems are mixed. For other file formats, the `read.table()` function provides additional flexibility. You can learn more about the options available by typing `?read.table`.
+Experience tells us that this is, unfortunately, not a trivial matter, because in some instances the two csv systems are mixed. For other file formats, the `read.table()` function provides additional flexibility. You can learn more about the options available by typing `?read.table`.
 
-If no error or warning messages appear, then `R` has presumably read the irrigcorn.csv file, and stored the data in an object called `corn.dat`. To view the first few lines of the imported data file to ensure that the data was read successfully, use the `head()` function; to produce a summary of the data columns use the `summary()` function.
-
-```{r}
-head(corn.dat)
-summary(corn.dat)
-```
-
-The `head()` function does tell you that the data looked as if they came in right. However, you cannot see if a column of numbers really is numbers or just characters. It could happen if the csv file is not properly cleansed for strange characters, e.g. `”` or `;`  or even letters. Sometime it is difficult to figure out what is wrong with a variable and even when you presumably have a column of pure numbers, you still get them converted to characters in the reading process. The `summary()` function will indicate whether the data is being viewed as numeric/integer or something else. One other useful function is `str()`, which provides information on the structure of the `R` object. For data frames, the `str()` function will tell us the format for each column in the data frame. In the `corn.dat` data frame, we can see there are 96 rows and 8 columns, most of the columns contain interger (`int`) data, the 'Irrig' variable is a factor with 2 levels, and the last column is a numeric (`num`) variable. 
+For our example above, if no error or warning messages appear then `R` has presumably read the irrigcorn.csv file, and stored the data in an object called `corn.dat`. To ensure the data was read successfully, use the`str()` function, `head()` function, or `summary()` function can be used, all producing different information.
 
 ```{r}
 str(corn.dat)
 ```
+
+The `str()` function provides information on the structure of the `R` object (and can be used with *any* object, not just data frames). For data frames, the `str()` function will tell us the format for each column in the data frame. In the `corn.dat` data frame, we can see there are 96 rows and 8 columns, most of the columns contain interger (`int`) data, the 'Irrig' variable is a character variable, and the last column is a numeric (`num`) variable. 
+
+```{r}
+head(corn.dat)
+```
+
+The `head()` function shows the first few lines of the data set, and can be useful to ensure the data are structured correctly. However, the `head()` function does not allow you to see if a column of numbers is recognized as numbers or as characters. This is a common problem when reading in data from external files; if the csv or other data file is not properly formatted or contains strange characters (e.g. `”` or `;`  or even letters), then the entire column will be recognized as a character or factor variable instead of a numeric variable. This is where the `str()` or `summary()` functions are helpful to recognize this problem. 
 
 In some cases, we may have a variable coded as an integer that we would like `R` to recognize as a factor variable. In the corn data set, the 'Variety' variable is numbered, but there is no numeric order to the varieties. To convert this column to a factor variable, we can use the `as.factor()` function, and store the result as the same name as the original variable. 
 
@@ -134,6 +143,6 @@ corn.dat$Variety <- as.factor(corn.dat$Variety)
 str(corn.dat)
 ```
 
-Sometimes, particularly when exporting data from Excel, numeric data is recognized by R as text. This is sometimes due to spaces in the data file, but sometimes the origin of the problem is difficult to find (especially with large data files). In these cases, one trick that can be tried is to convert the data to character, then back to numeric with the following code: `as.numeric(as.character(data$var))`.
+Sometimes, despite all efforts to avoid the problem, numeric data is recognized by R as text, especially when exporting large data files from Excel or other spreadsheet software. This is sometimes due to spaces or other characters out of place in the data file; but sometimes the origin of the problem is difficult to find (especially with large data files). In these cases, one trick that can be tried is to convert the data to character, then back to numeric with the following code: `data$var <- as.numeric(as.character(data$var))`.
 
 *****

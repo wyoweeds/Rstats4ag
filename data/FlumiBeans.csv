@@ -1,0 +1,78 @@
+year,treatment,block,population.4wk
+2009,Nontreated,1,55757
+2009,Nontreated,2,45302
+2009,Nontreated,3,38333
+2009,flumioxazin + trifluralin,1,13939
+2009,flumioxazin + trifluralin,2,27878
+2009,flumioxazin + trifluralin,3,31363
+2009,flumioxazin + pendimethalin,1,10454
+2009,flumioxazin + pendimethalin,2,20909
+2009,flumioxazin + pendimethalin,3,27878
+2009,flumioxazin + ethafluralin,1,24394
+2009,flumioxazin + ethafluralin,2,52272
+2009,flumioxazin + ethafluralin,3,38333
+2009,EPTC + ethafluralin,1,45302
+2009,EPTC + ethafluralin,2,45302
+2009,EPTC + ethafluralin,3,55757
+2009,imazamox + bentazon,1,62726
+2009,imazamox + bentazon,2,52272
+2009,imazamox + bentazon,3,34848
+2009,Handweeded,1,34848
+2009,Handweeded,2,38333
+2009,Handweeded,3,31363
+2010,Nontreated,1,45302
+2010,Nontreated,2,52272
+2010,Nontreated,3,55757
+2010,Nontreated,4,48787
+2010,flumioxazin + trifluralin,1,10454
+2010,flumioxazin + trifluralin,2,41818
+2010,flumioxazin + trifluralin,3,10454
+2010,flumioxazin + trifluralin,4,20909
+2010,flumioxazin + pendimethalin,1,17424
+2010,flumioxazin + pendimethalin,2,17424
+2010,flumioxazin + pendimethalin,3,20909
+2010,flumioxazin + pendimethalin,4,24394
+2010,flumioxazin + ethafluralin,1,6970
+2010,flumioxazin + ethafluralin,2,24394
+2010,flumioxazin + ethafluralin,3,10454
+2010,flumioxazin + ethafluralin,4,20909
+2010,EPTC + ethafluralin,1,66211
+2010,EPTC + ethafluralin,2,55757
+2010,EPTC + ethafluralin,3,48787
+2010,EPTC + ethafluralin,4,55757
+2010,imazamox + bentazon,1,55757
+2010,imazamox + bentazon,2,52272
+2010,imazamox + bentazon,3,59242
+2010,imazamox + bentazon,4,62726
+2010,Handweeded,1,52272
+2010,Handweeded,2,45302
+2010,Handweeded,3,48787
+2010,Handweeded,4,55757
+2011,Nontreated,1,34849
+2011,Nontreated,2,41819
+2011,Nontreated,3,40948
+2011,Nontreated,4,40077
+2011,flumioxazin + trifluralin,1,22652
+2011,flumioxazin + trifluralin,2,18296
+2011,flumioxazin + trifluralin,3,30493
+2011,flumioxazin + trifluralin,4,20910
+2011,flumioxazin + pendimethalin,1,21781
+2011,flumioxazin + pendimethalin,2,20038
+2011,flumioxazin + pendimethalin,3,16553
+2011,flumioxazin + pendimethalin,4,20910
+2011,flumioxazin + ethafluralin,1,16553
+2011,flumioxazin + ethafluralin,2,10455
+2011,flumioxazin + ethafluralin,3,14811
+2011,flumioxazin + ethafluralin,4,15682
+2011,EPTC + ethafluralin,1,38334
+2011,EPTC + ethafluralin,2,33978
+2011,EPTC + ethafluralin,3,40077
+2011,EPTC + ethafluralin,4,40077
+2011,imazamox + bentazon,1,39205
+2011,imazamox + bentazon,2,39205
+2011,imazamox + bentazon,3,35721
+2011,imazamox + bentazon,4,40948
+2011,Handweeded,1,43562
+2011,Handweeded,2,36592
+2011,Handweeded,3,42690
+2011,Handweeded,4,46175
