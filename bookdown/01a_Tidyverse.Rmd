@@ -96,7 +96,11 @@ head(df1.new)
 
 ### `filter()` and `select()` functions
 
+<<<<<<< HEAD
 The `filter()` and `select()` functions are useful for subsetting or removing rows or columns from your data. The `filter()` function is used to keep or remove *rows* based on a specified criteria. For example, if we wanted to remove all rows with treatment 'C' from the data, we could do so by filtering to *keep* only rows where 'fac' is not equal to 'C'. The operator for 'not equal' in `R` is `!=` (see table of useful operators at the end of this chapter). 
+=======
+The `filter()` and `select()` functions are useful for subsetting or removing rows or columns from your data. The `filter()` function is used to keep or remove *rows* based on a specified criteria. For example, if we wanted to remove all rows with treatment 'C' from the data, we could do so by filtering to *keep* only rows where 'fac' is not equal to 'C'. The operator for 'not equal' in `R` is `!=`. 
+>>>>>>> 8e2378fe4699900a62ed1544c8f58ec178943c0c
 
 ```{r}
 df1.noC <- df1 %>%
