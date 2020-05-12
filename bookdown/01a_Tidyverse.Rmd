@@ -1,0 +1,219 @@
+# Welcome to the Tidyverse
+
+The [`tidyverse` is a collection of packages](https://www.tidyverse.org/) that were developed for data science. This group of packages provide some powerful and efficient functions that share a common syntax, making them seamless to use together. It is also possible (and common) to combine functions from the `tidyverse` with base `R` functions. The 'tidy' in the name comes from the concept of [tidy data](https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf), which is basically a standardized way of managing data. 
+
+The `tidyverse` is a meta-package; the package itself does not contain any functions, but when you install or load `tidyverse` into your workspace, it ensures that the full group of packages are installed or loaded. The `tidyverse` includes three packages that we will use in this text (`dplyr`, `tidyr`, and `ggplot2`), plus several others. 
+
+```{r, message=FALSE, results='hide'}
+library(tidyverse)
+```
+
+## The `dplyr` package
+
+One of the most useful packages in the `tidyverse` is `dplyr`, and one of the most useful functions within the `tidyverse` is the pipe. Here, we will show how to use the pipe operator `%>%` to more efficiently do some of the same operations we showed in the previous chapter. 
+
+### The `dplyr` pipe (`%>%`)
+
+The concept of a pipe may be familiar to many programmers, but is often a new concept to scientists without a coding background. The simplest way to think about pipes is to say to yourself "and then..." any time you see the pipe. One of the most common usages of pipes is illustrated below. In the first line, we specify which data we want to work with, *and then* we perform operation 1, *and then* we perform operation 2. 
+
+```{r, eval=FALSE}
+##  A common use of pipes (not run):
+data.object %>%
+  operation 1 %>%
+  operation 2
+```
+
+To illustrate, we will create some pretend data to use with `dplyr`. The data frame will be named 'df', and will contain 20 rows and 4 columns. The `glimpse()` function from `dplyr` serves the same general purpose as `str()` when applied to data frames.
+
+```{r}
+set.seed(20102)
+df1 <- data.frame(fac = rep(c("A","B","C","D"), 5),
+                 x = c(1:20),
+                 y = round(rnorm(20, 10, 5)*(-9:10)^2),
+                 z = round(rnorm(20, 100, 20)))
+glimpse(df1) # similar to the `str()` function in base R
+```
+
+### `group_by()` and `summarize()` functions
+
+One of the most useful things we can use dplyr for is to calculate descriptive statistics. For example, if we wanted to calculate the mean of y and z for the whole data set, we could use the `summarize()` function. This example takes the data frame 'df', *and then* uses the `summarize()` function to calculate the means of the columns named *y* and *z*.  
+
+```{r}
+### Using a pipe to calculate means.
+df1 %>% 
+  summarize(y.mean = mean(y),
+            z.mean = mean(z))
+```
+
+In this particular example, the pipe operator (`%>%`) isn't all that helpful. We could have gotten the same result more efficiently using several different methods. One method, still using the `summarize()` function, removes the pipe and adds the data frame as the first argument to the function:
+
+```{r}
+### Doing the same thing without a pipe:
+summarize(df1, 
+          y.mean = mean(y),
+          z.mean = mean(z))
+```
+
+But pipes become much more useful once we want to use multiple functions. To illustrate, we will combine two functions, the `group_by()` and `summarize()` functions, in order to calculate means for different groups. If we assume the 'fac' variable in the data is a treatment, and the y and z variables are responses to those treatments, then we will probably want to know the means for each treatment group. Using pipes, we can do that this way:
+
+```{r}
+df1 %>%
+  group_by(fac) %>%
+  summarize(y.mean = mean(y),
+            z.mean = mean(z))
+```
+
+This example starts with the data frame, *and then* groups the data by levels in the 'fac' column, *and then* summarizes the data by calculating the means. It will be common to use summarized data in tables and figures, so we can also store this summarized data for later use (as in, perhaps, a bar plot):
+
+```{r}
+df1.means <- df1 %>%
+  group_by(fac) %>%
+  summarize(y.mean = mean(y),
+            z.mean = mean(z))
+
+### Create a barplot of the means:
+barplot(df1.means$y.mean, names.arg=df1.means$fac, ylab="Y")
+```
+
+### The `mutate()` function
+
+The `mutate()` function is used primarily when you want to create a new column. Common scenarios would include data transformations (such as log or square root), converting units (US customary units to SI units), or calculating a new variable for each observation from the measured data (calculating area from measured length and width). The syntax of `mutate` is similar to the `summarize()` function, but instead of reducing the data, it will keep the number of table rows the same while adding (or replacing) a column. For example, if we wanted to create a new variable that is the sum of *y* and *z* (named *yz*):
+
+```{r}
+df1.new <- df1 %>%
+  mutate(yz = y+z)
+head(df1.new)
+```
+
+Another powerful feature of `dplyr` is the ability to reference variables created earlier in the same function. For example, we can create the *yz* variableas before, and then perform a transformation on the new variable, like taking the square root all within the same `mutate()` function:
+
+```{r}
+df1.new <- df1 %>%
+  mutate(yz = y + z,
+         yz.sqrt = sqrt(yz))
+head(df1.new)
+```
+
+### `filter()` and `select()` functions
+
+The `filter()` and `select()` functions are useful for subsetting or removing rows or columns from your data. The `filter()` function is used to keep or remove *rows* based on a specified criteria. For example, if we wanted to remove all rows with treatment 'C' from the data, we could do so by filtering to *keep* only rows where 'fac' is not equal to 'C'. The operator for 'not equal' in `R` is `!=`. 
+
+```{r}
+df1.noC <- df1 %>%
+  filter(fac != "C")
+df1.noC
+```
+
+The behavior of `filter()` is to keep all rows that match whatever criteria we set in the function, so in the previous call, we keep all rows where *fac* does **not** equal "C". We could also do the opposite, and keep only rows where the *fac* variable is equal to *C*. The operator for 'equal to' in `R` is `==`.
+
+```{r}
+df1.onlyC <- df1 %>%
+  filter(fac == "C")
+df1.onlyC
+```
+
+Numeric values can be filtered similarly; for example if we want to keep only rows where 'x' is *less than or equal* to 8:
+
+```{r}
+df1.u8 <- df1 %>%
+  filter(x <= 8)
+df1.u8
+```
+
+And, like all things in dplyr, we can filter on multiple variables simultaneously. Perhaps for data quality checks, we want to look for all observations of treatment 'C' where 'y' is greater than 1,000. Note in this example, we use two equals signs '==' as the logical operator for 'equal to', and we use the ampersand '&' as the logical AND.
+
+```{r}
+df1 %>%
+  filter(y > 1000 & fac == "C")
+```
+
+The 'OR' operator in `R` is a vertical bar '|'. So if we wanted to filter rows to keep all observations that are greater than 1,000 OR less than 100, we could use the following filter arguments:
+
+```{r}
+df1 %>%
+  filter(y > 1000 | y < 100)
+```
+
+The `select()` function provides similar ability but for columns instead of rows. We can keep variables by including the column names in the `select()` function, and we can remove them by using a '-' sign in front of the name (but typically using one or the other, not both). The following examples will result in the same three columns being retained, just *fac*, *x*, and *y*. In the first, we will explicitly include these three columns by naming them. In the second example, we will exclude the *z* column by using the minus sign.
+
+```{r, include=FALSE}
+select <- dplyr::select
+```
+```{r}
+### Example 1 - keeping columns
+df1 %>%
+  select(fac, x, y) %>%
+  head()
+
+### Example 2 - removing a column
+df1 %>% 
+  select(-z) %>%
+  head()
+```
+
+## The `tidyr` package
+
+Another package contained in the `tidyverse` is `tidyr`. This package, as you might suspect form the name, relates to the tidy data format [Wickham 2014](https://vita.had.co.nz/papers/tidy-data.pdf). The two functions that we will use are called `pivot_longer()` which takes a 'wide' data set and reformats it to the long format, and `pivot_wider()` which takes a long data format and reformats it to a wider version. To begin, we'll create some pretend data in the wide format:
+
+```{r, results='hide', warning=FALSE, message=FALSE}
+set.seed(4070)
+df.wide <- data.frame(
+  replicate = 1:6,
+  trt1 = round(rnorm(6, 10, 1),1),
+  trt2 = round(rnorm(6, 13, 1),1),
+  trt3 = round(rnorm(6, 4, 1),1))
+```
+
+To see what the data looks like in wide format, we can print the `df.wide` data frame we just created:
+
+```{r}
+df.wide
+```
+
+To convert this wide data into the long format that is typically preferred for statistical analysis, we can use the `pivot_longer()` function. For a simple data frame like this, there are four arguments we need to provide: 
+
+1. the `data` argument, which tells R which data frame we'll be starting with; 
+2. the `cols` argument, which a list of columns we don't want to gather from wide to long format; 
+3. the `names_to` argument, which is what we want the column that contains the treatment information to be named; and 
+4. the `values_to` argument, which is what we want to name the column that contains the data.
+
+For this example, the data we are using is called 'df.wide'. The columns we don't want to include are any 'housekeeping' variables; in this case it is only one column, named 'replicate'. We will store the treatment in a new column named 'treatment', and we will put the data into a new column named 'weight'. So the `pivot_longer()` function would look like this:
+
+```{r}
+df.long <- pivot_longer(data = df.wide,
+                        cols = -replicate, 
+                        names_to = "treatment", 
+                        values_to = "weight")
+df.long
+```
+
+We could also use the 'pipes' from `dplyr` as in the previous example to achieve the same result:
+
+```{r}
+df.long <- df.wide %>%
+  pivot_longer(cols = -replicate,
+               names_to = "treatment",
+               values_to = "weight")
+```
+
+In this example, there is no real benefit for using the pipes. However, if we wanted to do more operations on the same data, like filter or summarize the data, then the efficiency of pipes becomes substantial. For example, if we wanted to convert the weight from pounds to kilograms, and then summarize the data by treatment, we could use the following code:
+
+```{r}
+df.wide %>%
+  pivot_longer(cols = -replicate,
+               names_to = "treatment",
+               values_to = "weight") %>%
+  mutate(weight.kg = weight * 0.4536) %>%
+  group_by(treatment) %>%
+  summarize(meanWeight.kg = mean(weight.kg))
+```
+
+
+**Table of useful operators in the `R` language.** 
+```{r, echo=FALSE}
+opTable <- data.frame(operator = c("==", "!=", ">",">=", "<","<=", "&", "|"),
+                      meaning = c("equal to", "not equal to", "greater than",
+                       "greater than or equal to", "less than",
+                       "less than or equal to", "and", "or"))
+knitr::kable(opTable)
+```
