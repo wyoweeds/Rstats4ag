@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Student's t-test
 
 ## One-sample t-test
@@ -14,13 +19,13 @@ yld.dat
 colMeans(yld.dat)
 ```
 
-The mean wheat yield in the experiment was `r mean(yield)` kg/ha, `r mean(yld.diff)` kg/ha greater than the state-wide average. There are several possible methods to conduct the one-sample t-test. The first is to subtract the state-wide mean from each observation from the experiment, then test whether the mean difference in yield is different from zero. This is done simply by running the `t.test()` function on the “yld.diff” object calculated above.
+The mean wheat yield in the experiment was `r mean(yld.dat$yield)` kg/ha, `r mean(yld.dat$yld.diff)` kg/ha greater than the state-wide average. There are several possible methods to conduct the one-sample t-test. The first is to subtract the state-wide mean from each observation from the experiment, then test whether the mean difference in yield is different from zero. This is done simply by running the `t.test()` function on the “yld.diff” object calculated above.
 
 ```{r}
 t.test(yld.dat$yld.diff)
 ```
 
-The `t.test()` output specifies that the alternative hypothesis is that the true mean is not equal to zero, and gives a P-value of `r round(t.test(yld.diff)$p.value, 3)`; there is fairly strong evidence that the wheat yield in the experiment is different from the state-wide average. The `t.test()` function also allows the user to specify a value other than zero to test. This eliminates the need to first calculate the difference of each mean from the state-wide average, and instead, specify the state-wide average within the `t.test()` function using the `mu` argument. `mu` is a common statistical symbol for the population mean.
+The `t.test()` output specifies that the alternative hypothesis is that the true mean is not equal to zero, and gives a P-value of `r round(t.test(yld.dat$yld.diff)$p.value, 3)`; there is fairly strong evidence that the wheat yield in the experiment is different from the state-wide average. The `t.test()` function also allows the user to specify a value other than zero to test. This eliminates the need to first calculate the difference of each mean from the state-wide average, and instead, specify the state-wide average within the `t.test()` function using the `mu` argument. `mu` is a common statistical symbol for the population mean.
 
 ```{r}
 t.test(yld.dat$yield, mu=1810)
