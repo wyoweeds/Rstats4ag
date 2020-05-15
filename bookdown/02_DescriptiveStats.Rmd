@@ -97,14 +97,15 @@ In the code above, we are loading the dplyr package, then using two functions fr
 moatotal <- resistance %>%
   group_by(MOA) %>%
   summarize(total=length(ID))
-print(moatotal)
+moatotal
 ```
 The real power and elegance of the `dplyr` package becomes apparent once we begin using multiple groupings, and creating new variables. Below, we generate totals for each mode of action again, but also by year of listing by using the `group_by()` and `sumarize()` functions. 
 ```{r}
-totals<-resistance %>%
+totals <- resistance %>%
   group_by(Year, MOA) %>%
   summarize(total = length(ID)) 
 head(totals)
+tail(totals)
 ```
 We can then create a new variable using the `mutate()` function; we will add a cumulative total of herbicide resistance cases over time, while retaining information about mode of action by first ungrouping the data, then using mutate to calculate the cumulative total using the `cumsum()` from the default stats package.
 ```{r}
@@ -113,17 +114,18 @@ totals <- resistance %>%
   summarize(total = length(ID)) %>%
   ungroup() %>%
   mutate(cumulative = cumsum(total))
-
 head(totals)
 tail(totals)
 ```
 
 We can also use `dplyr` to look at other grouping, including by province or weed species, and then use the `subset()` function to print out only one group. In the below example, we will calculate totals for each province by weed species then keep only the cases from Saskatchewan.
 ```{r}
-provspec <- resistance %>%
+resistance.SK <- resistance %>%
   group_by(Province, SciName) %>%
   summarize(total=length(ID)) %>%
-  filter(Province == "Saskatchewan")
+  filter(Province == "Saskatchewan") %>%
+  arrange(-total) 
+resistance.SK
 ```
 
 *****

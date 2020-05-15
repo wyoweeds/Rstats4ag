@@ -5,9 +5,11 @@
 One of the most basic statistical analyses involves testing whether a group of data is statistically similar to a known value. For example, a researcher may want to know whether the yield data from a wheat experiment was similar to the state-wide average wheat yield for that year. In the example below, yield data (in kg/ha) from 10 different plots is entered manually, and stored in an object named “yield”. The state-wide dryland wheat average for the same year was 1812 kg/ha. Summary information of the wheat yield, and the differences between the experiment yields and the state average (“yld.diff”) are calculated. The `t.test()` function is used to calculate the one-sample Student's t-test.
 
 ```{r}
-yield <- c(2280, 2690, 2080, 2820, 1340, 2080, 2480, 2420, 2150, 1880)
-yld.diff <- yield - 1810
-yld.dat<-data.frame(yield, yld.diff)
+library(tidyverse)
+yld.dat <- data.frame(yield = c(2280, 2690, 2080, 
+                                  2820, 1340, 2080, 
+                                  2480, 2420, 2150, 1880)) %>%
+  mutate(yld.diff = yield - 1810)
 yld.dat
 colMeans(yld.dat)
 ```
@@ -15,19 +17,19 @@ colMeans(yld.dat)
 The mean wheat yield in the experiment was `r mean(yield)` kg/ha, `r mean(yld.diff)` kg/ha greater than the state-wide average. There are several possible methods to conduct the one-sample t-test. The first is to subtract the state-wide mean from each observation from the experiment, then test whether the mean difference in yield is different from zero. This is done simply by running the `t.test()` function on the “yld.diff” object calculated above.
 
 ```{r}
-t.test(yld.diff)
+t.test(yld.dat$yld.diff)
 ```
 
 The `t.test()` output specifies that the alternative hypothesis is that the true mean is not equal to zero, and gives a P-value of `r round(t.test(yld.diff)$p.value, 3)`; there is fairly strong evidence that the wheat yield in the experiment is different from the state-wide average. The `t.test()` function also allows the user to specify a value other than zero to test. This eliminates the need to first calculate the difference of each mean from the state-wide average, and instead, specify the state-wide average within the `t.test()` function using the `mu` argument. `mu` is a common statistical symbol for the population mean.
 
 ```{r}
-t.test(yield, mu=1810)
+t.test(yld.dat$yield, mu=1810)
 ```
 
 Results are identical to testing whether the difference between experiment yields and the state-wide average yield is different from zero. In both of the above cases, a two-sided alternative hypothesis is tested; that is, the alternate hypothesis being tested is that the experimental average is different from the state-wide average yield. In some cases, though, a one-sided alternative hypothesis would make more practical sense. Perhaps it is assumed *a priori* that the treatments in this experiment will improve wheat yields. Therefore it would be more logical to test whether the wheat yield in the experiment was greater than (not simply different from) the state-wide average. This can be done using the `alternative` argument in the `t.test()` function. The `alternative` argument can be set to either 'greater' or 'less'. 
 
 ```{r}
-t.test(yield, alternative="greater", mu=1810)
+t.test(yld.dat$yield, alternative="greater", mu=1810)
 ```
 
 As expected, the one-sided alternative produces a p-value of exactly one-half of the two-sided alternative. It appears that there is strong evidence that the experimental mean wheat yield is greater than the state-wide average wheat yield.
@@ -37,8 +39,8 @@ As expected, the one-sided alternative produces a p-value of exactly one-half of
 The two-sample t-test is more common than the one-sample test in designed agricultural experiments. In a two-sample t-test, there are two groups (often experimental treatments) on which data is collected. Some examples where the two-sample t-test would be used might include testing isogenic crop varieties to test for yield drag, or comparing two herbicide formulations for absorption or efficacy. Another example from the published literature can be found in [Kniss et al. (2011)](http://assbt-jsbr.org/JSBR/Vol47/JSBRVol473and4p127to134CompasisonofConventionalandGlyphosate-ResistanSugarbeettheYarofCommercialInductioninWyoming.pdf), where glyphosate-resistant sugarbeet was compared with conventional sugarbeet varieties. For this study, 11 fields in Wyoming were split, with one side planted to glyphosate-resistant varieties, and the other side planted to conventional varieties. The two sides of the field were then managed as the grower thought best for the rest of the year.
 
 ```{r}
-sbeet.dat <- read.csv("http://rstats4ag.org/data/sugarbeet.csv")
-sbeet.dat$Yield <- round(sbeet.dat$Yield * 2.24, 1) # Convert data to SI units
+sbeet.dat <- read.csv("http://rstats4ag.org/data/sugarbeet.csv") %>%
+  mutate(Yield = round(Yield * 2.24, 1)) # Convert data to SI units
 head(sbeet.dat)
 ```
 
