@@ -1,2 +1,2 @@
 book_filename: "Rstats4ag.Rmd"
-output_dir: "Rstats4ag"
+output_dir: "../docs"
