@@ -1,9 +1,10 @@
 # Simple Correlation
 
 To quantify relationships between quantitative treatment structures (such as increasing rates) and a response variable, regression analysis is most appropriate. But in many cases it is of interest to determine the strength of a relationship between two measured variables (where no cause-effect or dose-response relationship is obvious). This can most easily be done with correlation analysis. Examples where correlation analysis would be appropriate include observational studies where soil texture (e.g. percent clay content) is thought to be related to density of a particular weed species; or the amount of sunlight reaching the crop canopy is related to crop biomass. In these cases, experimental treatments may not be explicitly designed, but rather many areas of a field could be sampled for both variables, and the correlation analysis conducted to quantify the strength of the relationship.
+
 The relationship between visual assessment of crop injury and dry weight (or yield) production of a crop may also be of interest to a researcher. This would not be a cause-effect relationship (injury symptoms do not cause dry weight reduction), and therefore correlation analysis is more appropriate than regression. In a study by Lyon and Kniss (2010), proso millet was tested for its tolerance to preemergence applications of the herbicide saflufenacil. Injury to the crop was evaluated visually at 10 and 20 days after treatment, and dry weight was measured 28 days after treatment. It is expected that visual injury symptoms would have a strong (negative) relationship with dry weight production; however, exceptions to this relationship may exist. Correlation analysis can be conducted in R using the cor.test function.
 ```{r}
-read.csv("http://rstats4ag.org/data/millet.csv")->millet.dat
+millet.dat <- read.csv("http://rstats4ag.org/data/millet.csv")
 cor.test(millet.dat$injury.10dat,millet.dat$drywt)
 cor.test(millet.dat$injury.20dat,millet.dat$drywt)
 ```

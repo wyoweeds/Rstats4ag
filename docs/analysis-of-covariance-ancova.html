@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>8 Analysis of Covariance (ANCOVA) | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="8 Analysis of Covariance (ANCOVA) | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="8 Analysis of Covariance (ANCOVA) | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="linear-regression.html"/>
+<link rel="next" href="mixed-models-anova.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="analysis-of-covariance-ancova" class="section level1">
+<h1><span class="header-section-number">8</span> Analysis of Covariance (ANCOVA)</h1>
+<p>In an ANOVA the interest lies in the differences among means. In a linear regression the interest lies in the intercept and slope parameters of regression lines, or perhaps other parameters of biological interest, e.g. asymptotic and effective doses (e.g, <span class="math inline">\(latex LD_{50}\)</span> levels in the nonlinear case. The combination of ANOVA and regression is called Analysis of Covariance (ANCOVA). It is an underutilized method that makes sequential tests for testing various hypotheses. Usually it is confined to linear regressions but can be equally powerful when used in nonlinear relationships. However, in this section we only consider the linear ANCOVA.</p>
+<div id="example-1-mechanical-weed-control" class="section level2">
+<h2><span class="header-section-number">8.1</span> Example 1: Mechanical Weed Control</h2>
+<p>A mechanical weed control experiment (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-3180.2008.00661.x/full">Rasmussen et al. 2008</a>] tested the effect of intensity of harrowing (1, 2, 3, or 4 times), either along or across the direction of sowing (factors) on the weed cover left after the harrowing.</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb171-1" data-line-number="1">Harrowing&lt;-<span class="st"> </span><span class="kw">read.csv2</span>(<span class="st">&quot;http://rstats4ag.org/data/Harrowing.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb171-2" data-line-number="2"><span class="kw">head</span>(Harrowing,<span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   plot       leaf     weeds int direction yield
+## 1    1 0.18623052 103.33763   0     along  4.21
+## 2    2 0.12696533  54.02022   1     along  4.08
+## 3    3 0.09006582  23.44035   2     along  3.92</code></pre>
+<p>Lets look at the relationships in Figure <a href="analysis-of-covariance-ancova.html#fig:figharrowpanel">8.1</a>.</p>
+
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb173-1" data-line-number="1"><span class="kw">library</span>(lattice)</a>
+<a class="sourceLine" id="cb173-2" data-line-number="2"><span class="kw">xyplot</span>(weeds <span class="op">~</span><span class="st"> </span>int <span class="op">|</span><span class="st"> </span>direction, <span class="dt">data =</span> Harrowing,</a>
+<a class="sourceLine" id="cb173-3" data-line-number="3">       <span class="dt">ylab=</span><span class="st">&quot;Weed Cover&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;Intensity of Harrowing&quot;</span>  )     </a></code></pre></div>
+<div class="figure"><span id="fig:figharrowpanel"></span>
+<img src="Rstats4ag_files/figure-html/figharrowpanel-1.png" alt="The relationship between weed cover and intensity of harrowing either across or along the direction of sowing." width="672" />
+<p class="caption">
+Figure 8.1: <em>The relationship between weed cover and intensity of harrowing either across or along the direction of sowing.</em>
+</p>
+</div>
+<p>The relationships above does not look very linear, it looks like an exponential decreasing leaf cover. If this assumption is correct we can make the relationship linear by taking the logarithm of weed cover.</p>
+
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb174-1" data-line-number="1"><span class="kw">xyplot</span>(<span class="kw">log</span>(weeds) <span class="op">~</span><span class="st"> </span>int <span class="op">|</span><span class="st"> </span>direction, <span class="dt">data =</span> Harrowing,</a>
+<a class="sourceLine" id="cb174-2" data-line-number="2">       <span class="dt">ylab=</span><span class="st">&quot;Log(Weed Cover)&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;Intensity of Harrowing&quot;</span>,</a>
+<a class="sourceLine" id="cb174-3" data-line-number="3">       <span class="dt">panel =</span> <span class="cf">function</span>(x,y)</a>
+<a class="sourceLine" id="cb174-4" data-line-number="4">       {<span class="kw">panel.xyplot</span>(x,y)</a>
+<a class="sourceLine" id="cb174-5" data-line-number="5">        <span class="kw">panel.lmline</span>(x,y)})</a></code></pre></div>
+<div class="figure"><span id="fig:figharrowpanellog"></span>
+<img src="Rstats4ag_files/figure-html/figharrowpanellog-1.png" alt="Same data as in 8.1 using the logarithm of weed cover (y-axis) gives a relationship that looks linear on the intensity of harrowing within the directions of harrowing." width="672" />
+<p class="caption">
+Figure 8.2: <em>Same data as in <a href="analysis-of-covariance-ancova.html#fig:figharrowpanel">8.1</a> using the logarithm of weed cover (y-axis) gives a relationship that looks linear on the intensity of harrowing within the directions of harrowing.</em>
+</p>
+</div>
+<p>Apparently, the assumption of a straight line relationship looks good, but we have to do statistics to substantiate this hypothesis. It is of interest to know whether the harrowing direction (across or along the rows) had the same effect on weed cover. Statistically, we want to know if the two regression lines are similar in term of regression slopes. This can be done by sequential testing:</p>
+<ul>
+<li>Ordinary ANOVA where <code>int</code> is turned into a factor <code>factor(int)</code></li>
+<li>ANCOVA with interaction; meaning that the regression lines can have both different slopes and intercepts</li>
+</ul>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb175-1" data-line-number="1">Harrowing<span class="op">$</span>Log.weeds &lt;-<span class="st"> </span><span class="kw">log</span>(Harrowing<span class="op">$</span>weeds)</a>
+<a class="sourceLine" id="cb175-2" data-line-number="2">m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Log.weeds <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(int) <span class="op">*</span><span class="st"> </span>direction, <span class="dt">data =</span> Harrowing)</a>
+<a class="sourceLine" id="cb175-3" data-line-number="3">m2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Log.weeds <span class="op">~</span><span class="st"> </span>int <span class="op">*</span><span class="st"> </span>direction, <span class="dt">data =</span> Harrowing)</a>
+<a class="sourceLine" id="cb175-4" data-line-number="4"><span class="kw">anova</span>(m1, m2)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Log.weeds ~ factor(int) * direction
+## Model 2: Log.weeds ~ int * direction
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     30 3.5350                           
+## 2     36 4.2754 -6  -0.74048 1.0474 0.4152</code></pre>
+<p><code>m1</code>, an ordinary ANOVA, is the most general model with no assumption of any particular relationship. <code>m2</code>is the ANCOCVA, which assumes there is a linear relationship between harrowing direction and intensity. The <code>int * direction</code> in <code>m2</code> means that there is an interaction between the slopes depending on the direction of harrowing. Or in other words the slopes of the regression lines are different. The test for lack of fit is not significant (p=0.42) so we can assume a linear relationship applies to the log-transformed response variable.</p>
+<p>We can further refine the analysis through sequential testing:
+* Assuming similar slope but different intercept depending of direction of harrowing
+* Assuming that the directions of harrowing does not influence regression lines, e.i, similar line</p>
+<p>To do this, we first test the regression model with an interaction term, <code>m2</code>, with a regression model where we assume no interaction,<code>m3</code>, which mean the slopes of the regression lines are similar:</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" data-line-number="1">m3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Log.weeds <span class="op">~</span><span class="st"> </span>int <span class="op">+</span><span class="st"> </span>direction, <span class="dt">data =</span> Harrowing)</a>
+<a class="sourceLine" id="cb177-2" data-line-number="2"><span class="kw">anova</span>(m2,m3)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Log.weeds ~ int * direction
+## Model 2: Log.weeds ~ int + direction
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     36 4.2754                           
+## 2     37 4.3207 -1 -0.045295 0.3814 0.5407</code></pre>
+<p>The lack of fit test is again not significant so we can assume that there is no interaction, and conclude that the regression slopes are similar. The final test will determine whether the direction of harrowing influences the relationship between log(Weed Cover) and intensity of harrowing?</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb179-1" data-line-number="1">m4 &lt;-<span class="st"> </span><span class="kw">lm</span>(Log.weeds <span class="op">~</span><span class="st"> </span>int, <span class="dt">data =</span> Harrowing)</a>
+<a class="sourceLine" id="cb179-2" data-line-number="2"><span class="kw">anova</span>(m4, m3)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Log.weeds ~ int
+## Model 2: Log.weeds ~ int + direction
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     38 4.3311                           
+## 2     37 4.3207  1  0.010344 0.0886 0.7677</code></pre>
+<p>Again, no significance here either (p=0.77); so we end up from the most general model (ANOVA) to the most simple ANCOVA: direction of harrowing does not matter and the relationship between <code>log(weeds)</code>and intensity of harrowing is linear.</p>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb181-1" data-line-number="1"><span class="kw">summary</span>(m4)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = Log.weeds ~ int, data = Harrowing)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.63622 -0.25226  0.06307  0.28256  0.73686 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  5.04478    0.09246   54.56   &lt;2e-16 ***
+## int         -1.10710    0.03775  -29.33   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3376 on 38 degrees of freedom
+## Multiple R-squared:  0.9577, Adjusted R-squared:  0.9566 
+## F-statistic: 860.3 on 1 and 38 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>In order to illustrate the result we use the code below to create Figure <a href="analysis-of-covariance-ancova.html#fig:ancovaplot1">8.3</a>. For illustration purposes we have separated the means into direction across and along even though it is not necessary.</p>
+
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb183-2" data-line-number="2">Plot.means &lt;-<span class="st"> </span>Harrowing <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb183-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(int, direction) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb183-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>(), <span class="dt">Log.Weeds =</span> <span class="kw">mean</span>(Log.weeds))</a>
+<a class="sourceLine" id="cb183-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb183-6" data-line-number="6"><span class="kw">par</span>(<span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>))</a>
+<a class="sourceLine" id="cb183-7" data-line-number="7"><span class="kw">plot</span>(Log.Weeds<span class="op">~</span>int, <span class="dt">data =</span> Plot.means, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb183-8" data-line-number="8">     <span class="dt">pch =</span> <span class="kw">as.numeric</span>(direction),</a>
+<a class="sourceLine" id="cb183-9" data-line-number="9">     <span class="dt">xlab=</span><span class="st">&quot;Harrowing intensity&quot;</span>,</a>
+<a class="sourceLine" id="cb183-10" data-line-number="10">     <span class="dt">ylab=</span><span class="st">&quot;Log(weed cover)&quot;</span>)</a></code></pre></div>
+<pre><code>## Warning in FUN(X[[i]], ...): NAs introduced by coercion</code></pre>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" data-line-number="1"><span class="kw">abline</span>(m4)</a>
+<a class="sourceLine" id="cb185-2" data-line-number="2"><span class="kw">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;Across&quot;</span>, <span class="st">&quot;Along&quot;</span>), <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</a></code></pre></div>
+<div class="figure"><span id="fig:ancovaplot1"></span>
+<img src="Rstats4ag_files/figure-html/ancovaplot1-1.png" alt="Summary plot of the harrowing experiments. There is no difference between the direction of harrowing and, therefore, only one regression line is necessary." width="672" />
+<p class="caption">
+Figure 8.3: <em>Summary plot of the harrowing experiments. There is no difference between the direction of harrowing and, therefore, only one regression line is necessary.</em>
+</p>
+</div>
+<p>The slope is -1.11 (0.04) which means that with an increase in harrowing intensity the logarithm of weed cover decreases by -1.11. In fact the relationship is an exponential decay curve where the relative rate of change is exp(-1.11)= 0.3296 wherever we are on the curve.</p>
+</div>
+<div id="example-2-duration-of-competition" class="section level2">
+<h2><span class="header-section-number">8.2</span> Example 2: Duration of competition</h2>
+<p>In 2006 and 2007, field studies were conducted near Powell, Wyoming to determine the effects of <i>Salvia reflexa</i> (lanceleaf sage) interference with sugarbeet. This data was published in <a href="http://www.bioone.org/doi/abs/10.1614/WT-D-10-00015.1">Odero et al. 2010</a>. <i>Salvia reflexa</i> was seeded alongside the sugarbeet crop at a constant density, and allowed to compete for time periods ranging from 36 to 133 days after sugarbeet emergence. Yields (<code>Yield_Mg.ha</code>) were determined at the end of the season.</p>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb186-1" data-line-number="1">lanceleaf.sage&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/lanceleafsage.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb186-2" data-line-number="2"><span class="kw">head</span>(lanceleaf.sage,<span class="dt">n=</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   Replicate Duration Year Yield_Mg.ha Yield.loss.pct
+## 1         1       36 2006       67.26          98.05
+## 2         1       50 2006       60.34          87.96
+## 3         1       64 2006       53.69          78.27</code></pre>
+
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb188-1" data-line-number="1"><span class="kw">library</span>(lattice)</a>
+<a class="sourceLine" id="cb188-2" data-line-number="2"><span class="kw">xyplot</span>(Yield_Mg.ha<span class="op">~</span>Duration<span class="op">|</span><span class="kw">factor</span>(Year),<span class="dt">data=</span>lanceleaf.sage,</a>
+<a class="sourceLine" id="cb188-3" data-line-number="3">        <span class="dt">ylab=</span> <span class="st">&quot;Sugarbeet root yield (t/ha)&quot;</span>,</a>
+<a class="sourceLine" id="cb188-4" data-line-number="4">        <span class="dt">xlab=</span><span class="st">&quot;Duration of competition from _Salvia reflexa_&quot;</span>,</a>
+<a class="sourceLine" id="cb188-5" data-line-number="5">        <span class="dt">panel =</span> <span class="cf">function</span>(x,y)</a>
+<a class="sourceLine" id="cb188-6" data-line-number="6">       {<span class="kw">panel.xyplot</span>(x,y)</a>
+<a class="sourceLine" id="cb188-7" data-line-number="7">        <span class="kw">panel.lmline</span>(x,y)})</a></code></pre></div>
+<div class="figure"><span id="fig:figsagepanel"></span>
+<img src="Rstats4ag_files/figure-html/figsagepanel-1.png" alt="Duration of Salvia reflexa competition effect on yield of sugar beet in two years." width="672" />
+<p class="caption">
+Figure 8.4: <em>Duration of</em> Salvia reflexa <em>competition effect on yield of sugar beet in two years.</em>
+</p>
+</div>
+<p>As was the case with the harrowing experiment we do sequential testing. First, we compare the ANCOVA with the most general model, an AVOVA:</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb189-1" data-line-number="1">lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(Duration) <span class="op">*</span><span class="st"> </span><span class="kw">factor</span>(Year), <span class="dt">data =</span> lanceleaf.sage) <span class="co"># ANOVA</span></a>
+<a class="sourceLine" id="cb189-2" data-line-number="2">lm2 &lt;-<span class="st"> </span><span class="kw">lm</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span>Duration <span class="op">*</span><span class="st"> </span><span class="kw">factor</span>(Year), <span class="dt">data =</span> lanceleaf.sage) <span class="co"># Regression</span></a>
+<a class="sourceLine" id="cb189-3" data-line-number="3"><span class="kw">anova</span>(lm1, lm2) <span class="co"># Lack of fit test</span></a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Yield_Mg.ha ~ factor(Duration) * factor(Year)
+## Model 2: Yield_Mg.ha ~ Duration * factor(Year)
+##   Res.Df    RSS  Df Sum of Sq      F Pr(&gt;F)
+## 1     48 3198.3                            
+## 2     60 3667.1 -12   -468.78 0.5863 0.8423</code></pre>
+<p>The test for lack of fit shows that we can safely assume a linear regression (p=0.84). The next step is to test if we can assume similar slopes for the regression in the two years.</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" data-line-number="1">lm3 &lt;-<span class="st"> </span><span class="kw">lm</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span>Duration <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(Year), <span class="dt">data =</span> lanceleaf.sage)</a>
+<a class="sourceLine" id="cb191-2" data-line-number="2"><span class="kw">anova</span>(lm2, lm3) </a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Yield_Mg.ha ~ Duration * factor(Year)
+## Model 2: Yield_Mg.ha ~ Duration + factor(Year)
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     60 3667.1                           
+## 2     61 3669.1 -1   -2.0366 0.0333 0.8558</code></pre>
+<p>Again we can confidently assume that the slopes are the same irrespective of year (p=0.86). The next question: are the regression lines identical?</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" data-line-number="1">lm4 &lt;-<span class="st"> </span><span class="kw">lm</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span>Duration, <span class="dt">data =</span> lanceleaf.sage)</a>
+<a class="sourceLine" id="cb193-2" data-line-number="2"><span class="kw">anova</span>(lm4, lm3) </a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Yield_Mg.ha ~ Duration
+## Model 2: Yield_Mg.ha ~ Duration + factor(Year)
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     62 4819.3                                  
+## 2     61 3669.1  1    1150.2 19.123 4.862e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We get a extremely low p value (p&lt;0.0001). Therefore, the reduced model significantly reduces the fit. In other words, the <code>lm3</code> model is the model that should be used to summarize the experiment.</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb195-1" data-line-number="1"><span class="kw">summary</span>(lm3)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = Yield_Mg.ha ~ Duration + factor(Year), data = lanceleaf.sage)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.3477  -5.2428  -0.7246   3.5724  17.9560 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      72.09580    2.20523  32.693  &lt; 2e-16 ***
+## Duration         -0.21451    0.02472  -8.678 3.02e-12 ***
+## factor(Year)2007 -8.47875    1.93890  -4.373 4.86e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.756 on 61 degrees of freedom
+## Multiple R-squared:  0.6075, Adjusted R-squared:  0.5947 
+## F-statistic: 47.21 on 2 and 61 DF,  p-value: 4.081e-13</code></pre>
+<p>```</p>
+<p>The slopes are similar but not the intercepts and the summary of the experiment can be neatly presented graphically in Figure <a href="analysis-of-covariance-ancova.html#fig:figsageresults">8.5</a>.</p>
+
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb197-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb197-2" data-line-number="2">averages&lt;-lanceleaf.sage <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb197-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(Duration, Year) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb197-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>(), <span class="dt">YIELD =</span> <span class="kw">mean</span>(Yield_Mg.ha))</a>
+<a class="sourceLine" id="cb197-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb197-6" data-line-number="6"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb197-7" data-line-number="7"><span class="kw">plot</span>(YIELD <span class="op">~</span><span class="st"> </span>Duration, <span class="dt">data =</span> averages, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb197-8" data-line-number="8">     <span class="dt">pch =</span> <span class="kw">as.numeric</span>(<span class="kw">factor</span>(Year)), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">80</span>), </a>
+<a class="sourceLine" id="cb197-9" data-line-number="9">     <span class="dt">ylab=</span><span class="st">&quot;Sugarbeet root yield (t/ha)&quot;</span>,</a>
+<a class="sourceLine" id="cb197-10" data-line-number="10">     <span class="dt">xlab=</span><span class="st">&quot;Duration of competition from Salvia reflexa&quot;</span>)</a>
+<a class="sourceLine" id="cb197-11" data-line-number="11">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">300</span>)<span class="co">#dummy intensities</span></a>
+<a class="sourceLine" id="cb197-12" data-line-number="12"><span class="kw">lines</span>(x, <span class="kw">predict</span>(lm3, <span class="dt">newdata =</span> <span class="kw">data.frame</span>(<span class="dt">Year =</span> <span class="st">&quot;2006&quot;</span>,</a>
+<a class="sourceLine" id="cb197-13" data-line-number="13">                                        <span class="dt">Duration =</span> x)), <span class="dt">lty =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb197-14" data-line-number="14"><span class="kw">lines</span>(x, <span class="kw">predict</span>(lm3, <span class="dt">newdata =</span> <span class="kw">data.frame</span>(<span class="dt">Year =</span> <span class="st">&quot;2007&quot;</span>,</a>
+<a class="sourceLine" id="cb197-15" data-line-number="15">                                          <span class="dt">Duration =</span> x)), <span class="dt">lty =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb197-16" data-line-number="16"><span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;2006&quot;</span>, <span class="st">&quot;2007&quot;</span>), <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb197-17" data-line-number="17">       <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),   <span class="dt">merge =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figsageresults"></span>
+<img src="Rstats4ag_files/figure-html/figsageresults-1.png" alt="Sugarbeet yield in response to duration of Salvia reflexa competition." width="672" />
+<p class="caption">
+Figure 8.5: <em>Sugarbeet yield in response to duration of</em> Salvia reflexa <em>competition.</em>
+</p>
+</div>
+<p>Note the codes to obtain the regression lines for each year are more involved that in the harrowing example in Figure <a href="analysis-of-covariance-ancova.html#fig:ancovaplot1">8.3</a>. You must separate the regression lines on the basis of <code>Year</code> and define an independent variable <code>x</code>. Since it is a strait line you only need two `x’s within year to draw the lines.</p>
+<p>Even though the maximum yield (y-intercept) was different between years (72.1 in 2006 compared with 63.6 in 2007), yield reduction was similar in response to duration of weed competition. Each day of competition reduced the yield by 0.21 tons/ha (slope= -0.215 (0.025)).</p>
+<hr />
+
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="linear-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="mixed-models-anova.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -11,25 +11,25 @@ Some of the most often used experimental designs in weed science include complet
 
 The "FlumiBeans" data set is from a herbicide trial conducted in Wyoming during three different years (2009 through 2011). Five different herbicide treatments were applied, plus nontreated and handweeded controls for a total of seven treatments. The study was a randomized complete block design (RCBD) each year. There were 3 replicates in 2009, but 4 replicates in subsequent years. The response variable in this data set is dry bean (*Phaseolus vulgaris*) density 4 weeks after planting expressend in plants per acre.
 
+It is important to note that some of our factor variables have been expressed in the .csv file as numbers (e.g. 'year' and 'block'), and consequently, R will recognized these factors as numeric variables. It is important for our ANOVA that these variables be included as factors, and not as numeric variables. We can use the `dplyr` package from the `tidyverse` to convert these variables to the proper form as we read them with the `mutate()` function.
+
+
 ```{r}
-read.csv("http://rstats4ag.org/data/FlumiBeans.csv")->bean.dat
-bean.dat$population.4wk <- bean.dat$population.4wk * 2.47 # Convert to SI units 
-summary(bean.dat)
+library(tidyverse)
+
+bean.dat <- read.csv("http://rstats4ag.org/data/FlumiBeans.csv") %>%
+  mutate(population.4wk = population.4wk * 2.47, # Convert to SI units
+         year = factor(year),
+         block = factor(block),
+         treatment = factor(treatment))
+glimpse(bean.dat)
 ```
 
-It is important to note that some of our factor variables have been expressed in the .csv file as numbers (e.g. 'year' and 'block'), and consequently, R has recognized these factors as numeric variables. It is important for our ANOVA that these variables be included as factors, and not as numeric variables. We can tell R to view these variables as factors by re-naming them using the `as.factor()` function.
+For this analysis, we want to look at a One-Way analysis of variance, and so we will focus on the data from only one year. We can subset the data to include only this year using the `filter()` function from the `dplyr` package, and call this subsetted data `bean.09`.
 
 ```{r}
-bean.dat$year<-as.factor(bean.dat$year)
-bean.dat$block<-as.factor(bean.dat$block)
-bean.dat$treatment <- as.factor(bean.dat$treatment)
-summary(bean.dat)
-```
-
-Notice the difference for the 'year' and 'block' variables in the `summary()` results before and after renaming. For this analysis, we want to look at a One-Way analysis of variance, and so we will focus on the data from only one year. We can subset the data by year, and call this subsetted data `bean.09`.
-
-```{r}
-bean.09<-subset(bean.dat, year==2009)
+bean.09 <- bean.dat %>%
+  filter(year == 2009)
 ```
 
 We will then use the `aov()` function to generate the One-way ANOVA to see if herbicide treatment had an effect on dry bean population (expressed in plants per hectare) in 2009.
@@ -120,13 +120,15 @@ multcomp::cld(b09.emm, Letters=LETTERS, adjust="none") # corresponding compact l
 
 We'll now look at the second and third year of the study, beginning by subsetting the data to include only these years.
 ```{r}
-bean2.dat<-subset(bean.dat, year==2010 | year==2011)
+bean2.dat <- bean.dat %>%
+  filter(year==2010 | year==2011)
 summary(bean2.dat)
 ```
 We'll now incorporate year as a fixed effect in the analysis. We're going to exclude the 2009 data because it does not have the same number of replicates as the other two years of data. The `aov()` function is not appropriate for unbalanced data. We will look at how to best handle this in a later section using mixed effects. We're also going to incorporate the blocking design into the model using the `Error()` argument. Blocking was used in each year of the field study (in a randomized complete block design). Because the trial was located in a different field each year, there is no reason to think that block 1 would result in a similar impact from one year to the next. Therefore, the effect of block is nested within year. We can specify this structure in the `aov()` function by using the `/` operator. 
 
 ```{r}
-bean2.aov<-aov(population.4wk ~ year*treatment + Error(year/block), data=bean2.dat)
+bean2.aov<-aov(population.4wk ~ year*treatment + Error(year/block), 
+               data=bean2.dat)
 summary(bean2.aov)
 ```
 
@@ -134,7 +136,8 @@ Adding the Error term into the model results in 3 separate sections of the ANOVA
 
 ```{r}
 bean2.dat$yrblock  <- with(bean2.dat, factor(year):factor(block))
-bean2.aov2<-aov(population.4wk ~ year*treatment + Error(yrblock), data=bean2.dat)
+bean2.aov2<-aov(population.4wk ~ year*treatment + Error(yrblock), 
+                data=bean2.dat)
 summary(bean2.aov2)
 ```
 

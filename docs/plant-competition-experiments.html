@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>14 Plant Competition Experiments | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="14 Plant Competition Experiments | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="14 Plant Competition Experiments | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="nonlinear-regression-selectivity-of-herbicides.html"/>
+<link rel="next" href="seed-germination.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="plant-competition-experiments" class="section level1">
+<h1><span class="header-section-number">14</span> Plant Competition Experiments</h1>
+<p>Competition experiments are a staple of weed science. Typically, we often want to assess the effect of weed density or duration of competition on crop yield. There is an ongoing debate about the appropriateness of using density and not for example plant cover. We will not go into this debate, but stick to density of plant, because the methods of analyzing data remain the same whether the independent variable, <code>x</code>, is density or plant cover.</p>
+<p>One of the important questions is,how do we assess competition and when does it start. In principle competition starts at germination and is a question of the resources:</p>
+<ul>
+<li>Light</li>
+<li>Nutrients</li>
+<li>Water</li>
+<li>“Space”</li>
+</ul>
+<p>The three first factors are rather easy to quantify, but the fourth one is more intangible it is dependent on the growth habits of the weeds, e.g. prostrate, erect and the ability of the crop to outgrow the weeds. Whatever the reason for competition, it often boils down to the relationship in Figure <a href="plant-competition-experiments.html#fig:figcompshape">14.1</a>; when will the relationship divert from a straight line.</p>
+<div id="yield-density-and-yield-loss" class="section level2">
+<h2><span class="header-section-number">14.1</span> Yield, Density and Yield Loss</h2>
+<p>The general plant competition and crop yield loss relationships are consider the same, a rectangular hyperbola. In Figure <a href="plant-competition-experiments.html#fig:figcompshape">14.1</a> we have a classical intra-specific competition relationship (A), and a yield loss relationship (B). Competition materializes when the curve diverts from the straight line. The initial straight line means that putting a new plant into the system just increases the yield the same way as all the other individuals contribute initially. When individual plants begin compete with each other for resources, because of high density, then the curves diverts from the straight line.</p>
+<p>In Figure <a href="plant-competition-experiments.html#fig:figcompshape">14.1</a>B, the percentage yield loss is based upon the yield without the presence of weeds. The competition (inter-specific competition) for resources materializes itself immediately. When the line diverts from the straight line relationship there will also be some intra-specific competition among the weeds. If there is no competition between crop and weeds at all, then the slope of the curve in Figure <a href="plant-competition-experiments.html#fig:figcompshape">14.1</a>B would be zero, or no change in yield whatever the density of weeds.</p>
+
+<div class="figure"><span id="fig:figcompshape"></span>
+<img src="Rstats4ag_files/figure-html/figcompshape-1.png" alt="Competition within the same species, often denoted intra-specific competition (A). Yield loss function based on the percentage yield loss relative to the yield in weed free environment (B)." width="672" />
+<p class="caption">
+Figure 14.1: <em>Competition within the same species, often denoted intra-specific competition (A). Yield loss function based on the percentage yield loss relative to the yield in weed free environment (B).</em>
+</p>
+</div>
+<p>If the yield is a crop and the density is weeds per unit area then the the competition (inter-specific competition) materializes in exactly the same way. But now the competition begins from the very start. If there is no competition between crop and weed then the slope of the curve would be zero, viz no change in yield whatever the density of weeds.</p>
+<p>The first example is a study conducted near Lingle, Wyoming over two years. In this study, volunteer corn densities ranging from 0 to 2.4 plants/<span class="math inline">\(m^2\)</span> were planted along with dry edible beans to document the bean yield loss from increasing volunteer corn density.</p>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" data-line-number="1"><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/volcorn.csv&quot;</span>)-&gt;VolCorn</a>
+<a class="sourceLine" id="cb369-2" data-line-number="2">VolCorn<span class="op">$</span>yr&lt;-<span class="kw">as.factor</span>(VolCorn<span class="op">$</span>yr)</a>
+<a class="sourceLine" id="cb369-3" data-line-number="3">VolCorn<span class="op">$</span>reps&lt;-<span class="kw">as.factor</span>(VolCorn<span class="op">$</span>reps)</a>
+<a class="sourceLine" id="cb369-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb369-5" data-line-number="5"><span class="kw">head</span>(VolCorn,<span class="dt">n=</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##     yr reps dens    y.pct y.kg
+## 1 2009    1    0 3.283996 6273
+## 2 2009    2    0 9.466543 5872
+## 3 2009    3    0 4.625347 6186</code></pre>
+<p>The variable ‘yr’ is the year the study was completed (either 2008 or 2009), <code>reps</code> denotes the replicate (1 through 4), ‘dens’ is the volunteer corn density in plants/<span class="math inline">\(m^2\)</span> (0 to 2.4), ‘y.pct’ is the percentage dry bean yield loss as compared with the zero volunteer corn density, and ‘y.kg’ is the dry bean yield in kg/ha.</p>
+<p><a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1744-7348.1985.tb01567.x/pdf">Cousens 1985</a> proposed a re-parameterization of a rectangular hyperbola (perhaps better known as Michaelis-Menten) model as a tool to analyze competition experiments, and the <code>drc</code> is well suited for this type of analysis <a href="http://www.jstatsoft.org/v12/i05/paper">Ritz and Streibig 2005</a>. This package must be loaded with the code:</p>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" data-line-number="1"><span class="kw">library</span>(drc)</a></code></pre></div>
+<p>The <code>drm()</code> function can be used to fit a variety of non-linear models, including the Michaelis-Menten model. The code to fit the Michaelis-Menten model to the volunteer corn data is for one of the two years, 2009, by using the argument <code>data=VolCorn, subset=yr==2009,</code></p>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" data-line-number="1"><span class="kw">drm</span>(y.pct <span class="op">~</span><span class="st"> </span>dens, <span class="dt">fct=</span><span class="kw">MM.2</span>(<span class="dt">names=</span><span class="kw">c</span>(<span class="st">&quot;Vmax&quot;</span>,<span class="st">&quot;K&quot;</span>)), <span class="dt">data=</span>VolCorn, </a>
+<a class="sourceLine" id="cb372-2" data-line-number="2">    <span class="dt">subset=</span>yr<span class="op">==</span><span class="dv">2009</span>, <span class="dt">na.action=</span>na.omit)-&gt;y2009.MM2</a>
+<a class="sourceLine" id="cb372-3" data-line-number="3"><span class="kw">summary</span>(y2009.MM2)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Michaelis-Menten (2 parms)
+## 
+## Parameter estimates:
+## 
+##                  Estimate Std. Error t-value p-value
+## Vmax:(Intercept)  66.7415    73.8753  0.9034  0.3782
+## K:(Intercept)      2.6490     4.8209  0.5495  0.5894
+## 
+## Residual standard error:
+## 
+##  13.32239 (18 degrees of freedom)</code></pre>
+<p>Obviously, the <code>Vmax</code> and <code>K</code> parameter of the Michaelis-Menten model were non-significant, the reason is that the range of density of weeds were not large enough, we only catch the linear part (Figure <a href="plant-competition-experiments.html#fig:figvolcornextrapolate">14.2</a>).</p>
+
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb374-2" data-line-number="2"><span class="kw">plot</span>(y2009.MM2,<span class="dt">log=</span><span class="st">&quot;&quot;</span>, </a>
+<a class="sourceLine" id="cb374-3" data-line-number="3">     <span class="dt">ylab=</span> <span class="st">&quot;Percent Sugarbeet Yield Loss&quot;</span>,</a>
+<a class="sourceLine" id="cb374-4" data-line-number="4">     <span class="dt">xlab=</span><span class="st">&quot;Volunteer Corn Density&quot;</span>,</a>
+<a class="sourceLine" id="cb374-5" data-line-number="5">     <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">70</span>), <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb374-6" data-line-number="6"><span class="kw">abline</span>(<span class="dt">h=</span><span class="fl">66.7</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figvolcornextrapolate"></span>
+<img src="Rstats4ag_files/figure-html/figvolcornextrapolate-1.png" alt="Yield loss curve with a two parameter Michaelis-Menten’s curve (the argument in drm() is fct=MM.2(). The Vmax is the upper limit, shown with the broken horizontal line, and k is the rate constant." width="672" />
+<p class="caption">
+Figure 14.2: <em>Yield loss curve with a two parameter Michaelis-Menten’s curve (the argument in <code>drm()</code> is <code>fct=MM.2()</code>. The <code>Vmax</code> is the upper limit, shown with the broken horizontal line, and <code>k</code> is the rate constant.</em>
+</p>
+</div>
+<p>All functions in the <code>drc</code> package are defined in the <code>getMeanFunctions()</code> by writing <code>?MM.3</code> or <code>?MM.2</code> you can see the help on the curve fitting function.</p>
+<p><span class="math display">\[y=c + \frac{d-c}{1+(e/x)} .\]</span></p>
+<p>The suffix 3 or 2 defines how many asymptotes we use. The most common one is <code>MM.2</code> where there is only one upper limit <em>d</em>, in this context often referred to as <em>Vmax</em>. If you compare the model above with the log-logistic models, used in the selectivity and dose-response chapter, they look almost identical except that <em>b</em> in the log-logistic does not exist in <code>MM.2</code> or <code>MM.3</code>, because for this case <em>b</em>=1. The standard error of the parameter estimates reveals that none of the two parameters are significantly different from zero. This is due to the fact that only the first part of the curve is supported by experimental data as seen in Figure <a href="plant-competition-experiments.html#fig:figvolcornextrapolate">14.2</a>; there is no data to support the upper limit of the curve.</p>
+<p>The tradition in weed science, as mentioned above, is to reparametrizise the Michaelis-Menten model and use:</p>
+<p><span class="math display">\[Y_L = \frac{Ix}{1+Ix/A} .\]</span></p>
+<p>which was proposed by Cousens (1985), where <code>A</code> now is the upper limit and <code>I</code> is the initial slope of the curve as shown Figure <a href="plant-competition-experiments.html#fig:figcompshape">14.1</a>. This reparametrization is available in the ‘drc’ package by using the ‘yieldLoss()’ function as shown below:</p>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" data-line-number="1"><span class="kw">yieldLoss</span>(y2009.MM2, <span class="dt">interval=</span><span class="st">&quot;as&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated A parameters
+## 
+##   Estimate Std. Error   Lower   Upper
+## 1   66.741     73.875 -88.465 221.948
+## 
+## 
+## Estimated I parameters
+## 
+##   Estimate Std. Error   Lower   Upper
+## 1   25.195     18.749 -14.196  64.585</code></pre>
+<p>The upper limit, which is called <code>Vmax</code> in the Michaelis-Menten and <code>A</code> in the yieldLoss function is the same 67% and the rate constant in the Michaelis-Menten is 2.64 (corresponding to ED50 in the Log-logistic), but for the Cousens rectangular hyperbola the initial slope is 25. Of course the parameters of the <code>yieldLoss()</code> function were not different from zero either.</p>
+<p>Looking at the yield loss curve one could suspect that a straight line relationship applies. We test the regression against the most general model an ANOVA:</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1">lm.Y2009&lt;-<span class="kw">lm</span>(y.pct <span class="op">~</span><span class="st"> </span>dens,<span class="dt">data=</span>VolCorn, <span class="dt">subset=</span>yr<span class="op">==</span><span class="dv">2009</span>)</a>
+<a class="sourceLine" id="cb377-2" data-line-number="2">ANOVA.Y2009&lt;-<span class="kw">lm</span>(y.pct <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(dens), <span class="dt">data=</span>VolCorn, <span class="dt">subset=</span>yr<span class="op">==</span><span class="dv">2009</span>)</a>
+<a class="sourceLine" id="cb377-3" data-line-number="3"><span class="kw">anova</span>(lm.Y2009,ANOVA.Y2009)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: y.pct ~ dens
+## Model 2: y.pct ~ factor(dens)
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     18 3241.9                           
+## 2     15 2637.2  3    604.71 1.1465 0.3625</code></pre>
+<p>The test for lack of fit is non-significant (p=0.36) so we can confidently assume the straight line gives a good description of the relationship.</p>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="kw">summary</span>(lm.Y2009)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = y.pct ~ dens, data = VolCorn, subset = yr == 2009)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -30.013  -6.501   1.457   7.370  27.645 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)    2.498      4.285   0.583  0.56717   
+## dens          13.002      3.475   3.741  0.00149 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 13.42 on 18 degrees of freedom
+## Multiple R-squared:  0.4374, Adjusted R-squared:  0.4062 
+## F-statistic:    14 on 1 and 18 DF,  p-value: 0.001495</code></pre>
+<p>Sugarbeet yield loss increases by 13% with each volunteer corn plant/m<span class="math inline">\(^2\)</span> that is added into the system.</p>
+
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb381-2" data-line-number="2">Yield.m&lt;-<span class="kw">subset</span>(VolCorn,yr<span class="op">==</span><span class="dv">2009</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb381-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(dens) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb381-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Yieldloss=</span><span class="kw">mean</span>(y.pct))</a>
+<a class="sourceLine" id="cb381-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb381-6" data-line-number="6"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb381-7" data-line-number="7"><span class="kw">plot</span>(Yieldloss <span class="op">~</span><span class="st"> </span>dens,<span class="dt">data=</span>Yield.m, </a>
+<a class="sourceLine" id="cb381-8" data-line-number="8">     <span class="dt">ylab=</span><span class="st">&quot;Percent Sugarbeet Yield Loss&quot;</span>, </a>
+<a class="sourceLine" id="cb381-9" data-line-number="9">     <span class="dt">xlab=</span><span class="st">&quot;Volunteer corn density&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb381-10" data-line-number="10"><span class="kw">abline</span>(lm.Y2009)</a>
+<a class="sourceLine" id="cb381-11" data-line-number="11"><span class="kw">plot</span>(y2009.MM2,<span class="dt">log=</span><span class="st">&quot;&quot;</span>, <span class="dt">add=</span>T, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figvolcornmodelcomp"></span>
+<img src="Rstats4ag_files/figure-html/figvolcornmodelcomp-1.png" alt="The linear model fit with a slope of 13 meaning that for every unit density of corn we get a yield decrease of 13%. The broken line is the nonlinear fit from shown in Figure 14.2." width="672" />
+<p class="caption">
+Figure 14.3: <em>The linear model fit with a slope of 13 meaning that for every unit density of corn we get a yield decrease of 13%. The broken line is the nonlinear fit from shown in Figure <a href="plant-competition-experiments.html#fig:figvolcornextrapolate">14.2</a>.</em>
+</p>
+</div>
+<p>The assumption of a straight line relationship in Figure <a href="plant-competition-experiments.html#fig:figvolcornmodelcomp">14.3</a> is justified by the test for lack of fit and we can conclude we loose 13% yield per each volunteer corn plant. However, it is important to recognize that the further we extrapolate beyond the volunteer corn densities used in the study, the more likely the linear fit is to provide nonsensical yield loss estimates.</p>
+<p>One issue with expressing yield loss as a function of the weed-free is it relies heavily on the weed-free control treatments from a particular study. When regression is used, it is possible to use the density relationship (in addition to the weed-free control treatment) to provide a more robust estimate of crop yield in the absence of weed competition. The weed-free yield can be estimated by using the following re-parameterization of the rectangular hyperbolic model (also proposed by Cousens 1985):</p>
+<p><span class="math display">\[Yield = Y_0(1-(\frac{Ix}{100(1+Ix/A)})) \]</span></p>
+<p>where <em>Y<sub>0</sub></em> is the intercept with the yield axis when weed density is zero. Of course it requires that the curve is well described over the range of relevant weed densities <a href="http://www.wssajournals.org/doi/pdf/10.1614/WS-D-13-00159.1">Ritz, Kniss and Streibig 2015</a>.</p>
+</div>
+<div id="replacement-series" class="section level2">
+<h2><span class="header-section-number">14.2</span> Replacement Series</h2>
+<p>The replacement series can assess interference, niche differentiation, resource utilization, and productivity in simple mixtures of two species. Of course more than two species can be used as long as the total density remains the same, but the interpretation of results becomes very difficult. The species are growing at the same total density, but the proportion between the two species vary. One of the good things about replacement series is that if the replacement graphs looks like the one in <b>Figure 5</b>, it could be the reference, because with linear relationships in <b>Figure 5</b> shows no competition; the two species do not interfere with each others growth. As discuss earlier, when there is a straight line relationship between yield and density of a species (<b> Figure 1</b>), the second species does not interfere. If there is a curved relationship there is intraspecific and/or inter specific competition. The intraspecific competition can only be assessed if a species is grown in pure stand.</p>
+<p>The density dependence, maximum density determined by experimenter, impedes generalization for a replacement series. And as always, we only get a snapshot of what is going on in an otherwise dynamic competition scenario. In order to avoid criticisms, however, researchers should appreciate the assumptions and limitations of this methodology <a href="http://onlinelibrary.wiley.com/doi/10.1046/j.1365-2745.2000.00470.x/pdf">Jollife 2000</a></p>
+
+<div class="figure"><span id="fig:figrepser"></span>
+<img src="Rstats4ag_files/figure-html/figrepser-1.png" alt="The frame of reference for replacement series with two species where there is no competition between species and the Yield Total (YT) does not change which ever the combination of the two species is. The two species do not need to have the same maximum yield in monoculture." width="672" />
+<p class="caption">
+Figure 14.4: <em>The frame of reference for replacement series with two species where there is no competition between species and the Yield Total (YT) does not change which ever the combination of the two species is. The two species do not need to have the same maximum yield in monoculture.</em>
+</p>
+</div>
+<p>The philosophy of the replacement series is that the carrying capacity, in terms of say biomass, on a unit of land is constant whatever the proportion of the species.</p>
+<p>The example uses a barley crop grown together with the weed <i>Amsinckia menziesii</i>. The experiment was run in greenhouse with the intention of having 20 plants in total in pots of 20 cm in diameter. After 20 days the plants were harvested and the actual number of plants were counted and the biomass per species measured.</p>
+<p>The dataset <code>Replacement series.csv</code> is a mixture of <code>csv</code> and <code>csv2</code> files, because the students who did the experiments came form continental Europe or Australia. It means the continental Europeans use the semicolon as variable separator mixed with the Australian’s decimal separator of dot. This mess is taken care of by using the <code>read.table()</code> function.</p>
+<p>As we have to use the percent of either species as independent variable to fit regression models we have to define new variables <code>Pct.Amsinckia</code> and <code>Pct.Barley</code>.</p>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" data-line-number="1">Replace<span class="fl">.1</span>&lt;-<span class="kw">read.table</span>(<span class="st">&quot;http://rstats4ag.org/data/ReplacementSeries.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb382-2" data-line-number="2">                      <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;;&quot;</span>, <span class="dt">dec=</span><span class="st">&quot;.&quot;</span>)</a>
+<a class="sourceLine" id="cb382-3" data-line-number="3">Replace<span class="fl">.1</span><span class="op">$</span>Pct.Amsinckia&lt;-<span class="kw">with</span>(Replace<span class="fl">.1</span>,D.Amsinckia<span class="op">*</span><span class="dv">100</span><span class="op">/</span>(D.Amsinckia<span class="op">+</span>D.Barley))</a>
+<a class="sourceLine" id="cb382-4" data-line-number="4">Replace<span class="fl">.1</span><span class="op">$</span>Pct.Barley&lt;-<span class="st">   </span><span class="kw">with</span>(Replace<span class="fl">.1</span>,D.Barley<span class="op">*</span><span class="dv">100</span><span class="op">/</span>(D.Amsinckia<span class="op">+</span>D.Barley))</a>
+<a class="sourceLine" id="cb382-5" data-line-number="5"><span class="kw">head</span>(Replace<span class="fl">.1</span>,<span class="dt">n=</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   D.Amsinckia D.Barley Harvest.time B.Amsinckia B.Barley Pct.Amsinckia Pct.Barley
+## 1           0       14   14.05.2014           0     98.1             0        100
+## 2           0       32   14.05.2014           0    112.7             0        100
+## 3           0       21   14.05.2014           0     94.5             0        100</code></pre>
+<p>First we try straight line relationships and illustrate the fit and with an analysis of residuals.</p>
+
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" data-line-number="1">lm.Amsinckia&lt;-<span class="kw">lm</span>(B.Amsinckia <span class="op">~</span>Pct.Amsinckia,<span class="dt">data=</span>Replace<span class="fl">.1</span>)</a>
+<a class="sourceLine" id="cb384-2" data-line-number="2">lm.Barley&lt;-<span class="kw">lm</span>(B.Barley <span class="op">~</span>Pct.Barley,<span class="dt">data=</span>Replace<span class="fl">.1</span>)</a>
+<a class="sourceLine" id="cb384-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb384-4" data-line-number="4"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,.<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb384-5" data-line-number="5"><span class="kw">plot</span>(B.Amsinckia <span class="op">~</span>Pct.Amsinckia,<span class="dt">data=</span>Replace<span class="fl">.1</span>, <span class="dt">ylab=</span><span class="st">&quot;Yield of Amsinckia&quot;</span>,</a>
+<a class="sourceLine" id="cb384-6" data-line-number="6">     <span class="dt">xlab=</span><span class="st">&quot;Percent of Amsinckia&quot;</span>)</a>
+<a class="sourceLine" id="cb384-7" data-line-number="7">  <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb384-8" data-line-number="8"><span class="kw">abline</span>(lm.Amsinckia)</a>
+<a class="sourceLine" id="cb384-9" data-line-number="9"><span class="kw">plot</span>(B.Barley <span class="op">~</span>Pct.Barley,<span class="dt">data=</span>Replace<span class="fl">.1</span>,<span class="dt">ylab=</span><span class="st">&quot;Yield of Barley&quot;</span>,</a>
+<a class="sourceLine" id="cb384-10" data-line-number="10">     <span class="dt">xlab=</span><span class="st">&quot;Percent of Barley&quot;</span>,<span class="dt">pch=</span><span class="dv">16</span>)</a>
+<a class="sourceLine" id="cb384-11" data-line-number="11">  <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb384-12" data-line-number="12"><span class="kw">abline</span>(lm.Barley,<span class="dt">lty=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb384-13" data-line-number="13"><span class="kw">plot</span>(lm.Amsinckia,<span class="dt">which=</span><span class="dv">1</span>, <span class="dt">caption=</span><span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb384-14" data-line-number="14">  <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb384-15" data-line-number="15"><span class="kw">plot</span>(lm.Barley,<span class="dt">which=</span><span class="dv">1</span>, <span class="dt">caption=</span><span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb384-16" data-line-number="16">  <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="st">&quot;D&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figrelserlm"></span>
+<img src="Rstats4ag_files/figure-html/figrelserlm-1.png" alt="Straight line relationships do not appear to capture the variation in the species. The analysis of residuals shows systematic departure form the expected shotgun distribution of residuals." width="672" />
+<p class="caption">
+Figure 14.5: <em>Straight line relationships do not appear to capture the variation in the species. The analysis of residuals shows systematic departure form the expected shotgun distribution of residuals.</em>
+</p>
+</div>
+<p>Obviously, the relationships in Figure <a href="plant-competition-experiments.html#fig:figrelserlm">14.5</a> for both species look like a curved relationship. We are not sure of which relationship to use and resort to a second degree polynomial.</p>
+<p><span class="math display">\[Yield = a+bx+cx^2 .\]</span></p>
+<p>where <em>a</em> is the intercept with the y-axis and <em>b</em> and <em>c</em> are parameters for the <em>x</em> and the <em>x</em><sup>2</sup>.
+The biological meanings of polynomial parameters in general are not often of interest because they can be hard to interpret. To fit the polynomial we use the <code>lm()</code>function because it is essentially a linear model we are fitting by adding a parameter for the <em>x</em><sup>2</sup> by writing <code>I(x^2)</code>. However, we cannot use the <code>abline()</code> function since there is now more than one ‘slope’ parameter.</p>
+<p>To plot a line, first we generate predicted values using the polynomial model to get smooth fits. It is done with the <code>predict()</code>function <code>predict(Pol.B.Amsinckia,data.frame(Pct.Amsinckia=seq(0,100,by=1)))</code>
+where</p>
+<ul>
+<li><code>Pol.B.Amsinckia</code> the results of the second degree polynomial fit for <i>Amsinckia</i></li>
+<li><code>data.frame(Pct.Amsinckia=seq(0,100,by=1))</code> generates a sequence of ‘x’ values from 0 to 100 by 1 (for a total of 101 values).</li>
+</ul>
+<p>The same procedure applies to barley.</p>
+
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1">Pol.B.Amsinckia&lt;-<span class="kw">lm</span>(B.Amsinckia <span class="op">~</span>Pct.Amsinckia<span class="op">+</span><span class="kw">I</span>(Pct.Amsinckia<span class="op">^</span><span class="dv">2</span>),<span class="dt">data=</span>Replace<span class="fl">.1</span>)</a>
+<a class="sourceLine" id="cb385-2" data-line-number="2">line.Pol.B.Amsinckia&lt;-<span class="kw">predict</span>(Pol.B.Amsinckia,<span class="kw">data.frame</span>(<span class="dt">Pct.Amsinckia=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dt">by=</span><span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb385-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb385-4" data-line-number="4">Pol.B.Barley&lt;-<span class="kw">lm</span>(B.Barley <span class="op">~</span>Pct.Barley<span class="op">+</span><span class="kw">I</span>(Pct.Barley<span class="op">^</span><span class="dv">2</span>),<span class="dt">data=</span>Replace<span class="fl">.1</span>)</a>
+<a class="sourceLine" id="cb385-5" data-line-number="5">line.Pol.B.Barley&lt;-<span class="kw">predict</span>(Pol.B.Barley,<span class="kw">data.frame</span>(<span class="dt">Pct.Barley=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dt">by=</span><span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb385-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb385-7" data-line-number="7"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,.<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb385-8" data-line-number="8"><span class="kw">plot</span>(B.Amsinckia <span class="op">~</span>Pct.Amsinckia,<span class="dt">data=</span>Replace<span class="fl">.1</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb385-9" data-line-number="9">     <span class="dt">ylab=</span><span class="st">&quot;Amsinckia yield&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Percent Amsinckia&quot;</span>)</a>
+<a class="sourceLine" id="cb385-10" data-line-number="10"><span class="kw">lines</span>(line.Pol.B.Amsinckia<span class="op">~</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dt">by=</span><span class="dv">1</span>),<span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb385-11" data-line-number="11"><span class="kw">plot</span>(B.Barley <span class="op">~</span>Pct.Barley,<span class="dt">data=</span>Replace<span class="fl">.1</span>,<span class="dt">pch=</span><span class="dv">16</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb385-12" data-line-number="12">     <span class="dt">ylab=</span><span class="st">&quot;Barley yield&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Percent Barley&quot;</span>)</a>
+<a class="sourceLine" id="cb385-13" data-line-number="13"><span class="kw">lines</span>(line.Pol.B.Barley<span class="op">~</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dt">by=</span><span class="dv">1</span>),<span class="dt">col=</span><span class="st">&quot;red&quot;</span>,<span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figcomppoly"></span>
+<img src="Rstats4ag_files/figure-html/figcomppoly-1.png" alt="Fitting second degree polynomials to data." width="672" />
+<p class="caption">
+Figure 14.6: <em>Fitting second degree polynomials to data.</em>
+</p>
+</div>
+<p>Overall the second degree polynomials describe the variation reasonably well (Figure <a href="plant-competition-experiments.html#fig:figcomppoly">14.6</a>). However, there is a catch to it, the minimum for the <i>Amsinckia</i> second degree polynomial is at low percent of <i>Amsinckia</i> and the maximum for the second degree polynomial for barley is at rather high proportion of barley. If we can live with that we can use the fit to summarize the experiment by calculation the Yield Total (<em>YT</em>) as shown in the graph in Figure <a href="plant-competition-experiments.html#fig:figrepser">14.4</a>.</p>
+<p>This is a good example of the problem with polynomials. A Second degree polynomial is symmetric with either a minimum or a maximum depending of the parameters. A third degree polynomial does not have this symmetric property, it becomes much more complex, and it is definitely not advisable to use with interpolations. In order to summarize the experiment on the basis of the fits, we can combine the two curves for the two species and calculate the <em>YT</em>.</p>
+<p>We want to use the <code>line.Pol.B.Amsinckia</code> and the <code>line.Pol.B.Barley</code> that define the smooth lines and calculate <em>YT</em>. In order to calculate the YT we must sum the two predicted yields, but we must be carevul to reverse the order of one of the species (in this case we’ll reverse using the function <code>rev(line.Pol.B.Barley)</code>. For this example, the maximum yield is 102, which occurs when the percentage of <em>Amsinckia</em> is 0% (found by using the <code>which.max()</code> function).</p>
+
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" data-line-number="1"><span class="kw">max</span>(line.Pol.B.Amsinckia <span class="op">+</span><span class="st"> </span><span class="kw">rev</span>(line.Pol.B.Barley))</a></code></pre></div>
+<pre><code>## [1] 102.2132</code></pre>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" data-line-number="1"><span class="kw">which.max</span>(line.Pol.B.Amsinckia <span class="op">+</span><span class="st"> </span><span class="kw">rev</span>(line.Pol.B.Barley))<span class="op">-</span><span class="dv">1</span></a></code></pre></div>
+<pre><code>## 1 
+## 0</code></pre>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">5.2</span>,<span class="fl">3.2</span>,<span class="fl">0.5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,.<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb390-2" data-line-number="2"><span class="kw">plot</span>(<span class="kw">c</span>(line.Pol.B.Amsinckia[<span class="dv">101</span>],line.Pol.B.Barley[<span class="dv">101</span>])<span class="op">~</span><span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">0</span>),<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb390-3" data-line-number="3">     <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">120</span>), <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Yield&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb390-4" data-line-number="4"><span class="kw">mtext</span>(<span class="st">&quot;Amsinckia (%) ---&gt;&quot;</span>,<span class="dt">side=</span><span class="dv">1</span>,<span class="dt">line=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb390-5" data-line-number="5"><span class="kw">mtext</span>(<span class="st">&quot;&lt;--- Barley (100-%)&quot;</span>,<span class="dt">side=</span><span class="dv">1</span>,<span class="dt">line=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb390-6" data-line-number="6">Pred.RYT&lt;-line.Pol.B.Amsinckia[<span class="dv">1</span><span class="op">:</span><span class="dv">101</span>]<span class="op">+</span>line.Pol.B.Barley[<span class="kw">seq</span>(<span class="dv">101</span>,<span class="dv">1</span>,<span class="dt">by=</span><span class="op">-</span><span class="dv">1</span>)]</a>
+<a class="sourceLine" id="cb390-7" data-line-number="7"><span class="kw">lines</span>(Pred.RYT<span class="op">~</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dt">by=</span><span class="dv">1</span>),<span class="dt">lty=</span><span class="dv">3</span>,<span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb390-8" data-line-number="8"><span class="kw">lines</span>(line.Pol.B.Barley<span class="op">~</span><span class="kw">seq</span>(<span class="dv">100</span>,<span class="dv">0</span>,<span class="dt">by=</span><span class="op">-</span><span class="dv">1</span>),<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>,<span class="dt">lty=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb390-9" data-line-number="9"><span class="kw">lines</span>(line.Pol.B.Amsinckia<span class="op">~</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dt">by=</span><span class="dv">1</span>),<span class="dt">col=</span><span class="st">&quot;red&quot;</span>,<span class="dt">lty=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb390-10" data-line-number="10"><span class="kw">points</span>(B.Amsinckia <span class="op">~</span>Pct.Amsinckia,<span class="dt">data=</span>Replace<span class="fl">.1</span>,<span class="dt">pch=</span><span class="dv">19</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb390-11" data-line-number="11"><span class="kw">points</span>(B.Barley <span class="op">~</span>Pct.Amsinckia,<span class="dt">data=</span>Replace<span class="fl">.1</span>,<span class="dt">pch=</span><span class="dv">1</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figrepselYT"></span>
+<img src="Rstats4ag_files/figure-html/figrepselYT-1.png" alt="Summary of the replacement series experiment with barley and Amsinckia. Solid and dotted black lines represent theoretical linear and estimated actual YT, respectively; red solid line and filled circles represent Amsinckia yield; blue dashed line and open circles represent barley yield." width="672" />
+<p class="caption">
+Figure 14.7: <em>Summary of the replacement series experiment with barley and</em> Amsinckia. <em>Solid and dotted black lines represent theoretical linear and estimated actual YT, respectively; red solid line and filled circles represent Amsinckia yield; blue dashed line and open circles represent barley yield.</em>
+</p>
+</div>
+<p>It seems in Figure <a href="plant-competition-experiments.html#fig:figrepselYT">14.7</a> that if <i>Amsinckia</i> gains with its convex curve, and barley suffers with its concave curve, but gain and suffering still leave the YT below the theoretical value of YT.</p>
+<p>Another issue is that that we do not test the regressions statistically, but use the fit to illustrate the relationships. In order to apply test statistics it requires more systematic designs with fixed number of plants per unit area, which unfortunately was not the case here. In the first example we had genuine replication with several replicates of the number of volunteer corn per unit area and therefore we could test which model could be used.</p>
+<p>It also shows that when fitting curves we can derive predicted values, which can be used to calculate derived parameters such as YT. In replacement series analysis, one often scales the results so that the theoretical maximum yield is equal to 1.0 and then calculate the Relative yield Total (RYT), which in mixed cropping research is called Land Equivalent Ratio (LER).</p>
+<hr />
+
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="nonlinear-regression-selectivity-of-herbicides.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="seed-germination.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

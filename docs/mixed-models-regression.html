@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10 Mixed Models - Regression | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10 Mixed Models - Regression | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10 Mixed Models - Regression | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="mixed-models-anova.html"/>
+<link rel="next" href="logistic-regression-binary-response.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="mixed-models---regression" class="section level1">
+<h1><span class="header-section-number">10</span> Mixed Models - Regression</h1>
+<div id="regression-models-with-mixed-effects" class="section level2">
+<h2><span class="header-section-number">10.1</span> Regression Models with Mixed Effects</h2>
+<p>When we conduct experiments over several years and/or at several locations, we have to decide if differences among years and/or differences among locations are of interest. In other words: are they fixed effects like the treatments we apply or we want to classify them random effects? If locations are picked at random it seems obvious to define locations as random effects. It means that the location contributes to the variation of the response that cannot be controlled. If the locations are picked according to their weed flora, soil type, and crop pattern, it would be wise to define locations as a fixed effect. Usually, one should use one’s common sense and the knowledge of the experimental design and the objectivewhen determining whether locations are fixed or random. There is ongoing discussions among statisticians about what should be random and what should be fixed; but that discussion is somewhat outside this course.</p>
+<div id="mixedregressionex1" class="section level3">
+<h3><span class="header-section-number">10.1.1</span> Example 1: Sugarbeet yield</h3>
+<p>Within the many years that sugarbeet has been an economic crop, we incidentally did field experiments in 2006 and 2007, near Powell, Wyoming to determine the effects of duration of <i>Salvia reflexa</i> (lanceleaf sage) interference with sugarbeet (<a href="http://www.bioone.org/doi/abs/10.1614/WT-D-10-00015.1">Odero et al. 2010</a>). The experiment is also used in the ANCOVA chapter.</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" data-line-number="1">lanceleaf.sage&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/lanceleafsage.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb223-2" data-line-number="2"><span class="kw">head</span>(lanceleaf.sage,<span class="dt">n=</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   Replicate Duration Year Yield_Mg.ha Yield.loss.pct
+## 1         1       36 2006       67.26          98.05
+## 2         1       50 2006       60.34          87.96
+## 3         1       64 2006       53.69          78.27</code></pre>
+<p>``</p>
+<p>First of all we look at the distribution of data within years in Figure <a href="mixed-models-regression.html#fig:figpanelmreg">10.1</a>:</p>
+
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" data-line-number="1"><span class="kw">library</span>(lattice)</a>
+<a class="sourceLine" id="cb225-2" data-line-number="2"><span class="kw">xyplot</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span>Duration <span class="op">|</span><span class="st"> </span><span class="kw">factor</span>(Year), <span class="dt">data =</span> lanceleaf.sage,</a>
+<a class="sourceLine" id="cb225-3" data-line-number="3">    <span class="dt">xlab=</span><span class="st">&quot;Duration of Competition&quot;</span>,</a>
+<a class="sourceLine" id="cb225-4" data-line-number="4">       <span class="dt">panel =</span> <span class="cf">function</span>(x,y)</a>
+<a class="sourceLine" id="cb225-5" data-line-number="5">         {<span class="kw">panel.xyplot</span>(x,y)</a>
+<a class="sourceLine" id="cb225-6" data-line-number="6">          <span class="kw">panel.lmline</span>(x,y)})</a></code></pre></div>
+<div class="figure"><span id="fig:figpanelmreg"></span>
+<img src="Rstats4ag_files/figure-html/figpanelmreg-1.png" alt="The effect of the duration of weed competition on sugarbeet yield in two different years. It looks as if the relationships could be linear." width="672" />
+<p class="caption">
+Figure 10.1: <em>The effect of the duration of weed competition on sugarbeet yield in two different years. It looks as if the relationships could be linear.</em>
+</p>
+</div>
+<p>The ANCOVA chapter analysis showed a linear regression was acceptable by checking the regression against the most general ANOVA model. The ANCOVA also showed that the regression slopes were the same independent of years, but the intercepts differed between years. In this chapter we now assume that the variation between years are random, because we cannot control the climate.</p>
+<p>To analyze this we need to use the <code>lmer()</code>function in the package <code>lme4</code>. The syntax for <code>lmer()</code>is almost the same as for <code>lm()</code>, but there are some limitations and some important additional arguments. In <code>lm()</code> we can convert a continuous x-variable to a factor just by writing <code>factor(x)</code>. You can also do that with fixed effects in the <code>lmer()</code>function, but when it comes to random effects you cannot. In this particular experiment, there are two random effects: experimental years <code>(1|Year)</code> and Replicate because it is a block experiment. But the Replicate 1 in year 2006 is not the same as Replicate 1 in 2007. Consequently, we have to make the names for Replicates unambiguously defined with a unique name, so we get a total of 8 unique levels for Year and Replicate combination and the random effect takes the form <code>(1|New.Rep)</code> by defining <code>New.Rep</code> using the <code>with()</code> function.</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb226-1" data-line-number="1">lanceleaf.sage<span class="op">$</span>New.Rep &lt;-<span class="st"> </span><span class="kw">with</span>(lanceleaf.sage, <span class="kw">factor</span>(Replicate)<span class="op">:</span><span class="kw">factor</span>(Year))</a>
+<a class="sourceLine" id="cb226-2" data-line-number="2"><span class="kw">levels</span>(lanceleaf.sage<span class="op">$</span>New.Rep)</a></code></pre></div>
+<pre><code>## [1] &quot;1:2006&quot; &quot;1:2007&quot; &quot;2:2006&quot; &quot;2:2007&quot; &quot;3:2006&quot; &quot;3:2007&quot; &quot;4:2006&quot; &quot;4:2007&quot;</code></pre>
+<p>After this initial exercise, we are now ready to test whether we can assume linearity of Yield on duration of competition. We compare the regression model with the most general model, the ANOVA, as it is becoming standard practice in the course.</p>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb228-1" data-line-number="1"><span class="kw">library</span>(lme4)</a>
+<a class="sourceLine" id="cb228-2" data-line-number="2">Anova.m1 &lt;-<span class="st"> </span><span class="kw">lmer</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(Duration) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Year) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>New.Rep),</a>
+<a class="sourceLine" id="cb228-3" data-line-number="3">                 <span class="dt">data=</span>lanceleaf.sage, <span class="dt">REML=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb228-4" data-line-number="4">Regression.m2 &lt;-<span class="st"> </span><span class="kw">lmer</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span>Duration <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Year) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>New.Rep),</a>
+<a class="sourceLine" id="cb228-5" data-line-number="5">                      <span class="dt">data=</span>lanceleaf.sage, <span class="dt">REML=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb228-6" data-line-number="6"><span class="kw">anova</span>(Anova.m1, Regression.m2) <span class="co">#No indication of nonlinearity</span></a></code></pre></div>
+<pre><code>## Data: lanceleaf.sage
+## Models:
+## Regression.m2: Yield_Mg.ha ~ Duration + (1 | Year) + (1 | New.Rep)
+## Anova.m1: Yield_Mg.ha ~ factor(Duration) + (1 | Year) + (1 | New.Rep)
+##               npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+## Regression.m2    5 454.77 465.56 -222.38   444.77                    
+## Anova.m1        11 460.97 484.72 -219.49   438.97 5.791  6      0.447</code></pre>
+<p>The test for lack of fit is non-significant as was also seen in the ANCOVA chapter.</p>
+<p>Notice, we have an argument that is not used in the general <code>lm()</code> and it is <code>REML</code> (Rstricted Maximum Likelihood). There are two options: Maximum Likelihood estimation (ML) REML. <code>REML=TRUE</code> is the default. ML produces downwards biased estimated variance components (over-optimistic precision). REML reduces the bias (similar to dividing by n - p rather than n for the residual standard error in linear regression). In other words REML agrees with <code>lm()</code> in case of no random effects. To make a long story short, we should use ML (<code>REML=FALSE</code>) when comparing models using the <code>anova()</code> function.</p>
+<p>However, when we look at the summary of the mixed effect regression:</p>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb230-1" data-line-number="1"><span class="kw">summary</span>(Regression.m2)</a></code></pre></div>
+<pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
+## Formula: Yield_Mg.ha ~ Duration + (1 | Year) + (1 | New.Rep)
+##    Data: lanceleaf.sage
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    454.8    465.6   -222.4    444.8       59 
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -1.71954 -0.65323 -0.09755  0.53285  2.36798 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  New.Rep  (Intercept)  8.993   2.999   
+##  Year     (Intercept) 14.092   3.754   
+##  Residual             52.217   7.226   
+## Number of obs: 64, groups:  New.Rep, 8; Year, 2
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept) 67.85642    3.40236  19.944
+## Duration    -0.21451    0.02303  -9.314
+## 
+## Correlation of Fixed Effects:
+##          (Intr)
+## Duration -0.473</code></pre>
+<p>it looks rather different from an ordinary regression summary with the <code>lm()</code> function. The first thing we see is that there are no significance levels like in <code>lm()</code> output. This is because there is still no consensus about how to calculate degrees of freedom for mixed effects models. There is fairly extensive discussion of this topic in the R community, that can be left out here, but we will point you to a breif explanation provided by <a href="https://stat.ethz.ch/pipermail/r-help/2006-May/094765.html">Douglas Bates</a>, the author of the <code>lmer()</code> function.</p>
+<p>Variation between years (Year) and variation between reps within year (New.Rep) are both provided in the random effects portion of the output. What it means is that the variance between years and the variation among Replicates cannot be controlled by us; therefore we define them as random effect and they are now an integral part of the total variation we cannot explain.</p>
+<p>Comparing the result above with the fixed year effect:</p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb232-1" data-line-number="1">regression.fixed&lt;-<span class="kw">lm</span>(Yield_Mg.ha <span class="op">~</span><span class="st"> </span>Duration <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(Year), <span class="dt">data=</span>lanceleaf.sage)</a>
+<a class="sourceLine" id="cb232-2" data-line-number="2"><span class="kw">summary</span>(regression.fixed)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = Yield_Mg.ha ~ Duration + factor(Year), data = lanceleaf.sage)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.3477  -5.2428  -0.7246   3.5724  17.9560 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      72.09580    2.20523  32.693  &lt; 2e-16 ***
+## Duration         -0.21451    0.02472  -8.678 3.02e-12 ***
+## factor(Year)2007 -8.47875    1.93890  -4.373 4.86e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.756 on 61 degrees of freedom
+## Multiple R-squared:  0.6075, Adjusted R-squared:  0.5947 
+## F-statistic: 47.21 on 2 and 61 DF,  p-value: 4.081e-13</code></pre>
+<p>We see that the slope for the mixed model is the same as for the fixed year model -0.21 with standard error of 0.02. The intercept of the mixed model is 67.9 (3.4). For the fixed effect model the intercepts were 72.1 and 72.1 -8.5 = 63.6with a standard error of 2.2 and 1.9, respectively. The changes of going from fixed year effect to random year effect is not dramatic when it comes to regression slopes, either. But if we decide year is random, then the mixed model is the one to use. We get a bonus, however by separating the variation of years from the residual. Reporting this information gives others who want to include our results in a meta-analysis knowledge of the actual variation in the experiments.</p>
+<p>The illustration of the results is shown below. In order to make the plot neat we take the averages of the measurements by using the package <code>dplyr</code>, before plotting the data in Figure <a href="mixed-models-regression.html#fig:figmregresults">10.2</a>.</p>
+
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb234-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb234-2" data-line-number="2">averages&lt;-lanceleaf.sage <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb234-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(Duration,Year) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb234-4" data-line-number="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">YIELD =</span> <span class="kw">mean</span>(Yield_Mg.ha))</a>
+<a class="sourceLine" id="cb234-5" data-line-number="5"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb234-6" data-line-number="6"><span class="kw">plot</span>(YIELD <span class="op">~</span><span class="st"> </span>Duration, <span class="dt">data =</span> averages, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb234-7" data-line-number="7">     <span class="dt">ylab =</span> <span class="kw">quote</span>(Yield<span class="op">~</span>(kg<span class="op">~</span>ha<span class="op">^-</span><span class="dv">1</span>)), <span class="co">#Note how to use dimension accepted in some journals</span></a>
+<a class="sourceLine" id="cb234-8" data-line-number="8">     <span class="dt">xlab =</span> <span class="st">&quot;Duration of competition&quot;</span>,</a>
+<a class="sourceLine" id="cb234-9" data-line-number="9">     <span class="dt">pch  =</span> <span class="kw">as.numeric</span>(<span class="kw">factor</span>(Year)), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">80</span>))</a>
+<a class="sourceLine" id="cb234-10" data-line-number="10">  <span class="kw">abline</span>(<span class="kw">fixef</span>(Regression.m2))</a></code></pre></div>
+<div class="figure"><span id="fig:figmregresults"></span>
+<img src="Rstats4ag_files/figure-html/figmregresults-1.png" alt="The regression model with year as a random effect. Note that in this instance we have one slope and one intercept, and the regression line now is almost in the middle. Note that the fixef(Regression.m2) contains the fixed regressions parameters and the ordinary abline() can be used." width="672" />
+<p class="caption">
+Figure 10.2: <em>The regression model with year as a random effect. Note that in this instance we have one slope and one intercept, and the regression line now is almost in the middle. Note that the <code>fixef(Regression.m2)</code> contains the fixed regressions parameters and the ordinary <code>abline()</code> can be used.</em>
+</p>
+</div>
+</div>
+<div id="example-2-fungicide-toxicity" class="section level3">
+<h3><span class="header-section-number">10.1.2</span> Example 2: Fungicide toxicity</h3>
+<p>Another example is with a total of six concentration-response experiments evaluating
+the effect of a fungicide, vinclozolin on luminescence of ovary cells. Vinclozolin is a putative endogenous disruptor and therefore banned in Denmark. The concentration-response curves were run on separate days and it shows that the calibration of the instrument makes the response-curves somewhat different.</p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" data-line-number="1">vinclozolin &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/vinclozolin.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb235-2" data-line-number="2"><span class="kw">head</span>(vinclozolin)</a></code></pre></div>
+<pre><code>##    conc effect experiment
+## 1 0.025    908      10509
+## 2 0.050    997      10509
+## 3 0.100    744      10509
+## 4 0.200    567      10509
+## 5 0.390    314      10509
+## 6 0.780    325      10509</code></pre>
+<p>Figure <a href="mixed-models-regression.html#fig:figfungpanel">10.3</a> shows the individual response curves illustrating the variation in the slope and intercept of the straight lines. However, the variation is kind of erratic because of daily calibration of the machine. Therefore, we consider days a random effect, the variation is intangible. As was the case with the duration of competition we will change the numeric name of each experiment to a factor:</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb237-1" data-line-number="1">vinclozolin<span class="op">$</span>Experiment &lt;-<span class="st"> </span><span class="kw">factor</span>(vinclozolin<span class="op">$</span>experiment)</a></code></pre></div>
+<p>And then run the analysis, but first we illustrate thevariation in data (Figure <a href="mixed-models-regression.html#fig:figfungpanel">10.3</a>).</p>
+
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb238-1" data-line-number="1"><span class="kw">library</span>(lattice)</a>
+<a class="sourceLine" id="cb238-2" data-line-number="2"><span class="kw">xyplot</span>(effect <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(conc) <span class="op">|</span><span class="st"> </span>Experiment, <span class="dt">data =</span> vinclozolin,</a>
+<a class="sourceLine" id="cb238-3" data-line-number="3">       <span class="dt">xlab =</span> <span class="st">&quot;Log( Concentration of Vinclozolin)&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Luminescence&quot;</span>,</a>
+<a class="sourceLine" id="cb238-4" data-line-number="4">       <span class="dt">panel =</span> <span class="cf">function</span>(x,y)</a>
+<a class="sourceLine" id="cb238-5" data-line-number="5">         {<span class="kw">panel.xyplot</span>(x,y)</a>
+<a class="sourceLine" id="cb238-6" data-line-number="6">          <span class="kw">panel.lmline</span>(x,y)})</a></code></pre></div>
+<div class="figure"><span id="fig:figfungpanel"></span>
+<img src="Rstats4ag_files/figure-html/figfungpanel-1.png" alt="Concentration-response curves for ovary cell luminescence on venclozolin." width="672" />
+<p class="caption">
+Figure 10.3: <em>Concentration-response curves for ovary cell luminescence on venclozolin.</em>
+</p>
+</div>
+<p>The procedure to run the mixed regression model is the same as for <a href="mixed-models-regression.html#mixedregressionex1">the sugarbeet example</a>. First we conduct a lack-of-fit test against the most general model - ANOVA.</p>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb239-1" data-line-number="1"><span class="kw">library</span>(lme4)</a>
+<a class="sourceLine" id="cb239-2" data-line-number="2">vinclo.mixed.ANOVA &lt;-<span class="st"> </span><span class="kw">lmer</span>(effect <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(conc) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Experiment),</a>
+<a class="sourceLine" id="cb239-3" data-line-number="3">                           <span class="dt">data =</span> vinclozolin, <span class="dt">REML =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb239-4" data-line-number="4">vinclo.mixed.Regression &lt;-<span class="st"> </span><span class="kw">lmer</span>(effect <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(conc) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>Experiment),</a>
+<a class="sourceLine" id="cb239-5" data-line-number="5">                                <span class="dt">data =</span> vinclozolin, <span class="dt">REML =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb239-6" data-line-number="6"><span class="kw">anova</span>(vinclo.mixed.ANOVA, vinclo.mixed.Regression)</a></code></pre></div>
+<pre><code>## Data: vinclozolin
+## Models:
+## vinclo.mixed.Regression: effect ~ log(conc) + (1 | Experiment)
+## vinclo.mixed.ANOVA: effect ~ factor(conc) + (1 | Experiment)
+##                         npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+## vinclo.mixed.Regression    4 627.06 634.46 -309.53   619.06                    
+## vinclo.mixed.ANOVA        10 628.42 646.92 -304.21   608.42 10.64  6     0.1002</code></pre>
+<p>The test for lack of fit is non-significant so we can assume the relationship is linear, whatever the day. Please note that we only have one replication per regression per day. But the concentrations are the same, so a test for lack of fit is still appropriate.</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" data-line-number="1"><span class="kw">summary</span>(vinclo.mixed.Regression)</a></code></pre></div>
+<pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
+## Formula: effect ~ log(conc) + (1 | Experiment)
+##    Data: vinclozolin
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    627.1    634.5   -309.5    619.1       43 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.9356 -0.6270 -0.2354  0.6112  3.0031 
+## 
+## Random effects:
+##  Groups     Name        Variance Std.Dev.
+##  Experiment (Intercept) 72092    268.5   
+##  Residual               19987    141.4   
+## Number of obs: 47, groups:  Experiment, 6
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)   478.77     112.71   4.248
+## log(conc)    -199.03      13.31 -14.956
+## 
+## Correlation of Fixed Effects:
+##           (Intr)
+## log(conc) 0.144</code></pre>
+<p>The variation among experimental days (268) is huge compared with the variation within days (141).</p>
+
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb243-1" data-line-number="1"><span class="kw">xyplot</span>(effect<span class="op">~</span><span class="kw">log</span>(conc)<span class="op">|</span>experiment, <span class="dt">data=</span>vinclozolin,</a>
+<a class="sourceLine" id="cb243-2" data-line-number="2">       <span class="dt">xlab=</span><span class="st">&quot;Log( Concentration of Vinclozolin)&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Luminescence&quot;</span>,</a>
+<a class="sourceLine" id="cb243-3" data-line-number="3">       <span class="dt">panel=</span><span class="cf">function</span>(...)</a>
+<a class="sourceLine" id="cb243-4" data-line-number="4">         {<span class="kw">panel.xyplot</span>(...);</a>
+<a class="sourceLine" id="cb243-5" data-line-number="5">          <span class="kw">panel.abline</span>(<span class="kw">fixef</span>(vinclo.mixed.Regression))})</a></code></pre></div>
+<div class="figure"><span id="fig:figfungpaneldays"></span>
+<img src="Rstats4ag_files/figure-html/figfungpaneldays-1.png" alt="Regression lines for all 6 days shown in six panels to give an idea of the variation among days. There appear to be particularly large differences between the responses and the regression lines for the three days in the lower panels." width="672" />
+<p class="caption">
+Figure 10.4: <em>Regression lines for all 6 days shown in six panels to give an idea of the variation among days. There appear to be particularly large differences between the responses and the regression lines for the three days in the lower panels.</em>
+</p>
+</div>
+<p>If we had run an ordinary regression by pooling the six concentration-response curves then we would have gotten the result below.</p>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" data-line-number="1">vinclo.fixed.Regression&lt;-<span class="kw">lm</span>(effect <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(conc), <span class="dt">data =</span> vinclozolin)</a>
+<a class="sourceLine" id="cb244-2" data-line-number="2"><span class="kw">summary</span>(vinclo.fixed.Regression)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = effect ~ log(conc), data = vinclozolin)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -584.64 -212.74  -58.83  179.01  920.36 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   478.90      58.03   8.253 1.48e-10 ***
+## log(conc)    -198.53      29.33  -6.768 2.25e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 312.6 on 45 degrees of freedom
+## Multiple R-squared:  0.5044, Adjusted R-squared:  0.4934 
+## F-statistic:  45.8 on 1 and 45 DF,  p-value: 2.253e-08</code></pre>
+<p>The slope and the intercept are almost identical for the two <code>lmer()</code>and <code>lm()</code>. The standard errors for the intercept, though, roughly doubled, 58 for <code>lm()</code> to 113 for <code>lmer()</code>, whereas the slope was more that halved, 13, for the <code>lmer()</code>compared to 29 with <code>lm()</code>. Undoubtedly, the experimental dates improved the precision of the slope. We can compare the fixed and random effects models on these data using Akaike Information Criterion (AIC). For a given set of data, the model with the lowest AIC value is more likely to be the appropriate model.</p>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb246-1" data-line-number="1"><span class="kw">AIC</span>(vinclo.mixed.Regression, vinclo.fixed.Regression)</a></code></pre></div>
+<pre><code>##                         df      AIC
+## vinclo.mixed.Regression  4 627.0628
+## vinclo.fixed.Regression  3 677.3501</code></pre>
+<p>As a gereral rule, differences in AIC values less than 10 indicate two models perform similarly in describing the data. For the vinclozolin data set, the mixed model has and AIC of 627 compared to 677 for the fixed model where the effect of day was not included. This indicates the mixed model is the best fit for these data.</p>
+<hr />
+
+</div>
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="mixed-models-anova.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="logistic-regression-binary-response.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
