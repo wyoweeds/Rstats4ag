@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>12 Dose-Response curves | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="12 Dose-Response curves | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="12 Dose-Response curves | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="logistic-regression-binary-response.html"/>
+<link rel="next" href="nonlinear-regression-selectivity-of-herbicides.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="dose-response-curves" class="section level1">
+<h1><span class="header-section-number">12</span> Dose-Response curves</h1>
+<p>We are surrounded by synthetic and natural substances that have both positive and negative effects upon humans, other animals, and the environment. It is difficult to estimate effects of a substance without testing it on living organisms. Chemical and physical properties of a substance can tell us about the molecules themselves, but living organisms may react in unpredictable ways. Therefore, we use biological assay to estimate effects. It means the design of bioassay experiments and the modelling of the response as a function of the dose is crucial for the classification of chemical compounds. In order to understand the principles of bioassay it is imperative to link results with the real world exposure to chemicals. In this chapter, chemicals used to illustrate bioassay are pesticides, but the principles are the same whatever the chemical.</p>
+<p><a href="%22http://www.jstor.org/stable/1403201?origin=crossref&amp;seq=1#page_scan_tab_contents%22">Finney 1976</a> wrote: “As a branch of applied statistics, biological assay appears to have a somewhat specialized appeal. Although a few statisticians have worked in it intensively, to the majority it appears as a topic that can be neglected, either because of its difficulties or because it is trivial……. I am convinced that many features of bioassay are out-standingly good for concentrating the mind on important parts of biometric practice and statistical inference.”</p>
+<p>In biology there are four general curves that describe many biological phenomena. Two of them, the rectangular hyperbola (of which Michaelis-Menten is a notable example) and sigmoid curves have either one or two asymptotes; that is, they have upper and/or lower limits as the independent variable approaches very small or very large values.</p>
+<p>In most text books, non-linear regression is not very well explained although it is easy for practitioners to implement. The difference between linear and non-linear regression can often be boiled down to the very fact: linear regression can be solved analytically by least square analysis, whereas the nonlinear regression cannot.</p>
+<p>Before fitting a nonlinear regression model, one has to do some guesstimates about the initial regression parameters before fitting. In some cases a nonlinear relationship can be converted to a linear one. The most common one is the exponential curve (<b>Figure 1</b> that turns into a linear relationship when taking the logarithm of the <code>y</code>. For the rectangular hyperbola it is usually with no lower limit and then it can also be linearize by manipulating as in ezymeology and biochemistry.The rectangular hyperbola is in other disciplines called the Michaelis Menten model.</p>
+<p>This chapter will be devoted to the use of the add-on package `drc? and will illustrate some of the facilities built in the package so far.</p>
+
+<div class="figure"><span id="fig:figcommonmodel4panel"></span>
+<img src="Rstats4ag_files/figure-html/figcommonmodel4panel-1.png" alt="Common regressions models in the biological sciences." width="672" />
+<p class="caption">
+Figure 12.1: <em>Common regressions models in the biological sciences.</em>
+</p>
+</div>
+<p>For the sigmoid curves, which can take several forms, we have to use nonlinear regression. One of the most common curves is the symmetric log-logistic model:</p>
+<p><span class="math display">\[y = c+\frac{d-c}{1+exp(b(log(x)-log(ED50)))} .\]</span></p>
+<p><code>y</code> is the response, <code>c</code> denotes the lower limit of the response when the dose <code>x</code> approaches infinity; <code>d</code> is the upper limit when the dose <code>x</code> approaches 0. <code>b</code> denotes the slope around the point of inflection, which is the <span class="math inline">\(ED_{50}\)</span>, i.e. the dose required to reduce the response half-way between the upper and lower limit.</p>
+<p>Guessing the parameters of a sigmoid curve can, for the less experienced person, be tiresome and frustrating. This has now been overcome by the development of a package named <code>drc</code>, which was developed at the University of Copenhagen. The purpose of the <code>drc</code> package was to ease the analysis of dose-response curves from greenhouse and field experiments in Weed and Pesticide Science courses and to assess the selectivity of herbicides and efficacy of pesticides. Similar dose-response curves are commonly used in ecotoxicology and general toxicology, and the <code>drc</code> package is used in various other disciplines.</p>
+<p>Gradually, <code>drc</code> has been extended with numerous nonlinear curves commonly used in the life sciences and elsewhere. The engine of <code>drc</code> is the <code>drm(y~x, fct=...)</code> function with self-starter that automatically calculates initial parameters. The <code>fct=</code>argument identifies the particular dose-response curve to be used. An overview of the various functions available can be accessed, after loading the <code>drc</code> package, by typing <code>?getMeanFunctions()</code>.</p>
+<div id="one-dose-response-curve" class="section level2">
+<h2><span class="header-section-number">12.1</span> One Dose-Response Curve</h2>
+<p>Let us look at how to fit a dose-response curve using a training data set in the <code>drc</code> package.</p>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb257-1" data-line-number="1"><span class="kw">library</span>(drc)</a></code></pre></div>
+<p>Before curve fitting, it is important to get an idea of how the data look. Below we create a plot with the x variable both on original scale and on log scale.</p>
+
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb258-1" data-line-number="1"><span class="kw">head</span>(ryegrass,<span class="dv">3</span>) </a></code></pre></div>
+<pre><code>##      rootl conc
+## 1 7.580000    0
+## 2 8.000000    0
+## 3 8.328571    0</code></pre>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb260-1" data-line-number="1">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,<span class="dv">2</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>)) <span class="co">#make two plots in two columns </span></a>
+<a class="sourceLine" id="cb260-2" data-line-number="2"><span class="kw">plot</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass, <span class="dt">main=</span><span class="st">&quot;Original Dose Scale&quot;</span>)</a>
+<a class="sourceLine" id="cb260-3" data-line-number="3"><span class="kw">plot</span>(rootl <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(conc<span class="fl">+.1</span>), <span class="dt">data =</span> ryegrass, <span class="dt">main=</span><span class="st">&quot;Logarithmic Dose Scale&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figdrrootlpanel"></span>
+<img src="Rstats4ag_files/figure-html/figdrrootlpanel-1.png" alt="There are two ways of plotting dose-response data, the default in the drc package is to use a logarithmic scale for x. Note with the logarithmic dose scale the untreated control, 0, is not defined. That is why we add 0.1 to the concentration before taking the logarithm." width="672" />
+<p class="caption">
+Figure 12.2: <em>There are two ways of plotting dose-response data, the default in the <code>drc</code> package is to use a logarithmic scale for x. Note with the logarithmic dose scale the untreated control, 0, is not defined. That is why we add 0.1 to the concentration before taking the logarithm.</em>
+</p>
+</div>
+<p>Below we fit a four-parameter log-logistic model with user-defined parameter names. The default names of the parameters (<em>b</em>, <em>c</em>, <em>d</em>, and <em>e</em>) included in the <code>drm()</code> function might not make sense to many weed scientists, but the <code>names=c()</code> argument can be used to facilitate sharing output with less seasoned <code>drc</code> users. The four parameter log-logistic curve has an upper limit, <code>d</code>, lower limit, <code>c</code>, the <span class="math inline">\(ED_{50}\)</span> is denoted <code>e</code>, and finally the slope, <code>b</code>, around the <span class="math inline">\(ED_{50}\)</span>.</p>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" data-line-number="1">ryegrass.m1 &lt;-<span class="st"> </span><span class="kw">drm</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass, </a>
+<a class="sourceLine" id="cb261-2" data-line-number="2">                   <span class="dt">fct =</span> <span class="kw">LL.4</span>(<span class="dt">names =</span> <span class="kw">c</span>(<span class="st">&quot;Slope&quot;</span>, <span class="st">&quot;Lower Limit&quot;</span>, <span class="st">&quot;Upper Limit&quot;</span>, <span class="st">&quot;ED50&quot;</span>)))</a>
+<a class="sourceLine" id="cb261-3" data-line-number="3"><span class="kw">summary</span>(ryegrass.m1)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+## 
+## Parameter estimates:
+## 
+##                         Estimate Std. Error t-value   p-value    
+## Slope:(Intercept)        2.98222    0.46506  6.4125 2.960e-06 ***
+## Lower Limit:(Intercept)  0.48141    0.21219  2.2688   0.03451 *  
+## Upper Limit:(Intercept)  7.79296    0.18857 41.3272 &lt; 2.2e-16 ***
+## ED50:(Intercept)         3.05795    0.18573 16.4644 4.268e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.5196256 (20 degrees of freedom)</code></pre>
+<p>The summary of the curve fitting shows the estimates of each of the four parameters and their standard errors. The p-values tell us if the parameters are different from zero. In this instance all four parameters are significantly different from zero and as seen on the graph the log-logistic curve seems to fit well to data.</p>
+
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb263-1" data-line-number="1">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb263-2" data-line-number="2"><span class="kw">plot</span>(ryegrass.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb263-3" data-line-number="3">     <span class="dt">xlab=</span><span class="st">&quot;Concentration of Ferulic Acid&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Length of Roots&quot;</span>)</a>
+<a class="sourceLine" id="cb263-4" data-line-number="4"><span class="kw">plot</span>(ryegrass.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb263-5" data-line-number="5">     <span class="dt">xlab=</span><span class="st">&quot;Concentration of Ferulic Acid&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Length of Roots&quot;</span>,<span class="dt">type=</span><span class="st">&quot;all&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figrootpanelmodel"></span>
+<img src="Rstats4ag_files/figure-html/figrootpanelmodel-1.png" alt="Plot of regression and averages of observations within each concentration (left), and all observation (right)." width="672" />
+<p class="caption">
+Figure 12.3: <em>Plot of regression and averages of observations within each concentration (left), and all observation (right).</em>
+</p>
+</div>
+<p>The slope of the dose-response curve at <span class="math inline">\(ED_{50}\)</span> has the opposite sign as compared to the sign of the parameter <code>b</code>. This is the consequence of the parameterization used in <code>drc</code> for the log-logistic model, a choice that is in part rooted in what was commonly used in the past. The actual slope of the tangent of the curve at <span class="math inline">\(ED_{50}\)</span> is determined :</p>
+<p><span class="math display">\[\frac{-b}{(d-c)/(4*e)}\]</span></p>
+<p>So apart from the sign there is a scaling factor that converts the parameter <code>b</code> into the slope, Therefore, the use of the word “relative”. Note that the scaling factor may be viewed as a kind of normalization factor involving the range of the response. As a consequence estimated <code>b</code> values often lie in the range 0.5 to 20 in absolute value, regardless of the assay or experiment generating the data.</p>
+<p>Note at the end of the ryegrass help file <code>?ryegrass</code> you can see examples, which give you some ideas of what can be done. The ryegrass help provides examples of various sigmoid curves to show the differences among them (see later). Note that we use the argument <code>broken=TRUE</code> to break the x-axis, because on a logarithmic scale, which is the default in <code>drc</code>, there is no such thing as a zero dose.</p>
+<p>There are various ways to check if a regression model gives a satisfactory picture of the variation in data. Before doing further analysis, the best way to judge it is to look at the graph to see if there are some serious discrepancies between the regression and mean values. Being satisfied with the results of the fit, one way of checking is to test for lack of fit against the most general model, an ANOVA. It is done automatically in drc with the function <code>modelFit()</code>.</p>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" data-line-number="1"><span class="co">#Test for lack of fit</span></a>
+<a class="sourceLine" id="cb264-2" data-line-number="2"><span class="kw">modelFit</span>(ryegrass.m1)</a></code></pre></div>
+<pre><code>## Lack-of-fit test
+## 
+##           ModelDf    RSS Df F value p value
+## ANOVA          17 5.1799                   
+## DRC model      20 5.4002  3  0.2411  0.8665</code></pre>
+<p>Obviously, the test for lack of fit is non-significant and therefore we can tentatively entertain the idea that the regression analysis was just as good to describe the variation in data as was an ANOVA. The test for lack of fit is not enough to ensure the fit is reasonable, because of few degrees of freedom, in this instance only 3 degrees of freedom. Another issue is that the more doses we use the less likely it is that the test for lack of fit would become non-significant; the mere fact being that the log-logistic curve, like any other sigmoid curve, is just an approximation of the real relationship.</p>
+<p>The distribution of the residuals and the hopefully normal distribution of residuals are informative to make sure that the prerequisites for doing a regression in the first place are not violated. The assumptions we must consider include:</p>
+<ol style="list-style-type: decimal">
+<li>Correct regression model</li>
+<li>Variance Homogeneity</li>
+<li>Normally distributed measurement errors</li>
+<li>Mutually independent measurement error <span class="math inline">\(\varepsilon\)</span></li>
+</ol>
+<p>Number 1 can always be discussed and we will not go too much into detail. This is generally determined by researchers familiar with the phenomena being described. Number 2 is important if you want to infer on the variability of parameters. Normally, the parameter estimates do not change much whether there are homogeneous variance or not; it is the standard errors that change and that is why we want to come so close to homogeneity of variance as possible. This is important when comparing curves, or evaluating the certainty we have about various parameters (like the effective dose or upper limit). Number 3 can be graphically shown and is only in some instances critical. Number 4 is important because we assume the observations for doses are independent of each other, a question that also can be debated. When we do dose-response experiments we often use the same stock solution. It means that any systematic error can be carried all the way though the dilution process and be part of the dose. Below we illustrate items 2 and item 3.</p>
+
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb266-1" data-line-number="1"><span class="co">#Graphical analysis of residuals</span></a>
+<a class="sourceLine" id="cb266-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,<span class="dv">2</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>)) <span class="co">#put two graphs together</span></a>
+<a class="sourceLine" id="cb266-3" data-line-number="3">    <span class="kw">plot</span>(<span class="kw">residuals</span>(ryegrass.m1) <span class="op">~</span><span class="st"> </span><span class="kw">fitted</span>(ryegrass.m1), <span class="dt">main=</span><span class="st">&quot;Residuals vs Fitted&quot;</span>)</a>
+<a class="sourceLine" id="cb266-4" data-line-number="4"><span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb266-5" data-line-number="5"><span class="kw">qqnorm</span>(<span class="kw">residuals</span>(ryegrass.m1))</a>
+<a class="sourceLine" id="cb266-6" data-line-number="6"> <span class="kw">qqline</span>(<span class="kw">residuals</span>(ryegrass.m1))</a></code></pre></div>
+<div class="figure"><span id="fig:rootdiag"></span>
+<img src="Rstats4ag_files/figure-html/rootdiag-1.png" alt="Model esiduals diagnostic plots: Left: distribution of residuals against the fitted value (variance homogeneity); Right: normal q-q plot illustrating whether the residuals are normally distributed (normally distributed measurement errors)." width="672" />
+<p class="caption">
+Figure 12.4: <em>Model esiduals diagnostic plots: Left: distribution of residuals against the fitted value (variance homogeneity); Right: normal q-q plot illustrating whether the residuals are normally distributed (normally distributed measurement errors).</em>
+</p>
+</div>
+<p>The residual plot indicates that the model was able to catch the variation in data. The distribution of residuals should look like a shotgun shot on a wall. Apparently, there are some systematic violations in the residual plot, At small fitted values the residuals are close to zero than at high fitted values the variation is much more pronounced. This is called a funnel type pattern. We also see it in the graphs with the fit and all the observations (Figure <a href="dose-response-curves.html#fig:rootdiag">12.4</a>). The normal Q-Q plot looks all right, no serious deviation from the assumption of normal distribution of residuals. Later we will look at this problem, which is a statistical problem not a biological one.</p>
+</div>
+<div id="note-on-use-of-r2" class="section level2">
+<h2><span class="header-section-number">12.2</span> Note on use of <span class="math inline">\(R^2\)</span></h2>
+<p>One of the most popular ways of assessing goodness of fit in regression, be it linear or nonlinear, is to use <span class="math inline">\(R^2\)</span>. The higher the better, but the <span class="math inline">\(R^2\)</span> does <em>not</em> tell you how well the curve fits to the data. In fact, if there are large differences between the maximum and the minimum observation, the <span class="math inline">\(R^2\)</span> will be larger than if the differences are small. It is also important to note that the most common interpretation of <span class="math inline">\(R^2\)</span> for linear regression does not hold true for nonlinear regression; in the nonlinear case, the <span class="math inline">\(R^2\)</span> value is <em>not</em> the amount of variability in Y explained by X. At its core, the <a href="http://www.jstor.org/stable/2684259"><span class="math inline">\(R^2\)</span> is a comparison of 2 models</a>; in linear regression the two models being compared are the regression model and a null model indicating no relationship between X and Y. For nonlinear regression, the choice of a ‘null’ model is not as simple, and therefore the <span class="math inline">\(R^2\)</span> type measure will be different depending on the chosen reduced model. The appropriate ‘null’ model may differ (and perhaps <em>should</em> differ) depending on the nonlinear model being used. Therefore, the <span class="math inline">\(R^2\)</span> is not part of the output from <code>drc</code>. To give an example we fit a linear model to the ryegrass data.</p>
+
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" data-line-number="1">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,<span class="dv">0</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>)) <span class="co">#put two graphs together</span></a>
+<a class="sourceLine" id="cb267-2" data-line-number="2"><span class="kw">plot</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb267-3" data-line-number="3">linear.m1 &lt;-<span class="st"> </span><span class="kw">lm</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass)</a>
+<a class="sourceLine" id="cb267-4" data-line-number="4"><span class="kw">summary</span>(linear.m1)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = rootl ~ conc, data = ryegrass)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.4399 -1.7055  0.9623  1.7532  2.3575 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  6.24176    0.52973  11.783 5.64e-11 ***
+## conc        -0.25929    0.04326  -5.994 4.94e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.07 on 22 degrees of freedom
+## Multiple R-squared:  0.6202, Adjusted R-squared:  0.603 
+## F-statistic: 35.93 on 1 and 22 DF,  p-value: 4.939e-06</code></pre>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb269-1" data-line-number="1"><span class="kw">abline</span>(linear.m1)</a>
+<a class="sourceLine" id="cb269-2" data-line-number="2"><span class="kw">plot</span>(linear.m1, <span class="dt">which=</span><span class="dv">1</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figr2ex"></span>
+<img src="Rstats4ag_files/figure-html/figr2ex-1.png" alt="Linear regression y=-.25x+6.24 with highly significant parameters (left) and residual plot (right). The \(R^2\) is not negligable (\(R^2\) = 0.6), but the model is obviously not correct." width="672" />
+<p class="caption">
+Figure 12.5: <em>Linear regression y=-.25x+6.24 with highly significant parameters (left) and residual plot (right). The <span class="math inline">\(R^2\)</span> is not negligable (<span class="math inline">\(R^2\)</span> = 0.6), but the model is obviously not correct.</em>
+</p>
+</div>
+<p>The regression parameters are highly significantly different from zero so it looks good as does <span class="math inline">\(R^2\)</span> of 0.62 . This is not a small value, but obviously the goodness of fit is not good, let alone the systematic distribution of residuals. When trying to determine whether the nonlinear model is better or worse than the linear model, Akaike Information Criterion (AIC) can be used. Smaller values of AIC indicate better fit to the data.</p>
+<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb270-1" data-line-number="1"><span class="kw">AIC</span>(ryegrass.m1, linear.m1)</a></code></pre></div>
+<pre><code>##             df       AIC
+## ryegrass.m1  5  42.31029
+## linear.m1    3 106.95109</code></pre>
+<p>The AIC value for the nonlinear model <code>ryegrass.m1</code> is much lower than the linear fit <code>linear.m1</code> that definitely violated item 1. This confirms that the nonlinear model is a better fit to the data compared with the linear model.</p>
+</div>
+<div id="which-dose-response-model" class="section level2">
+<h2><span class="header-section-number">12.3</span> Which Dose-Response Model?</h2>
+<p>There exists numerous sigmoid curves of which the log-logistic is the most common one. It is symmetric and the <span class="math inline">\(ED_{50}\)</span> is a parameter of the model. Several other models exist, particularly, the non symmetric ones where <span class="math inline">\(ED_{50}\)</span> is not a “natural” parameter. For example the Weibull-1 model.</p>
+<p><span class="math display">\[y = c+(d-c)exp(-exp(b(log(x)-log(e)))) .\]</span></p>
+<p>The parameter <code>b</code> is the steepness of the curve and the
+parameter <code>e</code> is the dose where the inflection point of the dose-
+response curve is located, which is <em>not</em> the <span class="math inline">\(ED_{50}\)</span>.The Weibull-1 descends slowly from the upper limit <code>d</code> and approach the lower limit <code>c</code> rapidly.</p>
+<p>Another model, Weibull-2 is somewhat different from Weibull-1, because it has a different asymmetry, with a rapid descent from the upper limit <code>d</code> and a slow approach toward the lower limit (Figure <a href="dose-response-curves.html#fig:fignlinmodelcomp">12.6</a>).</p>
+<p><span class="math display">\[y = c+(d-c)(1-exp(-exp(b(log(x)-log(e))))) .\]</span></p>
+<p><a href="http://onlinelibrary.wiley.com/doi/10.1002/etc.7/abstract">Ritz 2009</a> has in detailed described those asymmetric dose-response curves and also illustrated it as shown in Figure <a href="dose-response-curves.html#fig:fignlinmodelcomp">12.6</a>.</p>
+
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb272-1" data-line-number="1"><span class="kw">library</span>(drc)</a>
+<a class="sourceLine" id="cb272-2" data-line-number="2"><span class="co">## Comparing log-logistic and Weibull models</span></a>
+<a class="sourceLine" id="cb272-3" data-line-number="3"><span class="co">## (Figure 2 in Ritz (2009))</span></a>
+<a class="sourceLine" id="cb272-4" data-line-number="4">ryegrass.m0 &lt;-<span class="st"> </span><span class="kw">drm</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass, <span class="dt">fct =</span> <span class="kw">LL.4</span>())</a>
+<a class="sourceLine" id="cb272-5" data-line-number="5">ryegrass.m1 &lt;-<span class="st"> </span><span class="kw">drm</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass, <span class="dt">fct =</span> <span class="kw">W1.4</span>())</a>
+<a class="sourceLine" id="cb272-6" data-line-number="6">ryegrass.m2 &lt;-<span class="st"> </span><span class="kw">drm</span>(rootl <span class="op">~</span><span class="st"> </span>conc, <span class="dt">data =</span> ryegrass, <span class="dt">fct =</span> <span class="kw">W2.4</span>())</a>
+<a class="sourceLine" id="cb272-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb272-8" data-line-number="8"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb272-9" data-line-number="9"><span class="kw">plot</span>(ryegrass.m0, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">xlab=</span><span class="st">&quot;Dose (mM)&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Root length (cm)&quot;</span>, <span class="dt">lwd=</span><span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb272-10" data-line-number="10">     <span class="dt">cex=</span><span class="fl">1.2</span>, <span class="dt">cex.axis=</span><span class="fl">1.2</span>, <span class="dt">cex.lab=</span><span class="fl">1.2</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb272-11" data-line-number="11"><span class="kw">plot</span>(ryegrass.m1, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">lty=</span><span class="dv">2</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb272-12" data-line-number="12"><span class="kw">plot</span>(ryegrass.m2, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">lty=</span><span class="dv">3</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb272-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb272-14" data-line-number="14"><span class="kw">arrows</span>(<span class="dv">3</span>, <span class="fl">7.5</span>, <span class="fl">1.4</span>, <span class="fl">7.5</span>, <span class="fl">0.15</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb272-15" data-line-number="15"><span class="kw">text</span>(<span class="dv">3</span>,<span class="fl">7.5</span>, <span class="st">&quot;Weibull-2&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>, <span class="dt">cex=</span><span class="fl">1.2</span>)</a>
+<a class="sourceLine" id="cb272-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb272-17" data-line-number="17"><span class="kw">arrows</span>(<span class="fl">2.5</span>, <span class="fl">0.9</span>, <span class="fl">5.7</span>, <span class="fl">0.9</span>, <span class="fl">0.15</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb272-18" data-line-number="18"><span class="kw">text</span>(<span class="dv">3</span>,<span class="fl">0.9</span>, <span class="st">&quot;Weibull-1&quot;</span>, <span class="dt">pos=</span><span class="dv">2</span>, <span class="dt">cex=</span><span class="fl">1.2</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:fignlinmodelcomp"></span>
+<img src="Rstats4ag_files/figure-html/fignlinmodelcomp-1.png" alt="Comparison among the two asymmetric Weibull models and the log-logistic model. The differences in this instance are at either the upper limit or the lower limit of the curves." width="672" />
+<p class="caption">
+Figure 12.6: <em>Comparison among the two asymmetric Weibull models and the log-logistic model. The differences in this instance are at either the upper limit or the lower limit of the curves.</em>
+</p>
+</div>
+<p>The <span class="math inline">\(ED_{50}\)</span> for the Weibull-1 and Weibull-2 model has to be derived from the fit by using the function<code>ED()</code>.</p>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb273-1" data-line-number="1"> <span class="kw">ED</span>(ryegrass.m1,<span class="dv">50</span>,<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated effective doses
+## 
+##        Estimate Std. Error   Lower   Upper
+## e:1:50  3.08896    0.17331 2.72744 3.45048</code></pre>
+<p>A relevant questions would be how do the <span class="math inline">\(ED_{x}\)</span> change when fitting the different sigmoid curves?</p>
+<p>To illustrate this we use the ggplot2 package and a function to combine graphs. First we have to calculate the <span class="math inline">\(ED_{x}\)</span> and combine the results in a data.frame as done below.</p>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb275-1" data-line-number="1">edLL&lt;-<span class="kw">data.frame</span>(<span class="kw">ED</span>(ryegrass.m0,<span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">50</span>,<span class="dv">90</span>),<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>, </a>
+<a class="sourceLine" id="cb275-2" data-line-number="2">                    <span class="dt">display=</span><span class="ot">FALSE</span>),<span class="dt">ll=</span><span class="st">&quot;Log-logistic&quot;</span>)            </a>
+<a class="sourceLine" id="cb275-3" data-line-number="3">edW1&lt;-<span class="kw">data.frame</span>(<span class="kw">ED</span>(ryegrass.m1,<span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">50</span>,<span class="dv">90</span>),<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>, </a>
+<a class="sourceLine" id="cb275-4" data-line-number="4">                    <span class="dt">display=</span><span class="ot">FALSE</span>),<span class="dt">ll=</span><span class="st">&quot;Weibull 1&quot;</span>)</a>
+<a class="sourceLine" id="cb275-5" data-line-number="5">edW2&lt;-<span class="kw">data.frame</span>(<span class="kw">ED</span>(ryegrass.m2,<span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">50</span>,<span class="dv">90</span>),<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>, </a>
+<a class="sourceLine" id="cb275-6" data-line-number="6">                    <span class="dt">display=</span><span class="ot">FALSE</span>),<span class="dt">ll=</span><span class="st">&quot;Weibull 2&quot;</span>)</a>
+<a class="sourceLine" id="cb275-7" data-line-number="7">CombED&lt;-<span class="kw">rbind</span>(edLL,edW1,edW2)</a></code></pre></div>
+<p>Then we can use <code>plot_grid()</code> from the <code>cowplot</code> package, which is a function that combines various independent ggplots into one plot.</p>
+
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" data-line-number="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb276-2" data-line-number="2"><span class="kw">library</span>(cowplot)</a>
+<a class="sourceLine" id="cb276-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb276-4" data-line-number="4">p1 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>CombED[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">7</span>),], <span class="kw">aes</span>(<span class="dt">x=</span>ll, <span class="dt">y=</span>Estimate))<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-5" data-line-number="5"><span class="st"> </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;lightgreen&quot;</span>, <span class="dt">colour=</span><span class="st">&quot;black&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin=</span>Lower, <span class="dt">ymax=</span>Upper), <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb276-7" data-line-number="7"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;ED10&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-8" data-line-number="8"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb276-9" data-line-number="9">p2 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>CombED[<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">8</span>),], <span class="kw">aes</span>(<span class="dt">x=</span>ll, <span class="dt">y=</span>Estimate))<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-10" data-line-number="10"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;lightgreen&quot;</span>, <span class="dt">colour=</span><span class="st">&quot;black&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-11" data-line-number="11"><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin=</span>Lower, <span class="dt">ymax=</span>Upper), <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb276-12" data-line-number="12"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;ED50&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-13" data-line-number="13"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb276-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb276-15" data-line-number="15">p3 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>CombED[<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">9</span>),], <span class="kw">aes</span>(<span class="dt">x=</span>ll, <span class="dt">y=</span>Estimate))<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-16" data-line-number="16"><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;lightgreen&quot;</span>, <span class="dt">colour=</span><span class="st">&quot;black&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-17" data-line-number="17"><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin=</span>Lower, <span class="dt">ymax=</span>Upper), <span class="dt">width=</span><span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb276-18" data-line-number="18"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;ED90&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb276-19" data-line-number="19"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Sigmoid four parameter models&quot;</span>)</a>
+<a class="sourceLine" id="cb276-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb276-21" data-line-number="21"><span class="kw">plot_grid</span>(p1,p2,p3, <span class="dt">ncol=</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figEDcomp"></span>
+<img src="Rstats4ag_files/figure-html/figEDcomp-1.png" alt="Comparison of \(ED_{10}\), \(ED_{50}\) and \(ED_{90}\) for various sigmoid dose-response curves with associated 95% confidence intervals." width="672" />
+<p class="caption">
+Figure 12.7: <em>Comparison of <span class="math inline">\(ED_{10}\)</span>, <span class="math inline">\(ED_{50}\)</span> and <span class="math inline">\(ED_{90}\)</span> for various sigmoid dose-response curves with associated 95% confidence intervals.</em>
+</p>
+</div>
+<p>Obviously, the ED-levels in Figure <a href="dose-response-curves.html#fig:figEDcomp">12.7</a> in this instance did not change much among the three sigmoid curves. Sometimes they do and residual plots show that one of the asymmetrical curves is more appropriate than the common log-logistic, although it can not be substantiated by an ordinary test for lack of fit.<code>drc</code>also has a function where you can test the differences between the <span class="math inline">\(ED_{x}\)</span> as shown below</p>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" data-line-number="1"><span class="kw">comped</span>(CombED[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">4</span>),<span class="dv">1</span>],CombED[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">4</span>),<span class="dv">2</span>],<span class="dt">log=</span>F,<span class="dt">operator =</span> <span class="st">&quot;-&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated difference of effective doses
+## 
+##       Estimate Std. Error     Lower Upper
+## [1,]  0.057726   0.314927 -0.559519 0.675</code></pre>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb279-1" data-line-number="1"><span class="kw">comped</span>(CombED[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span>),<span class="dv">1</span>],CombED[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span>),<span class="dv">2</span>],<span class="dt">log=</span>F,<span class="dt">operator =</span> <span class="st">&quot;-&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated difference of effective doses
+## 
+##      Estimate Std. Error    Lower  Upper
+## [1,] -0.16457    0.23335 -0.62193 0.2928</code></pre>
+<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb281-1" data-line-number="1"><span class="kw">comped</span>(CombED[<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">6</span>),<span class="dv">1</span>],CombED[<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">6</span>),<span class="dv">2</span>],<span class="dt">log=</span>F,<span class="dt">operator =</span> <span class="st">&quot;-&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated difference of effective doses
+## 
+##      Estimate Std. Error    Lower  Upper
+## [1,]  1.28762    0.99032 -0.65337 3.2286</code></pre>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb283-1" data-line-number="1"><span class="kw">comped</span>(CombED[<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">9</span>),<span class="dv">1</span>],CombED[<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">9</span>),<span class="dv">2</span>],<span class="dt">log=</span>F,<span class="dt">operator =</span> <span class="st">&quot;-&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated difference of effective doses
+## 
+##      Estimate Std. Error   Lower  Upper
+## [1,]  -2.7048     1.4939 -5.6327 0.2231</code></pre>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb285-1" data-line-number="1"><span class="kw">comped</span>(CombED[<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">9</span>),<span class="dv">1</span>],CombED[<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">9</span>),<span class="dv">2</span>],<span class="dt">log=</span>F,<span class="dt">operator =</span> <span class="st">&quot;-&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated difference of effective doses
+## 
+##      Estimate Std. Error   Lower Upper
+## [1,]  -1.4172     1.6368 -4.6253 1.791</code></pre>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb287-1" data-line-number="1"><span class="kw">comped</span>(CombED[<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">9</span>),<span class="dv">1</span>],CombED[<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">9</span>),<span class="dv">2</span>],<span class="dt">log=</span>F,<span class="dt">operator =</span> <span class="st">&quot;-&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated difference of effective doses
+## 
+##      Estimate Std. Error   Lower  Upper
+## [1,]  -2.7048     1.4939 -5.6327 0.2231</code></pre>
+<p>None of the differences are significantly different form zero, lower limits are negative in all instance and upper limits of the differences are positive.</p>
+</div>
+<div id="more-dose-response-curves" class="section level2">
+<h2><span class="header-section-number">12.4</span> More Dose-Response Curves</h2>
+<p>When it comes to assessment of herbicide selectivity, one dose-response curve does not tell you anything. Selectivity of a herbicide is always dose-dependent and a bioassay with a pre-fixed harvest day only gives a snapshot of the effect of a herbicide. When comparing dose-response curves of say two herbicides on the same plant species or one herbicide on two plant species, it is imperative that the curves you compare were run at the same point in time or at least close to and at the same stage of plant development. The training data set <code>S.alba</code> in the <code>drc</code> package consists of two dose-response curves, one for bentazon and one for glyphosate.</p>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb289-1" data-line-number="1"><span class="kw">head</span>(S.alba,<span class="dt">n=</span><span class="dv">2</span>)</a></code></pre></div>
+<pre><code>##   Dose  Herbicide DryMatter
+## 1    0 Glyphosate       4.7
+## 2    0 Glyphosate       4.6</code></pre>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb291-1" data-line-number="1"><span class="kw">tail</span>(S.alba,<span class="dt">n=</span><span class="dv">2</span>)</a></code></pre></div>
+<pre><code>##    Dose Herbicide DryMatter
+## 67  640 Bentazone       0.6
+## 68  640 Bentazone       0.8</code></pre>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb293-1" data-line-number="1"><span class="co">## Fitting a log-logistic model with</span></a>
+<a class="sourceLine" id="cb293-2" data-line-number="2">S.alba.m1 &lt;-<span class="st"> </span><span class="kw">drm</span>(DryMatter <span class="op">~</span><span class="st"> </span>Dose, Herbicide, <span class="dt">data=</span>S.alba, <span class="dt">fct =</span> <span class="kw">LL.4</span>())</a></code></pre></div>
+<p>Note that the the variable, Herbicide, identifies the herbicides, Therefore, the third argument in the <code>drm()</code> is the classification variable <code>Herbicide</code>.</p>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb294-1" data-line-number="1"><span class="kw">modelFit</span>(S.alba.m1)</a></code></pre></div>
+<pre><code>## Lack-of-fit test
+## 
+##           ModelDf    RSS Df F value p value
+## ANOVA          53 8.0800                   
+## DRC model      60 8.3479  7  0.2511  0.9696</code></pre>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb296-1" data-line-number="1"><span class="kw">summary</span>(S.alba.m1)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+## 
+## Parameter estimates:
+## 
+##               Estimate Std. Error t-value   p-value    
+## b:Glyphosate  2.715409   0.748279  3.6289 0.0005897 ***
+## b:Bentazone   5.134810   1.130949  4.5403 2.760e-05 ***
+## c:Glyphosate  0.891238   0.194703  4.5774 2.421e-05 ***
+## c:Bentazone   0.681845   0.095111  7.1689 1.288e-09 ***
+## d:Glyphosate  3.875759   0.107463 36.0661 &lt; 2.2e-16 ***
+## d:Bentazone   3.805791   0.110341 34.4911 &lt; 2.2e-16 ***
+## e:Glyphosate 62.087606   6.611444  9.3909 2.184e-13 ***
+## e:Bentazone  29.268444   2.237090 13.0833 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.3730047 (60 degrees of freedom)</code></pre>
+<p>The test for lack of fit shows non-significance, and furthermore, the summary shows that the upper limits <code>d</code>s are very close to each other and the same applies to the lower limit <code>c</code>s. Consequently, we could entertain the idea that they are similar for both curves. We use the argument in the <code>drm()</code> function <code>pmodels=data.frame(..)</code>to make the upper limit and the lower limit similar for both curves. The argument follows the alphabetical order of the names of the parameters, <code>b,c,d,e</code>. Below, we will allow the <code>b</code> parameter to vary freely between the two herbicides, whereas <code>c</code> and <code>d</code> will be held the same for both herbicides (they have the same identification <code>1,1</code>). Finally the <code>e</code> parameters can vary freely.</p>
+
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb298-1" data-line-number="1"><span class="co">##  common lower and upper limits</span></a>
+<a class="sourceLine" id="cb298-2" data-line-number="2">S.alba.m2 &lt;-<span class="st"> </span><span class="kw">drm</span>(DryMatter <span class="op">~</span><span class="st"> </span>Dose, Herbicide, <span class="dt">data=</span>S.alba, <span class="dt">fct =</span> <span class="kw">LL.4</span>(),</a>
+<a class="sourceLine" id="cb298-3" data-line-number="3">                 <span class="dt">pmodels=</span><span class="kw">data.frame</span>(Herbicide, <span class="dv">1</span>, <span class="dv">1</span>, Herbicide)) </a>
+<a class="sourceLine" id="cb298-4" data-line-number="4"><span class="kw">summary</span>(S.alba.m2)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+## 
+## Parameter estimates:
+## 
+##                Estimate Std. Error t-value   p-value    
+## b:Bentazone    5.046141   1.040135  4.8514 8.616e-06 ***
+## b:Glyphosate   2.390218   0.495959  4.8194 9.684e-06 ***
+## c:(Intercept)  0.716559   0.089245  8.0291 3.523e-11 ***
+## d:(Intercept)  3.854861   0.076255 50.5519 &lt; 2.2e-16 ***
+## e:Bentazone   28.632355   2.038098 14.0486 &lt; 2.2e-16 ***
+## e:Glyphosate  66.890545   5.968819 11.2067 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.3705151 (62 degrees of freedom)</code></pre>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb300-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb300-2" data-line-number="2"><span class="kw">plot</span>(S.alba.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb300-3" data-line-number="3"><span class="kw">plot</span>(S.alba.m2, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">legend=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figglybentnlin"></span>
+<img src="Rstats4ag_files/figure-html/figglybentnlin-1.png" alt="The two fits, one without assuming common upper and lower limits for the two curves (black) and one where the curves have the same upper and lower limits (red)." width="672" />
+<p class="caption">
+Figure 12.8: <em>The two fits, one without assuming common upper and lower limits for the two curves (black) and one where the curves have the same upper and lower limits (red).</em>
+</p>
+</div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb301-1" data-line-number="1"><span class="kw">anova</span>(S.alba.m1, S.alba.m2) <span class="co"># Test for lack of fit not signifiancant</span></a></code></pre></div>
+<pre><code>## 
+## 1st model
+##  fct:     LL.4()
+##  pmodels: Herbicide, 1, 1, Herbicide
+## 2nd model
+##  fct:     LL.4()
+##  pmodels: Herbicide (for all parameters)</code></pre>
+<pre><code>## ANOVA table
+## 
+##           ModelDf    RSS Df F value p value
+## 2nd model      62 8.5114                   
+## 1st model      60 8.3479  2  0.5876  0.5588</code></pre>
+<p>A test for lack of fit was non-significant and, therefore, we presume that the curves have similar upper an lower limits. Now we have the ideal framework for comparing the relative potency between the two herbicides with similar upper and lower limit, we have the same reference for both curves.</p>
+<p>Comparing the fit without freely estimated upper and lower limit and with common upper and lower limit did not change the <span class="math inline">\(ED_{50}\)</span> much but did reduce the standard errors somewhat.</p>
+<p>The next step could be to assume that the two curves also have the same slope, i.e. the two curves are similar and only differ in their relative displacement along the x-axis.</p>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb304-1" data-line-number="1"><span class="co">##  common lower and upper limits and slope</span></a>
+<a class="sourceLine" id="cb304-2" data-line-number="2">S.alba.m3 &lt;-<span class="st"> </span><span class="kw">drm</span>(DryMatter<span class="op">~</span>Dose, Herbicide, <span class="dt">data=</span>S.alba, <span class="dt">fct =</span> <span class="kw">LL.4</span>(),</a>
+<a class="sourceLine" id="cb304-3" data-line-number="3">                 <span class="dt">pmodels=</span><span class="kw">data.frame</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, Herbicide)) </a>
+<a class="sourceLine" id="cb304-4" data-line-number="4"><span class="kw">anova</span>(S.alba.m2, S.alba.m3)</a></code></pre></div>
+<pre><code>## 
+## 1st model
+##  fct:     LL.4()
+##  pmodels: 1, 1, 1, Herbicide
+## 2nd model
+##  fct:     LL.4()
+##  pmodels: Herbicide, 1, 1, Herbicide</code></pre>
+<pre><code>## ANOVA table
+## 
+##           ModelDf    RSS Df F value p value
+## 2nd model      63 9.4946                   
+## 1st model      62 8.5114  1  7.1614  0.0095</code></pre>
+<p>Although the ‘parallel’ curves in Figure <a href="dose-response-curves.html#fig:figglybentslope">12.9</a> seem reasonable, the test for lack of fit now is significant, so the assumption of similar curves except for the <span class="math inline">\(ED_{50}\)</span> is not supported. We should prefer, instead, the model with independent slopes (Figure <a href="dose-response-curves.html#fig:figglybentnlin">12.8</a>).</p>
+
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb307-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb307-2" data-line-number="2"><span class="kw">plot</span>(S.alba.m3, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figglybentslope"></span>
+<img src="Rstats4ag_files/figure-html/figglybentslope-1.png" alt="The two curves are similar except for their relative displacement on the x-axis - this is often called a parallel slopes model." width="672" />
+<p class="caption">
+Figure 12.9: <em>The two curves are similar except for their relative displacement on the x-axis - this is often called a parallel slopes model.</em>
+</p>
+</div>
+<p>Comparing Figures <a href="dose-response-curves.html#fig:figglybentnlin">12.8</a> and <a href="dose-response-curves.html#fig:figglybentslope">12.9</a> shows that the fits are forced so they do not capture the responses properly at the lower limits. As seen below the relative potency with common upper and lower limit but different slopes yield different relative potencies: <span class="math inline">\(ED_{10}\)</span>, <span class="math inline">\(ED_{50}\)</span>, and <span class="math inline">\(ED_{90}\)</span>.</p>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb308-1" data-line-number="1"><span class="co">#EDcomp(S.alba.LL.4.1, c(10, 50, 50), interval = &quot;delta&quot;)</span></a>
+<a class="sourceLine" id="cb308-2" data-line-number="2"><span class="kw">EDcomp</span>(S.alba.m2, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>, <span class="dt">reverse=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##                            Estimate   Lower   Upper
+## Glyphosate/Bentazone:10/10  1.44007 0.81836 2.06177</code></pre>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb310-1" data-line-number="1"><span class="kw">EDcomp</span>(S.alba.m2, <span class="kw">c</span>(<span class="dv">50</span>, <span class="dv">50</span>), <span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>, <span class="dt">reverse=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##                            Estimate  Lower  Upper
+## Glyphosate/Bentazone:50/50   2.3362 1.8571 2.8153</code></pre>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb312-1" data-line-number="1"><span class="kw">EDcomp</span>(S.alba.m2, <span class="kw">c</span>(<span class="dv">90</span>, <span class="dv">90</span>), <span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>, <span class="dt">reverse=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##                            Estimate  Lower  Upper
+## Glyphosate/Bentazone:90/90   3.7899 2.0793 5.5006</code></pre>
+<p>It is noted above that the relative potency varies depending of the ED-level. This is of course due to the fact that the two curves have different slopes, <code>b</code> parameters. From a biological point of view the herbicides have different mode of action and experience shows that contact PS II herbicides, such as bentazon, would have a steeper slope than does the EPSP inhibitor, glyphosate.</p>
+<p>In <code>drc</code> there is a function <code>relpot()</code> that can illustrate the relationship between changes of the relative potency and the predicted responses.</p>
+
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb314-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb314-2" data-line-number="2"><span class="kw">relpot</span>(S.alba.m2, <span class="dt">interval =</span> <span class="st">&quot;delta&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figglybenrelpot"></span>
+<img src="Rstats4ag_files/figure-html/figglybenrelpot-1.png" alt="The relative potency varies depending of response level, with the 95% confidence intervals. The dashed horizontal line shows the relative potency at the \(ED_{50}\) for glyphosate and bentazon." width="672" />
+<p class="caption">
+Figure 12.10: <em>The relative potency varies depending of response level, with the 95% confidence intervals. The dashed horizontal line shows the relative potency at the <span class="math inline">\(ED_{50}\)</span> for glyphosate and bentazon.</em>
+</p>
+</div>
+<p>The most precise ED-level is at the <span class="math inline">\(ED_{50}\)</span>; towards the extremes close to the upper and lower limit the variation becomes huge. This is a general trend and explains why we often wish to quantify toxicity of a compound by using <span class="math inline">\(ED_{50}\)</span>.</p>
+</div>
+<div id="when-upper-and-lower-limits-are-not-similar" class="section level2">
+<h2><span class="header-section-number">12.5</span> When Upper and Lower Limits are not similar</h2>
+<p>In real life, e.g., when testing herbicide tolerant/resistant biotypes of weeds and different weed species, we cannot expect that the upper and lower limits are similar among curves and that the curves have the same slopes. On the contrary, if there is a penalty for acquiring resistance (fitness cost) then the untreated control for each biotype would be expected to have different biomass. Depending on the time from spraying and ambient growth condition at harvest; the lower limit may also differ.</p>
+<p>Whatever the purpose of assessing potencies among plants the problem of different upper and lower limits is often “solved” in the literature by scaling the raw data to percentage of untreated control. <b>This “solution” often results in smaller but incorrect standard error of <span class="math inline">\(ED_{50}\)</span> being inflated by the scaling.</b></p>
+<p>In general, we do not want to go for low standard error, but go for the <em>correct</em> standard error. Therefore, we recommend to do all the curve-fitting on original raw data!</p>
+<p>Below we have two accessions of <em>Echonichlora oryzoides</em> where both the upper limit and the lower limits are different.</p>
+
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb315-1" data-line-number="1">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb315-2" data-line-number="2">TwoCurves&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/twoCurves.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb315-3" data-line-number="3"><span class="kw">head</span>(TwoCurves,<span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   xn Dose Accesion Dry.weight.per.pot  X
+## 1 33    0  SAM-E-8              1.968 NA
+## 2 34    0  SAM-E-8              2.030 NA
+## 3 35    0  SAM-E-8              2.129 NA</code></pre>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb317-1" data-line-number="1">Bispyribac.sodium.m1 &lt;-<span class="st"> </span><span class="kw">drm</span>(Dry.weight.per.pot <span class="op">~</span><span class="st"> </span>Dose, Accesion,</a>
+<a class="sourceLine" id="cb317-2" data-line-number="2">                            <span class="dt">data =</span> TwoCurves, <span class="dt">fct=</span><span class="kw">LL.4</span>())</a>
+<a class="sourceLine" id="cb317-3" data-line-number="3"><span class="kw">modelFit</span>(Bispyribac.sodium.m1)</a></code></pre></div>
+<pre><code>## Lack-of-fit test
+## 
+##           ModelDf    RSS Df F value p value
+## ANOVA          48 1.7678                   
+## DRC model      56 2.2799  8  1.7384  0.1137</code></pre>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb319-1" data-line-number="1"><span class="kw">summary</span>(Bispyribac.sodium.m1)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+## 
+## Parameter estimates:
+## 
+##             Estimate Std. Error t-value   p-value    
+## b:SAM-E-8   2.047171   0.327585  6.2493 5.957e-08 ***
+## b:TEK-E-10  0.876716   0.315014  2.7831  0.007327 ** 
+## c:SAM-E-8   0.245913   0.073938  3.3259  0.001560 ** 
+## c:TEK-E-10 -0.053077   0.091626 -0.5793  0.564726    
+## d:SAM-E-8   2.242014   0.081575 27.4841 &lt; 2.2e-16 ***
+## d:TEK-E-10  1.827553   0.101102 18.0764 &lt; 2.2e-16 ***
+## e:SAM-E-8  21.702693   2.276642  9.5328 2.514e-13 ***
+## e:TEK-E-10  2.666463   1.026905  2.5966  0.012004 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.2017751 (56 degrees of freedom)</code></pre>
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb321-1" data-line-number="1"><span class="kw">plot</span>(Bispyribac.sodium.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bp=</span>.<span class="dv">1</span>, <span class="dt">ylab=</span><span class="st">&quot;Dry Matter(g/pot)&quot;</span>,</a>
+<a class="sourceLine" id="cb321-2" data-line-number="2">     <span class="dt">xlab=</span><span class="st">&quot;Bispyribac sodium (g/ha)&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb321-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb321-4" data-line-number="4"><span class="co"># drawing lines on the plot</span></a>
+<a class="sourceLine" id="cb321-5" data-line-number="5">ED.SAM.E<span class="fl">.8</span> &lt;-<span class="st"> </span><span class="fl">0.24591</span> <span class="op">+</span><span class="st"> </span>(<span class="fl">2.24201</span> <span class="op">-</span><span class="st"> </span><span class="fl">0.24591</span>) <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb321-6" data-line-number="6">ED.TEK.E<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="fl">-0.05308</span> <span class="op">+</span><span class="st"> </span>(<span class="fl">1.82755</span> <span class="op">+-</span><span class="st"> </span><span class="fl">0.05308</span>) <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb321-7" data-line-number="7"><span class="kw">arrows</span>(<span class="fl">0.1</span>, ED.SAM.E<span class="fl">.8</span>, <span class="fl">21.7</span>, ED.SAM.E<span class="fl">.8</span>, <span class="dt">code=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb321-8" data-line-number="8"><span class="kw">arrows</span>(<span class="fl">21.7</span>, ED.SAM.E<span class="fl">.8</span>, <span class="fl">21.7</span>, <span class="dv">0</span>, <span class="dt">code=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb321-9" data-line-number="9"><span class="kw">arrows</span>(<span class="fl">0.1</span>, ED.TEK.E<span class="fl">.10</span>, <span class="fl">2.67</span>, ED.TEK.E<span class="fl">.10</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb321-10" data-line-number="10"><span class="kw">arrows</span>(<span class="fl">2.67</span>, ED.TEK.E<span class="fl">.10</span>, <span class="fl">2.67</span>, <span class="dv">0</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figbisrs"></span>
+<img src="Rstats4ag_files/figure-html/figbisrs-1.png" alt="Fit of regression for two accessions." width="672" />
+<p class="caption">
+Figure 12.11: <em>Fit of regression for two accessions.</em>
+</p>
+</div>
+<p>The fit looks reasonable and the test for lack of fit is non-significant and the <span class="math inline">\(ED_{50}\)</span>s are shown. Everything seems to be all right, but we notice that distribution of observations for TEK-E-10 could be better to describe the mid range of the responses. The summary above reveals that the lower limit, <code>c</code>, for TEK-E-10 is less than zero, not much and not different from zero though, but still illogical. We can re-fit the model using the <code>lowerl=</code> argument which will allow us to restrict model parameters to biologically relevant estimates. In this case, we will restrict the lower limit to values of zero or greater. All other parameters will still be allowed to vary without restriction.</p>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb322-1" data-line-number="1">Bispyribac.sodium.m2 &lt;-<span class="st"> </span><span class="kw">drm</span>(Dry.weight.per.pot <span class="op">~</span><span class="st"> </span>Dose, Accesion,</a>
+<a class="sourceLine" id="cb322-2" data-line-number="2">                            <span class="dt">data =</span> TwoCurves, <span class="dt">fct=</span><span class="kw">LL.4</span>(),</a>
+<a class="sourceLine" id="cb322-3" data-line-number="3">                            <span class="dt">lowerl=</span><span class="kw">c</span>(<span class="ot">NA</span>,<span class="dv">0</span>,<span class="ot">NA</span>,<span class="ot">NA</span>))</a>
+<a class="sourceLine" id="cb322-4" data-line-number="4"><span class="kw">summary</span>(Bispyribac.sodium.m2)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+## 
+## Parameter estimates:
+## 
+##             Estimate Std. Error t-value   p-value    
+## b:SAM-E-8   2.042454   0.329052  6.2071 6.984e-08 ***
+## b:TEK-E-10  1.015226   0.313919  3.2340  0.002049 ** 
+## c:SAM-E-8   0.243411   0.074596  3.2631  0.001881 ** 
+## c:TEK-E-10  0.000000   0.071617  0.0000  1.000000    
+## d:SAM-E-8   2.242077   0.082057 27.3234 &lt; 2.2e-16 ***
+## d:TEK-E-10  1.826855   0.101703 17.9627 &lt; 2.2e-16 ***
+## e:SAM-E-8  21.740911   2.295727  9.4702 3.166e-13 ***
+## e:TEK-E-10  2.730186   0.961385  2.8398  0.006280 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.2028892 (56 degrees of freedom)</code></pre>
+<p>We see that the standard error dropped and now we will use the fit and calculate the selectivity factor at <span class="math inline">\(ED_{50}\)</span>:</p>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb324-1" data-line-number="1"><span class="kw">EDcomp</span>(Bispyribac.sodium.m2, <span class="kw">c</span>(<span class="dv">50</span>, <span class="dv">50</span>),<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##                        Estimate   Lower   Upper
+## SAM-E-8/TEK-E-10:50/50   7.9632  2.0988 13.8275</code></pre>
+<p>The resistance factor is about 8 and significantly greater than 1. Note this is one of the few times we do not test the null hypothesis but the hypothesis, that the potency is the same for the two accessions; that is, the relative potency is 1.0. Another important issue is that the dry matter for the <span class="math inline">\(ED_{50}\)</span> differs because of the different upper and lower limits. This will not be solved by scaling the observation to the individual accessions’ untreated control.</p>
+<p>Obviously, the <span class="math inline">\(ED_{50}\)</span> is not at the same response level, and the relative potency of 8 is significantly different form 1.00.</p>
+<p>When using absolute dry matter of say 1.24, the response at <span class="math inline">\(ED_{50}\)</span> for SAM-E-8 and TEK-E-10 is seen below.</p>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb326-1" data-line-number="1"><span class="kw">ED</span>(Bispyribac.sodium.m2, <span class="fl">1.24</span>, <span class="dt">type=</span><span class="st">&quot;absolute&quot;</span>, <span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated effective doses
+## 
+##                  Estimate Std. Error     Lower     Upper
+## e:SAM-E-8:1.24  21.799437   2.302921 17.186132 26.412741
+## e:TEK-E-10:1.24  1.306694   0.698047 -0.091663  2.705051</code></pre>
+<p>Looking at the distribution of observation for TEK-E-10, there are no observations to determine the shape of the curve above the <span class="math inline">\(ED_{50}\)</span>.</p>
+<p>If this is the right way to compare absolute response level we could use <span class="math inline">\(ED_{1.24}\)</span> (Figure <a href="dose-response-curves.html#fig:figbisrsabs">12.12</a>).</p>
+
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb328-2" data-line-number="2"><span class="kw">plot</span>(Bispyribac.sodium.m2, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bp=</span>.<span class="dv">1</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb328-3" data-line-number="3">     <span class="dt">ylab=</span><span class="st">&quot;g Dry Matter/pot&quot;</span>,</a>
+<a class="sourceLine" id="cb328-4" data-line-number="4">     <span class="dt">xlab=</span><span class="st">&quot;Dose (g Bispyribac sodium/ha)&quot;</span>)</a>
+<a class="sourceLine" id="cb328-5" data-line-number="5"><span class="kw">arrows</span>(  <span class="fl">0.1</span>, <span class="fl">1.24</span>, <span class="fl">21.79</span>, <span class="fl">1.24</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb328-6" data-line-number="6"><span class="kw">arrows</span>(<span class="fl">21.79</span>, <span class="fl">1.24</span>, <span class="fl">21.79</span>,    <span class="dv">0</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb328-7" data-line-number="7"><span class="kw">arrows</span>(  <span class="fl">1.31</span>, <span class="fl">1.24</span>,   <span class="fl">1.31</span>,    <span class="dv">0</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">2</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figbisrsabs"></span>
+<img src="Rstats4ag_files/figure-html/figbisrsabs-1.png" alt="Comparison of the two dose-response curves; red vertical lines show the dose of bispyribac sodium resulting in 1.24 g of dry matter (horizontal line) for the two biotypes." width="672" />
+<p class="caption">
+Figure 12.12: <em>Comparison of the two dose-response curves; red vertical lines show the dose of bispyribac sodium resulting in 1.24 g of dry matter (horizontal line) for the two biotypes.</em>
+</p>
+</div>
+<p>Now the resistance factor below becomes huge, but so does the confidence interval and consequently the resistance factor is not statistically different from 1.0 at an alpha ov 0.05. The villain is the poor precision of TEK-E-10 <span class="math inline">\(ED_{1.24}\)</span> that is not significantly different form 0.0.</p>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb329-1" data-line-number="1"><span class="kw">EDcomp</span>(Bispyribac.sodium.m2, <span class="kw">c</span>(<span class="fl">1.24</span>, <span class="fl">1.24</span>), <span class="dt">type=</span><span class="st">&quot;absolute&quot;</span>,<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##                            Estimate  Lower  Upper
+## SAM-E-8/TEK-E-10:1.24/1.24   16.683 -1.516 34.882</code></pre>
+<p>The problems described above is virtually never mentioned in the weed science journals, even though it is instrumental to understand what we actually compare. The researcher must choose, and the choice has nothing to do with statistics but with biology.</p>
+<p>On the basis of the fit above we can actually scale data on the basis of the regression parameters of the <code>d</code> and the <code>c</code> parameters.</p>
+
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb331-1" data-line-number="1">SAM.E.<span class="fl">8.</span>C&lt;-<span class="kw">coef</span>(Bispyribac.sodium.m1)[<span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb331-2" data-line-number="2">TEK.E.<span class="fl">10.</span>C&lt;-<span class="kw">coef</span>(Bispyribac.sodium.m1)[<span class="dv">4</span>]</a>
+<a class="sourceLine" id="cb331-3" data-line-number="3">SAM.E.<span class="fl">8.</span>d&lt;-<span class="kw">coef</span>(Bispyribac.sodium.m1)[<span class="dv">5</span>]</a>
+<a class="sourceLine" id="cb331-4" data-line-number="4">TEK.E.<span class="fl">10.</span>d&lt;-<span class="kw">coef</span>(Bispyribac.sodium.m1)[<span class="dv">6</span>]</a>
+<a class="sourceLine" id="cb331-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb331-6" data-line-number="6">Rel.Y&lt;-<span class="kw">with</span>(TwoCurves,</a>
+<a class="sourceLine" id="cb331-7" data-line-number="7">            <span class="kw">ifelse</span>(Accesion<span class="op">==</span><span class="st">&quot;SAM-E-8&quot;</span>, </a>
+<a class="sourceLine" id="cb331-8" data-line-number="8">                   ((Dry.weight.per.pot<span class="op">-</span>SAM.E.<span class="fl">8.</span>C)<span class="op">/</span>(SAM.E.<span class="fl">8.</span>d<span class="op">-</span>SAM.E.<span class="fl">8.</span>C)),</a>
+<a class="sourceLine" id="cb331-9" data-line-number="9">                   ((Dry.weight.per.pot<span class="op">-</span>TEK.E.<span class="fl">10.</span>C)<span class="op">/</span>(TEK.E.<span class="fl">10.</span>d<span class="op">-</span>TEK.E.<span class="fl">10.</span>C))))</a>
+<a class="sourceLine" id="cb331-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb331-11" data-line-number="11">Scaled.m1&lt;-<span class="kw">drm</span>(Rel.Y <span class="op">~</span><span class="st"> </span>Dose, Accesion, <span class="dt">pmodels=</span><span class="kw">data.frame</span>(Accesion, <span class="dv">1</span>, Accesion),</a>
+<a class="sourceLine" id="cb331-12" data-line-number="12">        <span class="dt">data=</span>TwoCurves, <span class="dt">fct=</span><span class="kw">LL.3</span>())</a>
+<a class="sourceLine" id="cb331-13" data-line-number="13"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb331-14" data-line-number="14"><span class="kw">plot</span>(Scaled.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bp=</span>.<span class="dv">1</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>, </a>
+<a class="sourceLine" id="cb331-15" data-line-number="15">     <span class="dt">ylab=</span><span class="st">&quot;Relative Dry Matter&quot;</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">1.2</span>),</a>
+<a class="sourceLine" id="cb331-16" data-line-number="16">     <span class="dt">xlab=</span><span class="st">&quot;Bispyribac-sodium dose (g/ha)&quot;</span>)</a>
+<a class="sourceLine" id="cb331-17" data-line-number="17"><span class="kw">arrows</span>(  <span class="fl">0.1</span>, <span class="fl">.5</span>, <span class="fl">21.7</span>,.<span class="dv">5</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb331-18" data-line-number="18"><span class="kw">arrows</span>(<span class="fl">21.79</span>, <span class="fl">0.5</span>, <span class="fl">21.79</span>,    <span class="dv">0</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb331-19" data-line-number="19"><span class="kw">arrows</span>(  <span class="fl">2.66</span>, <span class="fl">.5</span>,   <span class="fl">2.66</span>,    <span class="dv">0</span>, <span class="dt">code=</span><span class="dv">0</span>, <span class="dt">lty=</span><span class="dv">2</span>, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figbisrsscaled"></span>
+<img src="Rstats4ag_files/figure-html/figbisrsscaled-1.png" alt="Regression fit of scaled responses with similar upper limit, d, and lower limit set to zero." width="672" />
+<p class="caption">
+Figure 12.13: <em>Regression fit of scaled responses with similar upper limit, <code>d</code>, and lower limit set to zero.</em>
+</p>
+</div>
+<p>The summary of the fit in Figure <a href="dose-response-curves.html#fig:figbisrsscaled">12.13</a> shows that we get almost the same parameters for the scaled <span class="math inline">\(ED_{50}\)</span>’s and the selectivity factor is the same but what is concealed by fitting the scaled responses is that the dry matter production is not the same for the two curves, because the scales are originally different. In essence, scaling the data in this way removes the valuable information contained in the <em>d</em> parameter without adding benefit.</p>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb332-1" data-line-number="1"><span class="kw">summary</span>(Scaled.m1)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) with lower limit at 0 (3 parms)
+## 
+## Parameter estimates:
+## 
+##                Estimate Std. Error t-value   p-value    
+## b:SAM-E-8      2.048548   0.264669  7.7400 1.507e-10 ***
+## b:TEK-E-10     0.875897   0.197672  4.4311 4.133e-05 ***
+## d:(Intercept)  0.999972   0.031495 31.7504 &lt; 2.2e-16 ***
+## e:SAM-E-8     21.697160   1.825621 11.8848 &lt; 2.2e-16 ***
+## e:TEK-E-10     2.662759   0.924541  2.8801  0.005533 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.1005159 (59 degrees of freedom)</code></pre>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" data-line-number="1"><span class="kw">EDcomp</span>(Scaled.m1, <span class="kw">c</span>(<span class="dv">50</span>, <span class="dv">50</span>),<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##                        Estimate   Lower   Upper
+## SAM-E-8/TEK-E-10:50/50   8.1484  2.4492 13.8475</code></pre>
+<p>In summary, fitting on raw data the relative potency is 7.96 (2.93) with a coefficient of variation of 37% with the fit on scaled data on the basis of the upper limits of the regression fit on raw data the relative potency also is 8.14 (2.84) with a coefficient of variation of 32%. In this instance not dramatically different, except that for the raw data the relative potency is significantly different from zero on the 2% level whereas for the fit on relative data it is significant on the 1% level. However, if we go for an absolute ED at the dry matter of 1.24 the the relative potency is 16, but not significantly different from zero. In the literature the differences between untreated controls among accessions can be much larger than here.</p>
+</div>
+<div id="remedy-for-heterogeneous-variance" class="section level2">
+<h2><span class="header-section-number">12.6</span> Remedy for heterogeneous variance</h2>
+<p>Turning back to the ryegrass dataset the plot of the fit with all observations and the residual plot suggest we should do some kind of transformation or weighing. Because the log-logistic relationship is on the original scale, we cannot just make a transformation of response without doing the same on the right hand side of the equation. <code>drc</code> has a function that can do a a BoxCox transform-both-side regression. You can get more information by executing <code>?boxcox.drc</code>.</p>
+<ul>
+<li>Fit the original model</li>
+<li>update the fit with the function boxcox()</li>
+</ul>
+
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb336-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb336-2" data-line-number="2">ryegrass.BX &lt;-<span class="st"> </span><span class="kw">boxcox</span>(ryegrass.m1,<span class="dt">method=</span><span class="st">&quot;anova&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figryeboxcox1"></span>
+<img src="Rstats4ag_files/figure-html/figryeboxcox1-1.png" alt="Search for optimum \(\lambda\) with confidence intervals. The chosen \(\lambda\) is 0.42." width="672" />
+<p class="caption">
+Figure 12.14: <em>Search for optimum <span class="math inline">\(\lambda\)</span> with confidence intervals. The chosen <span class="math inline">\(\lambda\)</span> is 0.42.</em>
+</p>
+</div>
+<p>The summary below give the parameters with the BoxCox transformation.</p>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb337-1" data-line-number="1"><span class="kw">summary</span>(ryegrass.BX)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Weibull (type 1) (4 parms)
+## 
+## Parameter estimates:
+## 
+##               Estimate Std. Error t-value   p-value    
+## b:(Intercept) 1.573865   0.223277  7.0489 7.772e-07 ***
+## c:(Intercept) 0.476866   0.090536  5.2672 3.731e-05 ***
+## d:(Intercept) 8.007031   0.393446 20.3510 7.759e-15 ***
+## e:(Intercept) 3.845926   0.308134 12.4813 6.764e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error:
+## 
+##  0.3258055 (20 degrees of freedom)
+## 
+## Non-normality/heterogeneity adjustment through optimal Box-Cox transformation
+## 
+## Estimated lambda: 0.424 
+## Confidence interval for lambda: [0.124,0.782]</code></pre>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb339-1" data-line-number="1"><span class="kw">ED</span>(ryegrass.BX,<span class="dv">50</span>,<span class="dt">interval=</span><span class="st">&quot;delta&quot;</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated effective doses
+## 
+##        Estimate Std. Error   Lower   Upper
+## e:1:50  3.04695    0.29106 2.43981 3.65409</code></pre>
+<p>The changes in parameters and their standard deviations in relation to the original fit are not dramatic. Normally, if the heterogeneity of variance is moderate and the response curve is well described by responses covering the response range, the changes in the parameters would be small, but perhaps there will be changes in the standard errors. Consequently, if the objective is to compare potency among compounds the prerequisite for constant variance may be important to draw the optimal conclusions.</p>
+<p>The residuals after the BoxCox update look a bit better now, compared to the original one.</p>
+
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb341-1" data-line-number="1"><span class="co">#Graphical analysis of residuals</span></a>
+<a class="sourceLine" id="cb341-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,<span class="dv">2</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>)) <span class="co">#put two graphs together</span></a>
+<a class="sourceLine" id="cb341-3" data-line-number="3">    <span class="kw">plot</span>(<span class="kw">residuals</span>(ryegrass.BX) <span class="op">~</span><span class="st"> </span><span class="kw">fitted</span>(ryegrass.BX), <span class="dt">main=</span><span class="st">&quot;Residuals vs Fitted&quot;</span>)</a>
+<a class="sourceLine" id="cb341-4" data-line-number="4"><span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb341-5" data-line-number="5"><span class="kw">qqnorm</span>(<span class="kw">residuals</span>(ryegrass.BX))</a>
+<a class="sourceLine" id="cb341-6" data-line-number="6"> <span class="kw">qqline</span>(<span class="kw">residuals</span>(ryegrass.BX))</a></code></pre></div>
+<div class="figure"><span id="fig:figryeboxcoxdiag"></span>
+<img src="Rstats4ag_files/figure-html/figryeboxcoxdiag-1.png" alt="Residual plots of BoxCox transformed-both-sides.The funnel type distribution of the residuals now has disappeared." width="672" />
+<p class="caption">
+Figure 12.15: <em>Residual plots of BoxCox transformed-both-sides.The funnel type distribution of the residuals now has disappeared.</em>
+</p>
+</div>
+</div>
+<div id="dose-responses-with-binomial-data" class="section level2">
+<h2><span class="header-section-number">12.7</span> Dose-responses with binomial data</h2>
+<p>Survival of plant or ability to germinate in response to herbicides is a classical underlying construct in toxicology. In weed science it also is important because <em>the only good weed is a dead weed</em>. Particularly, in these ages of detecting herbicide resistance/tolerance the dead or alive response is important. In insecticide research and in general toxicology the binomial response, dead or alive or affected not affected is fundamental for classifying toxic compounds.</p>
+<p>A prerequisite is that we know how to properly classify the demise of a plant. We are far away from the normal distribution. The data, however, can still be analysed with the function <code>drm()</code> but a new argument must be included in the <code>drm()</code> function, viz <code>type=&quot;binomial</code>.</p>
+<div id="example-1-herbicide-susceptibility" class="section level3">
+<h3><span class="header-section-number">12.7.1</span> Example 1: Herbicide susceptibility</h3>
+<p>Below we have an experiment with putative glyphosate sensitive and tolerant biotypes of <em>Chenopodium album</em> and the survival as response, which takes two values: 0 means dead and 1 means alive. In fact, every plants is an experimental unit. We assume that all plants survived in the untreated control and at infinite high rates all plants die. It is important to note, though, that this assumption may not always hold; for example, some triazine-resistant biotypes may not be killed by atrazine, even at exceptionally high doses. But for this example, the data suggest that even the tolerant biotype can be killed at high doses.</p>
+
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb342-1" data-line-number="1"><span class="kw">library</span>(drc)</a>
+<a class="sourceLine" id="cb342-2" data-line-number="2"><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/chealglyph.csv&quot;</span>)-&gt;cheal.dat</a>
+<a class="sourceLine" id="cb342-3" data-line-number="3"><span class="kw">head</span>(cheal.dat,<span class="dt">n=</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   block biotype glyph.rate survival
+## 1     A       S        426        0
+## 2     A       T       1680        0
+## 3     A       T          0        1</code></pre>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb344-1" data-line-number="1"><span class="kw">drm</span>(survival <span class="op">~</span><span class="st"> </span>glyph.rate, biotype, <span class="dt">fct=</span><span class="kw">LL.2</span>(<span class="dt">names=</span><span class="kw">c</span>(<span class="st">&quot;Slope&quot;</span>, <span class="st">&quot;LD50&quot;</span>)),</a>
+<a class="sourceLine" id="cb344-2" data-line-number="2">    <span class="dt">type=</span>(<span class="st">&quot;binomial&quot;</span>), <span class="dt">data=</span>cheal.dat, <span class="dt">na.action=</span>na.omit)-&gt;cheal.drm</a>
+<a class="sourceLine" id="cb344-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb344-4" data-line-number="4"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb344-5" data-line-number="5"><span class="kw">plot</span>(cheal.drm, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10000</span>), <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>,</a>
+<a class="sourceLine" id="cb344-6" data-line-number="6">     <span class="dt">xlab=</span><span class="st">&quot;glyphosate rate&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;P(survival)&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figchealst"></span>
+<img src="Rstats4ag_files/figure-html/figchealst-1.png" alt="Dose-response curves for survival of Chenopodium album classified a priori as either sensitive or tolerant to glyphosate based on field history." width="672" />
+<p class="caption">
+Figure 12.16: <em>Dose-response curves for survival of</em> Chenopodium album <em>classified <strong>a priori</strong> as either sensitive or tolerant to glyphosate based on field history.</em>
+</p>
+</div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb345-1" data-line-number="1"><span class="kw">modelFit</span>(cheal.drm)</a></code></pre></div>
+<pre><code>## Goodness-of-fit test
+## 
+##             Df Chisq value p value
+##                                   
+## DRC model   89      63.247  0.9823</code></pre>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb347-1" data-line-number="1"><span class="kw">summary</span>(cheal.drm)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) with lower limit at 0 and upper limit at 1 (2 parms)
+## 
+## Parameter estimates:
+## 
+##          Estimate Std. Error t-value   p-value    
+## Slope:S   4.10418    1.40025  2.9310 0.0033783 ** 
+## Slope:T   2.42592    0.72357  3.3527 0.0008003 ***
+## LD50:S  216.98961   30.29692  7.1621 7.945e-13 ***
+## LD50:T  731.56946  122.16134  5.9886 2.117e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The data from the tolerant biotypes are not as ‘clean’ as for the sensitive biotype, and this is reflected in the standard error of the <span class="math inline">\(LD_{50}\)</span>. This variability is often to be expected when a population is still segregating for a resistance trait, and individual organisms are being used as experimental units. The ?EDcomp()` function can be used to test whether the <span class="math inline">\(LD_{50}\)</span> is statistically different between biotypes.</p>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb349-1" data-line-number="1"><span class="kw">EDcomp</span>(cheal.drm,<span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">50</span>), <span class="dt">reverse=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## 
+## Estimated ratios of effect doses
+## 
+##            Estimate Std. Error   t-value   p-value
+## T/S:50/50 3.3714492  0.7338531 3.2315040 0.0012314</code></pre>
+<p>The two biotypes exhibit an approximately 3-fold difference in susceptibility to glyphosate, and this difference is statistically different from 1.</p>
+<p>Another important issue here, is that the response range goes between 0 to 1.0, which is in contrast to the use of continuous response variables such as biomass. Generally, you get more information using biomass or other continuous responses, but also more difficult choices for interpretation, as mentioned before about, e.g. how to deal with different upper limit and lower limits among dose response curves.</p>
+</div>
+<div id="example-2-earthworm-toxicity" class="section level3">
+<h3><span class="header-section-number">12.7.2</span> Example 2: Earthworm toxicity</h3>
+<p>The next example is from an ecotoxicological experiment with earthworms. A number of earthworms is distributed uniformly in a container where one half of the container surface is contaminated by a toxic substance (not disclosed). If the earthworms do not like the substance they will flee to the uncontaminated part of the container.</p>
+<p>In this dataset the arrangement for data is somewhat different from the one with the sensitive and tolerant <i>Chenopodium album</i>. For each container we have a dose, a total number of earthworms, and the number of earthworms that migrated away form the contaminated part of the container. Consequently, we now need to use an additional argument in <code>drm()</code>, a weighing argument <code>weights=total</code>.</p>
+
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" data-line-number="1"><span class="kw">head</span>(earthworms,<span class="dt">n=</span><span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##   dose number total
+## 1    0      3     5
+## 2    0      3     5
+## 3    0      3     4</code></pre>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb353-1" data-line-number="1"><span class="co">## Fitting a logistic regression model</span></a>
+<a class="sourceLine" id="cb353-2" data-line-number="2">earthworms.m1 &lt;-<span class="st"> </span><span class="kw">drm</span>(number<span class="op">/</span>total <span class="op">~</span><span class="st"> </span>dose, <span class="dt">weights =</span> total, <span class="dt">data =</span> earthworms,</a>
+<a class="sourceLine" id="cb353-3" data-line-number="3">                     <span class="dt">fct =</span> <span class="kw">LL.2</span>(), <span class="dt">type =</span> <span class="st">&quot;binomial&quot;</span>)</a>
+<a class="sourceLine" id="cb353-4" data-line-number="4"><span class="kw">modelFit</span>(earthworms.m1)  <span class="co"># a crude goodness-of-fit test</span></a></code></pre></div>
+<pre><code>## Goodness-of-fit test
+## 
+##             Df Chisq value p value
+##                                   
+## DRC model   28      35.236  0.1631</code></pre>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb355-1" data-line-number="1"><span class="kw">summary</span>(earthworms.m1)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) with lower limit at 0 and upper limit at 1 (2 parms)
+## 
+## Parameter estimates:
+## 
+##               Estimate Std. Error t-value   p-value    
+## b:(Intercept) 1.260321   0.246707  5.1086 3.246e-07 ***
+## e:(Intercept) 0.145140   0.036797  3.9444 8.000e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb357-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb357-2" data-line-number="2"><span class="kw">plot</span>(earthworms.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figworms10"></span>
+<img src="Rstats4ag_files/figure-html/figworms10-1.png" alt="Standard 2 parameter log-logistic dose-response regression with upper and lower limits set to 1 and 0, respectively." width="672" />
+<p class="caption">
+Figure 12.17: <em>Standard 2 parameter log-logistic dose-response regression with upper and lower limits set to 1 and 0, respectively.</em>
+</p>
+</div>
+<p>The regression above is a standard the with an upper limit of 1 and apparently the goodness of fit is not significant, even though the untreated control is around 0.6. From a biological point of view the earthworms can move freely after half of the container is contaminated with toxic materials. In the untreated control with no contamination we expect that around 0.5 would be present in the part where we count. Therefore, a 2-parameter model with the upper limit fixed at 1.0 does not seem appropriate here. Consequently, we will introduce a three parameter log-logistic model with an upper limit being estimated on the basis of data.</p>
+
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb358-1" data-line-number="1"><span class="co">## Fitting an extended logistic regression model </span></a>
+<a class="sourceLine" id="cb358-2" data-line-number="2"><span class="co">##  where the upper limit is estimated</span></a>
+<a class="sourceLine" id="cb358-3" data-line-number="3">earthworms.m2 &lt;-<span class="st"> </span><span class="kw">drm</span>(number<span class="op">/</span>total <span class="op">~</span><span class="st"> </span>dose, <span class="dt">weights =</span> total, <span class="dt">data =</span> earthworms,</a>
+<a class="sourceLine" id="cb358-4" data-line-number="4">                     <span class="dt">fct =</span> <span class="kw">LL.3</span>(), <span class="dt">type =</span> <span class="st">&quot;binomial&quot;</span>)</a>
+<a class="sourceLine" id="cb358-5" data-line-number="5"><span class="kw">modelFit</span>(earthworms.m2)  <span class="co"># goodness-of-fit test</span></a></code></pre></div>
+<pre><code>## Goodness-of-fit test
+## 
+##             Df Chisq value p value
+##                                   
+## DRC model   32       43.13  0.0905</code></pre>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb360-1" data-line-number="1"><span class="kw">summary</span>(earthworms.m2)</a></code></pre></div>
+<pre><code>## 
+## Model fitted: Log-logistic (ED50 as parameter) with lower limit at 0 (3 parms)
+## 
+## Parameter estimates:
+## 
+##               Estimate Std. Error t-value   p-value    
+## b:(Intercept) 1.505679   0.338992  4.4416 8.928e-06 ***
+## d:(Intercept) 0.604929   0.085800  7.0505 1.783e-12 ***
+## e:(Intercept) 0.292428   0.083895  3.4856  0.000491 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb362-2" data-line-number="2"><span class="kw">plot</span>(earthworms.m2, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figworms0"></span>
+<img src="Rstats4ag_files/figure-html/figworms0-1.png" alt="Regression fit with the upper limit being estimated instead of fixed at 1.0." width="672" />
+<p class="caption">
+Figure 12.18: <em>Regression fit with the upper limit being estimated instead of fixed at 1.0.</em>
+</p>
+</div>
+<p>The goodness of fit was also here acceptable, so on the basis of the statistics we cannot pick the “best model”. However, we could compare the AIC for the two models and pick the lowest value.</p>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb363-1" data-line-number="1"><span class="kw">AIC</span>(earthworms.m1, earthworms.m2)</a></code></pre></div>
+<pre><code>##               df       AIC
+## earthworms.m1  2 699.10026
+## earthworms.m2  3  78.31036</code></pre>
+<p>The model with the estimated upper limit has an AIC that is 9 times smaller than the 2-parameter model. This also corresponds with what we biologically expected.</p>
+<p>The <span class="math inline">\(LD_{50}\)</span> changed somewhat because the upper limit changed, not because there is much difference of the mid part of the curves as snow below.</p>
+
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb365-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,.<span class="dv">5</span>,.<span class="dv">5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb365-2" data-line-number="2"><span class="kw">plot</span>(earthworms.m1, <span class="dt">broken=</span><span class="ot">TRUE</span>,  <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lty=</span><span class="dv">2</span>, <span class="dt">bty=</span><span class="st">&quot;l&quot;</span>)</a>
+<a class="sourceLine" id="cb365-3" data-line-number="3"><span class="kw">plot</span>(earthworms.m2, <span class="dt">broken=</span><span class="ot">TRUE</span>, <span class="dt">add=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb365-4" data-line-number="4"><span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>,<span class="kw">c</span>(<span class="st">&quot;2-parameter model (d = 1)&quot;</span>, <span class="st">&quot;3-parameter model (d = estimated)&quot;</span>),</a>
+<a class="sourceLine" id="cb365-5" data-line-number="5">       <span class="dt">lty=</span><span class="dv">2</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;red&quot;</span>,<span class="dv">1</span>))</a></code></pre></div>
+<div class="figure"><span id="fig:figwormsboth"></span>
+<img src="Rstats4ag_files/figure-html/figwormsboth-1.png" alt="Comparison between the two curves fittings on with standard d=1 and one with a d determined by data." width="672" />
+<p class="caption">
+Figure 12.19: <em>Comparison between the two curves fittings on with standard <code>d</code>=1 and one with a <code>d</code> determined by data.</em>
+</p>
+</div>
+<p>The earthworm example is a good one, because the biological knowledge of the set up of the experiment is instrumental to understanding which model to use. In fact the <span class="math inline">\(LD_{50}\)</span> ranged from 0.04 with the 2 parameter log-logistic fit to 0.29 while the 3 parameter log-logistic fit, which was the correct one from a biological point of view. We do expect that the earthworms would evenly distribute themselves in the untreated control with about 50% in each part of the box.</p>
+<hr />
+
+</div>
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="logistic-regression-binary-response.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="nonlinear-regression-selectivity-of-herbicides.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

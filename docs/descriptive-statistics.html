@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Descriptive Statistics | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Descriptive Statistics | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Descriptive Statistics | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="welcome-to-the-tidyverse.html"/>
+<link rel="next" href="simple-correlation.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="descriptive-statistics" class="section level1">
+<h1><span class="header-section-number">3</span> Descriptive Statistics</h1>
+<div id="calculating-group-means" class="section level2">
+<h2><span class="header-section-number">3.1</span> Calculating group means</h2>
+<p>One of the most basic exploratory tasks with any data set involves computing the mean, variance, and other descriptive statistics. A previous section has already demonstrated how to obtain many of these statistics from a data set, using the <code>summary()</code>, <code>mean()</code>, and <code>sd()</code> functions. However these functions were used in the context of an entire data set or column from a data set; in most cases it will be more informative to calculate these statistics for groups of data, such as experimental treatments. The <code>tapply()</code> function can be used for this purpose. Summary statistics for the corn irrigation data set were calculated previously using the <code>summary()</code> function. The <code>tapply()</code> function allows us to calculate similar descriptive statistics for groups of data, most commonly for treatments, but also for other logical groups, such as by experimental sites, or years. The <code>tapply()</code> function requires three arguments:</p>
+<ul>
+<li>The data column you want to summarize (response variable)</li>
+<li>The data column you wish to group the data by (treatment or grouping variable)</li>
+<li>The function you want to calculate (mean, standard deviation, maximum, etc.)</li>
+</ul>
+<p>The example below will calculate mean yield for each irrigation block (Full irrigation or Limited irrigation).</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1">corn.dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/irrigcorn.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb70-2" data-line-number="2"><span class="kw">tapply</span>(corn.dat<span class="op">$</span>Yield.BuA, corn.dat<span class="op">$</span>Irrig, mean)</a></code></pre></div>
+<pre><code>##     Full  Limited 
+## 181.1667 163.2708</code></pre>
+<p>To specify multiple grouping variables, we use the <code>list()</code> function within the <code>tapply()</code> function:</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1"><span class="kw">tapply</span>(corn.dat<span class="op">$</span>Yield.BuA, <span class="kw">list</span>(corn.dat<span class="op">$</span>Population.A, corn.dat<span class="op">$</span>Irrig), mean)</a></code></pre></div>
+<pre><code>##           Full  Limited
+## 23000 171.1667 147.3333
+## 33000 191.1667 179.2083</code></pre>
+</div>
+<div id="calculating-other-group-statistics-with-tapply" class="section level2">
+<h2><span class="header-section-number">3.2</span> Calculating other group statistics with tapply</h2>
+<p>We can use the same syntax to calculate nearly any statistic for the groups by replacing the <code>mean</code> argument with another function, such as <code>max</code>, <code>min</code>, <code>sd</code> etc.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1"><span class="kw">tapply</span>(corn.dat<span class="op">$</span>Yield.BuA, <span class="kw">list</span>(corn.dat<span class="op">$</span>Population.A, corn.dat<span class="op">$</span>Irrig), median)</a></code></pre></div>
+<pre><code>##       Full Limited
+## 23000  171   152.5
+## 33000  191   182.5</code></pre>
+<p>You can also specify other functions or operations. For example, there is no default function in <code>R</code> to calculate the CV, or coefficient of variation. This statistic is commonly used in crop sciences. The CV is simply the standard deviation divided by the mean, and so we can calculate the CV using by storing the output from <code>tapply()</code> into an object that we can call upon later.</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" data-line-number="1">popirr.sd   &lt;-<span class="st"> </span><span class="kw">tapply</span>(corn.dat<span class="op">$</span>Yield.BuA, </a>
+<a class="sourceLine" id="cb76-2" data-line-number="2">                      <span class="kw">list</span>(corn.dat<span class="op">$</span>Population.A, corn.dat<span class="op">$</span>Irrig), sd)</a>
+<a class="sourceLine" id="cb76-3" data-line-number="3">popirr.mean &lt;-<span class="st"> </span><span class="kw">tapply</span>(corn.dat<span class="op">$</span>Yield.BuA, </a>
+<a class="sourceLine" id="cb76-4" data-line-number="4">                      <span class="kw">list</span>(corn.dat<span class="op">$</span>Population.A, corn.dat<span class="op">$</span>Irrig), mean)</a>
+<a class="sourceLine" id="cb76-5" data-line-number="5">popirr.cv&lt;-popirr.sd<span class="op">/</span>popirr.mean</a>
+<a class="sourceLine" id="cb76-6" data-line-number="6"><span class="kw">round</span>(popirr.cv, <span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##        Full Limited
+## 23000 0.075   0.102
+## 33000 0.052   0.098</code></pre>
+<p>The <code>round()</code> function simply rounds the result to 3 decimal places to make the output more readable. Alternatively, if the CV is a statistic we will use regularly, it may be worthwhile to write our own function to save keystrokes later on. We can do this using <code>function()</code>.</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" data-line-number="1">cv &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb78-2" data-line-number="2">  xm  &lt;-<span class="st"> </span><span class="kw">mean</span>(x)</a>
+<a class="sourceLine" id="cb78-3" data-line-number="3">  xsd &lt;-<span class="st"> </span><span class="kw">sd</span>(x)</a>
+<a class="sourceLine" id="cb78-4" data-line-number="4">  xcv &lt;-<span class="st"> </span>xsd<span class="op">/</span>xm</a>
+<a class="sourceLine" id="cb78-5" data-line-number="5">  <span class="kw">round</span>(xcv, <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb78-6" data-line-number="6">}</a></code></pre></div>
+<p>Or, more efficiently:</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">cv &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb79-2" data-line-number="2">  xcv &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">sd</span>(x) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(x), <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb79-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb79-4" data-line-number="4"><span class="kw">tapply</span>(corn.dat<span class="op">$</span>Yield.BuA, <span class="kw">list</span>(corn.dat<span class="op">$</span>Population.A, corn.dat<span class="op">$</span>Irrig), cv)</a></code></pre></div>
+<pre><code>##         Full Limited
+## 23000 0.0750  0.1021
+## 33000 0.0523  0.0976</code></pre>
+<p>This approach is desirable if the CV will be used repeatedly. Once the function <code>cv()</code> has been defined, you can call upon it repeatedly with very few keystrokes.</p>
+</div>
+<div id="using-dplyr-to-summarize-data" class="section level2">
+<h2><span class="header-section-number">3.3</span> Using dplyr to summarize data</h2>
+<p>In addition to using <code>tapply()</code> from base stats R package, there is an excellent package for summarizing data called <code>dplyr</code>. We can get similar information from the corn data set using the <code>dplyr</code> package using the following syntax (explained in more detail below).</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb81-2" data-line-number="2">corn.summary &lt;-<span class="st"> </span>corn.dat <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb81-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(Population.A, Irrig) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb81-4" data-line-number="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">N        =</span> <span class="kw">length</span>(Yield.BuA),</a>
+<a class="sourceLine" id="cb81-5" data-line-number="5">            <span class="dt">AvgYield =</span> <span class="kw">round</span>(<span class="kw">mean</span>(Yield.BuA),<span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb81-6" data-line-number="6">            <span class="dt">CV       =</span> <span class="kw">cv</span>(Yield.BuA))</a>
+<a class="sourceLine" id="cb81-7" data-line-number="7">corn.summary            </a></code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+## # Groups:   Population.A [2]
+##   Population.A Irrig       N AvgYield     CV
+##          &lt;int&gt; &lt;chr&gt;   &lt;int&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+## 1        23000 Full       24     171. 0.075 
+## 2        23000 Limited    24     147. 0.102 
+## 3        33000 Full       24     191. 0.0523
+## 4        33000 Limited    24     179. 0.0976</code></pre>
+<p>We will explain and demonstrate some of the basic uses of <code>dplyr</code> using herbicide resistant weed data from Canada. The following data set was assembled using data from <a href="http://www.weedscience.org">weedscience.org</a>.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1">resistance&lt;-<span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/CanadaResistance2.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb83-2" data-line-number="2">resistance&lt;-<span class="kw">na.omit</span>(resistance)</a>
+<a class="sourceLine" id="cb83-3" data-line-number="3"><span class="kw">head</span>(resistance)</a></code></pre></div>
+<pre><code>##   Province ID          SciName Year                                     MOA
+## 1  Alberta  1  Stellaria media 1988                    ALS inhibitors (B/2)
+## 2  Alberta  2  Kochia scoparia 1989                    ALS inhibitors (B/2)
+## 3  Alberta  3      Avena fatua 1989 Multiple Resistance: 2 Sites of Action 
+## 6  Alberta  4  Setaria viridis 1989           Microtubule inhibitors (K1/3)
+## 7  Alberta  5      Avena fatua 1991                 ACCase inhibitors (A/1)
+## 8  Alberta  6 Sinapis arvensis 1993                    ALS inhibitors (B/2)</code></pre>
+<p>In the data file, there are instances of multiple resistance (resistance to more than one mode of action).
+The second line of the code above (<code>na.omit()</code>) removes all lines in the data set that contain <code>NA</code> (which is the default value in R for missing data). This is necessary for this particular example so that instances of multiple resistance are not counted multiple times. We may want to use the information from those rows later on, however, and therefore this method is preferable to deleting the rows from the raw data file.</p>
+<p>One of the first things we might like to do is simply count the number of herbicide resistant weed cases by mode of action. We could do this rather quickly using the <code>tapply()</code> function discussed in the previous section: <code>tapply(resistance$ID, resistance$MOA, length)</code>. In the code below, we will use the <code>dplyr</code> package to get some interesting information from this data set. First, we can simply count the number of herbicide resistant weeds for each mode of action in the data set. Initially it seems like much more typing compared to using <code>tapply()</code>, but later on it will become clear why this is a potentially more powerful method.</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb85-2" data-line-number="2">bymoa&lt;-<span class="kw">group_by</span>(resistance, MOA)</a>
+<a class="sourceLine" id="cb85-3" data-line-number="3">moatotal&lt;-<span class="kw">summarize</span>(bymoa, <span class="dt">total=</span><span class="kw">length</span>(ID))</a>
+<a class="sourceLine" id="cb85-4" data-line-number="4"><span class="kw">print</span>(moatotal)</a></code></pre></div>
+<p>In the code above, we are loading the dplyr package, then using two functions from that package. The <code>group_by()</code> function will provide the information on how the data are grouped. In this case, we want to group the data by MOA. We can then use the the <code>summarize()</code> function to calculate means, counts, sums, or any other operation on the data. Above, we used the <code>length()</code> function to count the unique instances of the ID variable for each mode of action. Storing each step with the <code>&lt;-</code> operator can be a little cumbersome, especially if we will not need to use the intermediary steps again. The <code>dplyr</code> package uses the <code>%&gt;%</code> operator to string together several steps. The code below will result in the same summary as above, with fewer keystrokes, and without storing the intermediary grouping as a separate object. The first line provides the name of the data set (<code>resistance</code>) followed by the <code>%&gt;%</code> operator. This tells <code>R</code> to expect a function on the next line from the dplyr package. The second line groups the resistance data set by MOA, and the third line summarizes the data by calculating the length of the ID variable for each level of the grouping factor. Effectively, this counts each instance of resistance. The last line prints out the resulting data frame.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1">moatotal &lt;-<span class="st"> </span>resistance <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb86-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(MOA) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb86-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">total=</span><span class="kw">length</span>(ID))</a>
+<a class="sourceLine" id="cb86-4" data-line-number="4">moatotal</a></code></pre></div>
+<pre><code>## # A tibble: 13 x 2
+##    MOA                                        total
+##    &lt;chr&gt;                                      &lt;int&gt;
+##  1 &quot;ACCase inhibitors (A/1)&quot;                      9
+##  2 &quot;ALS inhibitors (B/2)&quot;                        42
+##  3 &quot;EPSP synthase inhibitors (G/9)&quot;               2
+##  4 &quot;Lipid Inhibitors (thiocarbamates) (N/8)&quot;      2
+##  5 &quot;Microtubule inhibitors (K1/3)&quot;                3
+##  6 &quot;Multiple Resistance: 2 Sites of Action &quot;     12
+##  7 &quot;Multiple Resistance: 3 Sites of Action &quot;      3
+##  8 &quot;Multiple Resistance: 4 Sites of Action &quot;      1
+##  9 &quot;Photosystem II inhibitors (C1/5)&quot;            12
+## 10 &quot;PSI Electron Diverter (D/22)&quot;                 3
+## 11 &quot;PSII inhibitor (Ureas and amides) (C2/7)&quot;     3
+## 12 &quot;PSII inhibitors (Nitriles) (C3/6)&quot;            2
+## 13 &quot;Synthetic Auxins (O/4)&quot;                       3</code></pre>
+<p>The real power and elegance of the <code>dplyr</code> package becomes apparent once we begin using multiple groupings, and creating new variables. Below, we generate totals for each mode of action again, but also by year of listing by using the <code>group_by()</code> and <code>sumarize()</code> functions.</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1">totals &lt;-<span class="st"> </span>resistance <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb88-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(Year, MOA) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb88-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">total =</span> <span class="kw">length</span>(ID)) </a>
+<a class="sourceLine" id="cb88-4" data-line-number="4"><span class="kw">head</span>(totals)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+## # Groups:   Year [6]
+##    Year MOA                              total
+##   &lt;int&gt; &lt;chr&gt;                            &lt;int&gt;
+## 1  1957 Synthetic Auxins (O/4)               1
+## 2  1973 Photosystem II inhibitors (C1/5)     1
+## 3  1976 Photosystem II inhibitors (C1/5)     2
+## 4  1977 Photosystem II inhibitors (C1/5)     3
+## 5  1980 Photosystem II inhibitors (C1/5)     1
+## 6  1981 Photosystem II inhibitors (C1/5)     3</code></pre>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" data-line-number="1"><span class="kw">tail</span>(totals)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+## # Groups:   Year [3]
+##    Year MOA                                       total
+##   &lt;int&gt; &lt;chr&gt;                                     &lt;int&gt;
+## 1  2010 &quot;EPSP synthase inhibitors (G/9)&quot;              1
+## 2  2011 &quot;ACCase inhibitors (A/1)&quot;                     1
+## 3  2011 &quot;ALS inhibitors (B/2)&quot;                        2
+## 4  2011 &quot;Multiple Resistance: 2 Sites of Action &quot;     2
+## 5  2012 &quot;ALS inhibitors (B/2)&quot;                        1
+## 6  2012 &quot;Multiple Resistance: 2 Sites of Action &quot;     3</code></pre>
+<p>We can then create a new variable using the <code>mutate()</code> function; we will add a cumulative total of herbicide resistance cases over time, while retaining information about mode of action by first ungrouping the data, then using mutate to calculate the cumulative total using the <code>cumsum()</code> from the default stats package.</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1">totals &lt;-<span class="st"> </span>resistance <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(Year, MOA) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb92-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">total =</span> <span class="kw">length</span>(ID)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb92-4" data-line-number="4"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb92-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cumulative =</span> <span class="kw">cumsum</span>(total))</a>
+<a class="sourceLine" id="cb92-6" data-line-number="6"><span class="kw">head</span>(totals)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##    Year MOA                              total cumulative
+##   &lt;int&gt; &lt;chr&gt;                            &lt;int&gt;      &lt;int&gt;
+## 1  1957 Synthetic Auxins (O/4)               1          1
+## 2  1973 Photosystem II inhibitors (C1/5)     1          2
+## 3  1976 Photosystem II inhibitors (C1/5)     2          4
+## 4  1977 Photosystem II inhibitors (C1/5)     3          7
+## 5  1980 Photosystem II inhibitors (C1/5)     1          8
+## 6  1981 Photosystem II inhibitors (C1/5)     3         11</code></pre>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" data-line-number="1"><span class="kw">tail</span>(totals)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##    Year MOA                                       total cumulative
+##   &lt;int&gt; &lt;chr&gt;                                     &lt;int&gt;      &lt;int&gt;
+## 1  2010 &quot;EPSP synthase inhibitors (G/9)&quot;              1         88
+## 2  2011 &quot;ACCase inhibitors (A/1)&quot;                     1         89
+## 3  2011 &quot;ALS inhibitors (B/2)&quot;                        2         91
+## 4  2011 &quot;Multiple Resistance: 2 Sites of Action &quot;     2         93
+## 5  2012 &quot;ALS inhibitors (B/2)&quot;                        1         94
+## 6  2012 &quot;Multiple Resistance: 2 Sites of Action &quot;     3         97</code></pre>
+<p>We can also use <code>dplyr</code> to look at other grouping, including by province or weed species, and then use the <code>subset()</code> function to print out only one group. In the below example, we will calculate totals for each province by weed species then keep only the cases from Saskatchewan.</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1">resistance.SK &lt;-<span class="st"> </span>resistance <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb96-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(Province, SciName) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb96-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">total=</span><span class="kw">length</span>(ID)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb96-4" data-line-number="4"><span class="st">  </span><span class="kw">filter</span>(Province <span class="op">==</span><span class="st"> &quot;Saskatchewan&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb96-5" data-line-number="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>total) </a>
+<a class="sourceLine" id="cb96-6" data-line-number="6">resistance.SK</a></code></pre></div>
+<pre><code>## # A tibble: 12 x 3
+## # Groups:   Province [1]
+##    Province     SciName                 total
+##    &lt;chr&gt;        &lt;chr&gt;                   &lt;int&gt;
+##  1 Saskatchewan Avena fatua                 4
+##  2 Saskatchewan Setaria viridis             3
+##  3 Saskatchewan Kochia scoparia             2
+##  4 Saskatchewan Amaranthus retroflexus      1
+##  5 Saskatchewan Capsella bursa-pastoris     1
+##  6 Saskatchewan Chenopodium album           1
+##  7 Saskatchewan Galium spurium              1
+##  8 Saskatchewan Lolium persicum             1
+##  9 Saskatchewan Salsola tragus              1
+## 10 Saskatchewan Sinapis arvensis            1
+## 11 Saskatchewan Stellaria media             1
+## 12 Saskatchewan Thlaspi arvense             1</code></pre>
+<hr />
+
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="welcome-to-the-tidyverse.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="simple-correlation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

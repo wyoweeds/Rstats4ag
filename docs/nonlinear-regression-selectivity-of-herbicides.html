@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>13 Nonlinear Regression - Selectivity of Herbicides | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="13 Nonlinear Regression - Selectivity of Herbicides | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="13 Nonlinear Regression - Selectivity of Herbicides | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="dose-response-curves.html"/>
+<link rel="next" href="plant-competition-experiments.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="nonlinear-regression---selectivity-of-herbicides" class="section level1">
+<h1><span class="header-section-number">13</span> Nonlinear Regression - Selectivity of Herbicides</h1>
+<p>Herbicides are unique in that they are designed to kill plants. Sufficiently high doses will kill both crops and weeds, while small doses have no effect on crops and weeds. For the selective herbicides there are dose-range windows that control some weeds without harming the crop too much. The action of a herbicide is usually determined by its chemical and physical properties, its effect on plant metabolism, the stage of development of the plant and the environment. The purpose of this chapter is to give an overview of the basic principles of how to quantitatively assess herbicide selectivity.</p>
+<p>The chapter is based upon general toxicology commonly used in many disciplines of the biological sciences and it is also used to classify xenobiotics according to their toxic profile; the first of which is the dose required to kill 50% of some test animals (e.g., rats, mice, hamsters). However, the principles in the pesticide science have focus not only on general toxicity, but also on selectivity, particularly when it comes to herbicides.</p>
+<div id="dose-response-curves-1" class="section level2">
+<h2><span class="header-section-number">13.1</span> Dose-Response Curves</h2>
+<p>The difference between tolerance and control of a plant is determined by the size of the dose. The term size of a dose, however, is rather vague in that for some herbicides, only few g/ha are needed to control weeds (e.g., many sulfonylureas) whereas for others we must apply several kg to obtain the same level of control (e.g., phenoxy acids). If we want to determine the potency or selectivity of a herbicide it is not enough only to look at one dose-response curve, as the proper assessment of selectivity should be stated in relative terms depending on the herbicide, crops and weeds in question. In order to avoid ambiguity in assessment of selectivity the sigmoid log-logistic dose-response curve is a good starting point.</p>
+<p><span class="math display">\[y=c+\frac{d-c}{1+ \left(\frac{x}{ED_{50}}\right)^b} \]</span></p>
+<p>Where <code>y</code> is the response, <code>d</code>
+denotes the upper limit, <code>c</code> the lower limit, <span class="math inline">\(ED_{50}\)</span> denotes the dose,
+<code>x</code>, required to half the response 50% between <code>d</code> and <code>c</code>. Finally <code>b</code> denotes the relative slope of the curve around <span class="math inline">\(ED_{50}\)</span>.</p>
+
+<div class="figure"><span id="fig:figrawvslog"></span>
+<img src="Rstats4ag_files/figure-html/figrawvslog-1.png" alt="The log-logistic curve plotted on ordinary dose axis and log(Dose) axis. The broken lines indicate the \(ED_{50}\) on the x-axis and on the y-axis. The broken line on the log(Dose axis) indicates that a zero-dose does not exist on a logarithmic axis." width="672" />
+<p class="caption">
+Figure 13.1: <em>The log-logistic curve plotted on ordinary dose axis and log(Dose) axis. The broken lines indicate the <span class="math inline">\(ED_{50}\)</span> on the x-axis and on the y-axis. The broken line on the log(Dose axis) indicates that a zero-dose does not exist on a logarithmic axis.</em>
+</p>
+</div>
+<p>The ordinary dose-scale looks almost as an exponential decay curve apart form the upper part where there is a small bend. However, one of the nice properties of the log-logistic curves is that it is symmetric on the log(dose) scale (Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figrawvslog">13.1</a>). The inflection point is the <span class="math inline">\(ED_{50}\)</span> whatever the dose scale. The broken lines in Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figrawvslog">13.1</a> show the location of <span class="math inline">\(ED_{50}\)</span>, and in equation 1 it is a natural parameter of the model. If zero-dose is used as control we must break the x-axis to indicate that the logarithm to zero does not exist.</p>
+</div>
+<div id="assessment-of-selectivity" class="section level2">
+<h2><span class="header-section-number">13.2</span> Assessment of Selectivity</h2>
+<p>If we want to compare the phytotoxicity of two or more herbicides on the same plant species or maybe the selectivity of a herbicide upon a crop and a weed species, then we must compare several dose-response curves simultaneously and quantify our findings in relative terms. We must define a standard herbicide and/or a standard species.</p>
+
+<div class="figure"><span id="fig:figselect"></span>
+<img src="Rstats4ag_files/figure-html/figselect-1.png" alt="The relative potency at \(ED_{50}\) is the distance between the two curves. Note that the doses are on log scale and therefore the distance shown at the graph is the ratio between the two doses. In this instance the two curves are similar, i.e. that they have the same upper and lower limit and slope. It is only the \(ED_{50}\) that differs." width="672" />
+<p class="caption">
+Figure 13.2: <em>The relative potency at <span class="math inline">\(ED_{50}\)</span> is the distance between the two curves. Note that the doses are on log scale and therefore the distance shown at the graph is the ratio between the two doses. In this instance the two curves are similar, i.e. that they have the same upper and lower limit and slope. It is only the <span class="math inline">\(ED_{50}\)</span> that differs.</em>
+</p>
+</div>
+<p>To make things simple we assume that we compare the action of two herbicides on the same plant species or at different plant species but with the same upper limit, <code>d</code>, and lower limit <code>c</code>.</p>
+<p>The distance between the two dose-response curves at <span class="math inline">\(ED_{50}\)</span> is a measure of the biological exchange rate between herbicides (Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figselect">13.2</a>), analogous to the more common practice of exchanging currencies, when traveling to foreign land. In toxicology and herbicide selectivity, we do not call it exchange rate, but the relative potency or relative strength, and when studying herbicide resistant biotypes of weeds, the resistance factor or R:S ratio.</p>
+<p>For example, we know that to get adequate control of a common weed flora we need <span class="math inline">\(x_{B}\)</span> g of a test herbicide and <span class="math inline">\(x_{A}\)</span> g of the standard herbicide per unit area. Some will argue that <span class="math inline">\(ED_{50}\)</span> is not at all of interest when it comes to controlling weeds, since we are never interested in only achieving 50% control. While true from a practical standpoint, for the time being we will look at <span class="math inline">\(ED_{50}\)</span> because it is a natural parameter of the log-logistic curve, and therefore it is an important parameter to classify toxic material. Later, we will look at the two additional ED-levels - <span class="math inline">\(ED_{10}\)</span> to assess the crop tolerance and <span class="math inline">\(ED_{90}\)</span> to assess the weed control. In general terms, we can define the relative potency as a response half way between the upper limit,<code>d</code>, and the lower limit <code>c</code>.</p>
+<p><span class="math display">\[ R=\frac{x_{A}}{x_{B}} \]</span></p>
+<p>Where the relative potency, <code>R</code>, can be defined at any <span class="math inline">\(ED_{x}\)</span> level of which <span class="math inline">\(ED_{10}\)</span>, <span class="math inline">\(ED_{50}\)</span>, and <span class="math inline">\(ED_{90}\)</span> are the most common levels in Weed Science. In ecotoxicology <span class="math inline">\(ED_{05}\)</span> is common to define an no-effect level.</p>
+<p>If the relative potency, R=1.0, then there is no difference between the effect of the two herbicides, i.e. <span class="math inline">\(x_{A}\)</span> = <span class="math inline">\(x_{B}\)</span>, if <code>R&lt;1</code> the herbicide dose of B is less effective than herbicide A and if <code>R&gt;1</code> the herbicide A is more effective than herbicide B. So every time we calculate the relative potency, then we must know if the sheer ratio is different from 1.0.</p>
+<p>In Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figselect">13.2</a>, the two dose response curves are similar in that the upper and lower limit are the same for the two curves as are the relative slopes, <code>b</code>. But what if the two curves are not similar (and this more commonly the rule rather than the exception in real life)?</p>
+
+<div class="figure"><span id="fig:figselect2"></span>
+<img src="Rstats4ag_files/figure-html/figselect2-1.png" alt="The two herbicides have similar upper and lower limit and \(ED_{50}\), but have different slopes." width="672" />
+<p class="caption">
+Figure 13.3: <em>The two herbicides have similar upper and lower limit and <span class="math inline">\(ED_{50}\)</span>, but have different slopes.</em>
+</p>
+</div>
+<p>It is evident that in some cases <span class="math inline">\(ED_{50}\)</span> does not give the right picture of toxicity when curves are not similar (Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figselect2">13.3</a>). Herbicide A is less potent above <span class="math inline">\(ED_{50}\)</span> and more potent below <span class="math inline">\(ED_{50}\)</span>. Consider the example in Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figselect2">13.3</a> where the slopes are different but the <span class="math inline">\(ED_{50}\)</span> s are identical. How should we report this? One way of doing it is to report the relative potency at relevant response levels. By defining Herbicide A as being the standard, it means that its <span class="math inline">\(ED_{x}\)</span> is in the denominator. We get the following relative potencies:</p>
+<pre><code>## 
+## Estimated effective doses
+## 
+##          Estimate Std. Error
+## e:1:10 1.6667e+00 3.6316e-07
+## e:1:50 5.0000e+00 5.1752e-07
+## e:1:90 1.5000e+01 3.5880e-06</code></pre>
+<pre><code>## 
+## Estimated effective doses
+## 
+##          Estimate Std. Error
+## e:1:10 5.5556e-01 1.7824e-07
+## e:1:50 5.0000e+00 1.2011e-06
+## e:1:90 4.5000e+01 2.6206e-05</code></pre>
+<pre><code>##    e:1:10    e:1:50    e:1:90 
+## 2.9999968 1.0000014 0.3333346</code></pre>
+<ul>
+<li>Herbicide A the doses are 1.67, 5, 15` for <span class="math inline">\(ED_{10}\)</span>, <span class="math inline">\(ED_{50}\)</span> and <span class="math inline">\(ED_{90}\)</span>, respectively.</li>
+<li>Herbicide B the doses are 0.56, 5, 45 for <span class="math inline">\(ED_{10}\)</span>, <span class="math inline">\(ED_{50}\)</span> and <span class="math inline">\(ED_{90}\)</span>,respectively.</li>
+<li>And the relative potencies are 3, 1, 0.33 at <span class="math inline">\(ED_{10}\)</span>, <span class="math inline">\(ED_{50}\)</span> and <span class="math inline">\(ED_{90}\)</span>, respectively when Herbicide A is the standard.</li>
+</ul>
+<p>Note how the relative potency changes from 3.0 at <span class="math inline">\(ED_{10}\)</span> to 0.33 at <span class="math inline">\(ED_{90}\)</span>. Above <span class="math inline">\(ED_{50}\)</span> herbicide B is more potent than herbicide A, but this changes below <span class="math inline">\(ED_{50}\)</span> where the herbicide A now is most potent. This problem is looked at in more detailed in the <a href="#doseresponse1">previous chapter on dose response curves</a>.</p>
+<p>The <span class="math inline">\(ED_{50}\)</span> somewhat resembles the <span class="math inline">\(LD_{50}\)</span> (or dose required to cause 50% mortality in a test population) as an estimate in acute toxicity in toxicology, it does not tell the full story in Weed science. Particularly, when we wish to compare the selectivity of a herbicide on a crop and a weed flora, be it predominant weed species or not. <span class="math inline">\(ED_{50}\)</span> contains much more information than do <span class="math inline">\(LD_{50}\)</span>, but becomes more difficult to interpret because we typically deal with continuous responses in Weed Science.</p>
+
+<div class="figure"><span id="fig:figselect3"></span>
+<img src="Rstats4ag_files/figure-html/figselect3-1.png" alt="The assessment of the Selectivity Index for a crop and a weed or a group of weeds." width="672" />
+<p class="caption">
+Figure 13.4: <em>The assessment of the Selectivity Index for a crop and a weed or a group of weeds.</em>
+</p>
+</div>
+</div>
+<div id="selectivity-index" class="section level2">
+<h2><span class="header-section-number">13.3</span> Selectivity index</h2>
+<p>Since herbicides may have an effect on any plant, be it crop or weeds, we sometimes have to accept a small decrease in the yield of the crop growing in a weed free environment. For example a 10% decrease might be tolerated, <span class="math inline">\(ED_{10}\)</span>, while a 90% control of the weed, <span class="math inline">\(ED_{90}\)</span>, is considered a reasonable control level of the weeds. The <span class="math inline">\(ED_{10}\)</span> for the crop is 3.33 and the <span class="math inline">\(ED_{90}\)</span> for the weed is 1.04. Consequently the Selectivity Index is 3.20. As seen in Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figselect3">13.4</a>, the upper limits for the crop and the weed are different.</p>
+<p>In the development of herbicides the companies screen virtually 10,000’s of compounds, only a small fraction of which may have some activity. In order to handle this immense amount of information, they must unambiguously define the selectivity of herbicides in the development phase. By accepting a 10% yield loss of the crop growing in weed free environment and by being satisfied with a 90% effect on the weeds growing in crop free environment, we get an Index of Selectivity, IS:</p>
+<p><span class="math display">\[   IS=\frac{{[ED_{10}]_{crop}}}{{[ED_{90}]_{weeds}}} \]</span></p>
+<p>However, the same situation arises when we compare herbicide resistant biotypes with susceptible biotypes. Obviously, if there is target site resistance and a yield penalty we expect difference in response in untreated control. If it is metabolic resistance where no yield penalty has been observed, we can still have different untreated control response. This fact of differences in upper limit among curves are not being solved by making the untreated control equal to 100 and adjust the responses within biotypes accordingly. This often-ignored problem is dealt with in the <a href="#doseresponse1">previous chapter on dose-response curves</a>.</p>
+</div>
+<div id="vertical-and-horizontal-assessment" class="section level2">
+<h2><span class="header-section-number">13.4</span> Vertical and Horizontal Assessment</h2>
+<p>Vertical and horizontal assessment of herbicide effect is shown graphically in Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figvh">13.5</a>.</p>
+<div id="vertical-assessment" class="section level3">
+<h3><span class="header-section-number">13.4.1</span> Vertical assessment</h3>
+<p>Vertical assessment compares plant response at some preset dose levels. This is the most common method for evaluating herbicides in the field. If doses were chosen close to the upper or lower limit of the curves, differences between treatments would be less than if they were chosen in the middle part of the curve. If we are only working at dose-ranges in the middle part of the curves then, in this particular instance, differences would be almost independent of dose-levels. Consequently, the middle region is obviously the optimal part of the curve to obtain information about differences of effects in this particular graph where the curves are looking very similar. This, however, does not apply when the curves have different slopes as shown in Figure <a href="nonlinear-regression-selectivity-of-herbicides.html#fig:figselect3">13.4</a>.</p>
+<p>The curves show that if a herbicide is tested with or without an adjuvant in a factorial experiment, we may get significant interactions, because the differences of effects are not constant. As this interaction is dose dependent due to the S-shaped curves, it may be considered trivial and of little biological significance, when we appraise the selective action of the herbicide. If we choose only dose-ranges in the middle part of the curves, then differences are constant and independent of dose-levels and the interaction would disappear, i.e. the effects are additive.</p>
+</div>
+<div id="horizontal-assessment" class="section level3">
+<h3><span class="header-section-number">13.4.2</span> Horizontal assessment</h3>
+<p>Horizontal assessment is the method we used in the herbicide selectivity section and it answers the question many farmers are interested in: which dose should I use of herbicide A to get the same effect as with herbicide B (the biological exchange rate of two herbicide products). Usually, herbicides are tested in two to three doses and their efficacy is compared with either the untreated control or with some standard herbicide treatment. Rarely, we have so many doses in the field that we actually are able to fit the entire dose response curve.</p>
+
+<div class="figure"><span id="fig:figvh"></span>
+<img src="Rstats4ag_files/figure-html/figvh-1.png" alt="Vertical and horizontal comparison of efficacy of say two herbicide on the same plant species." width="672" />
+<p class="caption">
+Figure 13.5: <em>Vertical and horizontal comparison of efficacy of say two herbicide on the same plant species.</em>
+</p>
+</div>
+<p>Even though the horizontal assessment above seems straight forward, it is not always the case. With continuous response variables comparing dose-response curves with different upper and lower limits is not just a trivial task to compare curves. The differences in upper and lower limits of different dose-response curves are sometimes important as they tell a story about the experiments. In the <a href="#doseresponse1">Dose-Response Curve chapter</a> we briefly discuss it. The bottom line here is that comparison is not a matter of statistics, but a matter of biology, and thus rather complicated.</p>
+<hr />
+
+</div>
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dose-response-curves.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="plant-competition-experiments.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

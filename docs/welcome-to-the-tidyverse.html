@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Welcome to the Tidyverse | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Welcome to the Tidyverse | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Welcome to the Tidyverse | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="intro.html"/>
+<link rel="next" href="descriptive-statistics.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="welcome-to-the-tidyverse" class="section level1">
+<h1><span class="header-section-number">2</span> Welcome to the Tidyverse</h1>
+<p>The <a href="https://www.tidyverse.org/"><code>tidyverse</code> is a collection of packages</a> that were developed for data science. This group of packages provide some powerful and efficient functions that share a common syntax, making them seamless to use together. It is also possible (and common) to combine functions from the <code>tidyverse</code> with base <code>R</code> functions. The ‘tidy’ in the name comes from the concept of <a href="https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf">tidy data</a>, which is basically a standardized way of managing data.</p>
+<p>The <code>tidyverse</code> is a meta-package; the package itself does not contain any functions, but when you install or load <code>tidyverse</code> into your workspace, it ensures that the full group of packages are installed or loaded. The <code>tidyverse</code> includes three packages that we will use in this text (<code>dplyr</code>, <code>tidyr</code>, and <code>ggplot2</code>), plus several others.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
+<div id="the-dplyr-package" class="section level2">
+<h2><span class="header-section-number">2.1</span> The <code>dplyr</code> package</h2>
+<p>One of the most useful packages in the <code>tidyverse</code> is <code>dplyr</code>, and one of the most useful functions within the <code>tidyverse</code> is the pipe. Here, we will show how to use the pipe operator <code>%&gt;%</code> to more efficiently do some of the same operations we showed in the previous chapter.</p>
+<div id="the-dplyr-pipe" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</h3>
+<p>The concept of a pipe may be familiar to many programmers, but is often a new concept to scientists without a coding background. The simplest way to think about pipes is to say to yourself “and then…” any time you see the pipe. One of the most common usages of pipes is illustrated below. In the first line, we specify which data we want to work with, <em>and then</em> we perform operation 1, <em>and then</em> we perform operation 2.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co">##  A common use of pipes (not run):</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">data.object <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="st">  </span>operation <span class="dv">1</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="st">  </span>operation <span class="dv">2</span></a></code></pre></div>
+<p>To illustrate, we will create some pretend data to use with <code>dplyr</code>. The data frame will be named ‘df’, and will contain 20 rows and 4 columns. The <code>glimpse()</code> function from <code>dplyr</code> serves the same general purpose as <code>str()</code> when applied to data frames.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">20102</span>)</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">df1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fac =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>), <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">                 <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>),</a>
+<a class="sourceLine" id="cb33-4" data-line-number="4">                 <span class="dt">y =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>)<span class="op">*</span>(<span class="op">-</span><span class="dv">9</span><span class="op">:</span><span class="dv">10</span>)<span class="op">^</span><span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">                 <span class="dt">z =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>, <span class="dv">100</span>, <span class="dv">20</span>)))</a>
+<a class="sourceLine" id="cb33-6" data-line-number="6"><span class="kw">glimpse</span>(df1) <span class="co"># similar to the `str()` function in base R</span></a></code></pre></div>
+<pre><code>## Rows: 20
+## Columns: 4
+## $ fac &lt;chr&gt; &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;A&quot;, …
+## $ x   &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19…
+## $ y   &lt;dbl&gt; 964, 625, 692, 309, 146, 174, 98, 63, 6, 0, 16, 49, 86, 208, 399,…
+## $ z   &lt;dbl&gt; 115, 110, 111, 92, 94, 107, 93, 95, 71, 100, 99, 75, 104, 92, 95,…</code></pre>
+</div>
+<div id="group_by-and-summarize-functions" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> <code>group_by()</code> and <code>summarize()</code> functions</h3>
+<p>One of the most useful things we can use dplyr for is to calculate descriptive statistics. For example, if we wanted to calculate the mean of y and z for the whole data set, we could use the <code>summarize()</code> function. This example takes the data frame ‘df’, <em>and then</em> uses the <code>summarize()</code> function to calculate the means of the columns named <em>y</em> and <em>z</em>.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co">### Using a pipe to calculate means.</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">df1 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">y.mean =</span> <span class="kw">mean</span>(y),</a>
+<a class="sourceLine" id="cb35-4" data-line-number="4">            <span class="dt">z.mean =</span> <span class="kw">mean</span>(z))</a></code></pre></div>
+<pre><code>##   y.mean z.mean
+## 1  416.9   95.7</code></pre>
+<p>In this particular example, the pipe operator (<code>%&gt;%</code>) isn’t all that helpful. We could have gotten the same result more efficiently using several different methods. One method, still using the <code>summarize()</code> function, removes the pipe and adds the data frame as the first argument to the function:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">### Doing the same thing without a pipe:</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">summarize</span>(df1, </a>
+<a class="sourceLine" id="cb37-3" data-line-number="3">          <span class="dt">y.mean =</span> <span class="kw">mean</span>(y),</a>
+<a class="sourceLine" id="cb37-4" data-line-number="4">          <span class="dt">z.mean =</span> <span class="kw">mean</span>(z))</a></code></pre></div>
+<pre><code>##   y.mean z.mean
+## 1  416.9   95.7</code></pre>
+<p>But pipes become much more useful once we want to use multiple functions. To illustrate, we will combine two functions, the <code>group_by()</code> and <code>summarize()</code> functions, in order to calculate means for different groups. If we assume the ‘fac’ variable in the data is a treatment, and the y and z variables are responses to those treatments, then we will probably want to know the means for each treatment group. Using pipes, we can do that this way:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(fac) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">y.mean =</span> <span class="kw">mean</span>(y),</a>
+<a class="sourceLine" id="cb39-4" data-line-number="4">            <span class="dt">z.mean =</span> <span class="kw">mean</span>(z))</a></code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##   fac   y.mean z.mean
+##   &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 A       360.   92  
+## 2 B       311.   99.4
+## 3 C       479   103. 
+## 4 D       518.   88.2</code></pre>
+<p>This example starts with the data frame, <em>and then</em> groups the data by levels in the ‘fac’ column, <em>and then</em> summarizes the data by calculating the means. It will be common to use summarized data in tables and figures, so we can also store this summarized data for later use (as in, perhaps, a bar plot):</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">df1.means &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(fac) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">y.mean =</span> <span class="kw">mean</span>(y),</a>
+<a class="sourceLine" id="cb41-4" data-line-number="4">            <span class="dt">z.mean =</span> <span class="kw">mean</span>(z))</a>
+<a class="sourceLine" id="cb41-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb41-6" data-line-number="6"><span class="co">### Create a barplot of the means:</span></a>
+<a class="sourceLine" id="cb41-7" data-line-number="7"><span class="kw">barplot</span>(df1.means<span class="op">$</span>y.mean, <span class="dt">names.arg=</span>df1.means<span class="op">$</span>fac, <span class="dt">ylab=</span><span class="st">&quot;Y&quot;</span>)</a></code></pre></div>
+<p><img src="Rstats4ag_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+</div>
+<div id="the-mutate-function" class="section level3">
+<h3><span class="header-section-number">2.1.3</span> The <code>mutate()</code> function</h3>
+<p>The <code>mutate()</code> function is used primarily when you want to create a new column. Common scenarios would include data transformations (such as log or square root), converting units (US customary units to SI units), or calculating a new variable for each observation from the measured data (calculating area from measured length and width). The syntax of <code>mutate</code> is similar to the <code>summarize()</code> function, but instead of reducing the data, it will keep the number of table rows the same while adding (or replacing) a column. For example, if we wanted to create a new variable that is the sum of <em>y</em> and <em>z</em> (named <em>yz</em>):</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">df1.new &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb42-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">yz =</span> y<span class="op">+</span>z)</a>
+<a class="sourceLine" id="cb42-3" data-line-number="3"><span class="kw">head</span>(df1.new)</a></code></pre></div>
+<pre><code>##   fac x   y   z   yz
+## 1   A 1 964 115 1079
+## 2   B 2 625 110  735
+## 3   C 3 692 111  803
+## 4   D 4 309  92  401
+## 5   A 5 146  94  240
+## 6   B 6 174 107  281</code></pre>
+<p>Another powerful feature of <code>dplyr</code> is the ability to reference variables created earlier in the same function. For example, we can create the <em>yz</em> variableas before, and then perform a transformation on the new variable, like taking the square root all within the same <code>mutate()</code> function:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">df1.new &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb44-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">yz =</span> y <span class="op">+</span><span class="st"> </span>z,</a>
+<a class="sourceLine" id="cb44-3" data-line-number="3">         <span class="dt">yz.sqrt =</span> <span class="kw">sqrt</span>(yz))</a>
+<a class="sourceLine" id="cb44-4" data-line-number="4"><span class="kw">head</span>(df1.new)</a></code></pre></div>
+<pre><code>##   fac x   y   z   yz  yz.sqrt
+## 1   A 1 964 115 1079 32.84814
+## 2   B 2 625 110  735 27.11088
+## 3   C 3 692 111  803 28.33725
+## 4   D 4 309  92  401 20.02498
+## 5   A 5 146  94  240 15.49193
+## 6   B 6 174 107  281 16.76305</code></pre>
+</div>
+<div id="filter-and-select-functions" class="section level3">
+<h3><span class="header-section-number">2.1.4</span> <code>filter()</code> and <code>select()</code> functions</h3>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+The <code>filter()</code> and <code>select()</code> functions are useful for subsetting or removing rows or columns from your data. The <code>filter()</code> function is used to keep or remove <em>rows</em> based on a specified criteria. For example, if we wanted to remove all rows with treatment ‘C’ from the data, we could do so by filtering to <em>keep</em> only rows where ‘fac’ is not equal to ‘C’. The operator for ‘not equal’ in <code>R</code> is <code>!=</code> (see table of useful operators at the end of this chapter).
+=======
+The <code>filter()</code> and <code>select()</code> functions are useful for subsetting or removing rows or columns from your data. The <code>filter()</code> function is used to keep or remove <em>rows</em> based on a specified criteria. For example, if we wanted to remove all rows with treatment ‘C’ from the data, we could do so by filtering to <em>keep</em> only rows where ‘fac’ is not equal to ‘C’. The operator for ‘not equal’ in <code>R</code> is <code>!=</code>.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; 8e2378fe4699900a62ed1544c8f58ec178943c0c</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">df1.noC &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb46-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(fac <span class="op">!=</span><span class="st"> &quot;C&quot;</span>)</a>
+<a class="sourceLine" id="cb46-3" data-line-number="3">df1.noC</a></code></pre></div>
+<pre><code>##    fac  x    y   z
+## 1    A  1  964 115
+## 2    B  2  625 110
+## 3    D  4  309  92
+## 4    A  5  146  94
+## 5    B  6  174 107
+## 6    D  8   63  95
+## 7    A  9    6  71
+## 8    B 10    0 100
+## 9    D 12   49  75
+## 10   A 13   86 104
+## 11   B 14  208  92
+## 12   D 16  258  75
+## 13   A 17  600  76
+## 14   B 18  546  88
+## 15   D 20 1909 104</code></pre>
+<p>The behavior of <code>filter()</code> is to keep all rows that match whatever criteria we set in the function, so in the previous call, we keep all rows where <em>fac</em> does <strong>not</strong> equal “C”. We could also do the opposite, and keep only rows where the <em>fac</em> variable is equal to <em>C</em>. The operator for ‘equal to’ in <code>R</code> is <code>==</code>.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">df1.onlyC &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(fac <span class="op">==</span><span class="st"> &quot;C&quot;</span>)</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">df1.onlyC</a></code></pre></div>
+<pre><code>##   fac  x    y   z
+## 1   C  3  692 111
+## 2   C  7   98  93
+## 3   C 11   16  99
+## 4   C 15  399  95
+## 5   C 19 1190 118</code></pre>
+<p>Numeric values can be filtered similarly; for example if we want to keep only rows where ‘x’ is <em>less than or equal</em> to 8:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">df1.u8 &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(x <span class="op">&lt;=</span><span class="st"> </span><span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb50-3" data-line-number="3">df1.u8</a></code></pre></div>
+<pre><code>##   fac x   y   z
+## 1   A 1 964 115
+## 2   B 2 625 110
+## 3   C 3 692 111
+## 4   D 4 309  92
+## 5   A 5 146  94
+## 6   B 6 174 107
+## 7   C 7  98  93
+## 8   D 8  63  95</code></pre>
+<p>And, like all things in dplyr, we can filter on multiple variables simultaneously. Perhaps for data quality checks, we want to look for all observations of treatment ‘C’ where ‘y’ is greater than 1,000. Note in this example, we use two equals signs ‘==’ as the logical operator for ‘equal to’, and we use the ampersand ‘&amp;’ as the logical AND.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb52-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(y <span class="op">&gt;</span><span class="st"> </span><span class="dv">1000</span> <span class="op">&amp;</span><span class="st"> </span>fac <span class="op">==</span><span class="st"> &quot;C&quot;</span>)</a></code></pre></div>
+<pre><code>##   fac  x    y   z
+## 1   C 19 1190 118</code></pre>
+<p>The ‘OR’ operator in <code>R</code> is a vertical bar ‘|’. So if we wanted to filter rows to keep all observations that are greater than 1,000 OR less than 100, we could use the following filter arguments:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(y <span class="op">&gt;</span><span class="st"> </span><span class="dv">1000</span> <span class="op">|</span><span class="st"> </span>y <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>##   fac  x    y   z
+## 1   C  7   98  93
+## 2   D  8   63  95
+## 3   A  9    6  71
+## 4   B 10    0 100
+## 5   C 11   16  99
+## 6   D 12   49  75
+## 7   A 13   86 104
+## 8   C 19 1190 118
+## 9   D 20 1909 104</code></pre>
+<p>The <code>select()</code> function provides similar ability but for columns instead of rows. We can keep variables by including the column names in the <code>select()</code> function, and we can remove them by using a ‘-’ sign in front of the name (but typically using one or the other, not both). The following examples will result in the same three columns being retained, just <em>fac</em>, <em>x</em>, and <em>y</em>. In the first, we will explicitly include these three columns by naming them. In the second example, we will exclude the <em>z</em> column by using the minus sign.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="co">### Example 1 - keeping columns</span></a>
+<a class="sourceLine" id="cb56-2" data-line-number="2">df1 <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-3" data-line-number="3"><span class="st">  </span><span class="kw">select</span>(fac, x, y) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-4" data-line-number="4"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>##   fac x   y
+## 1   A 1 964
+## 2   B 2 625
+## 3   C 3 692
+## 4   D 4 309
+## 5   A 5 146
+## 6   B 6 174</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1"><span class="co">### Example 2 - removing a column</span></a>
+<a class="sourceLine" id="cb58-2" data-line-number="2">df1 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb58-3" data-line-number="3"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>z) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-4" data-line-number="4"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>##   fac x   y
+## 1   A 1 964
+## 2   B 2 625
+## 3   C 3 692
+## 4   D 4 309
+## 5   A 5 146
+## 6   B 6 174</code></pre>
+</div>
+</div>
+<div id="the-tidyr-package" class="section level2">
+<h2><span class="header-section-number">2.2</span> The <code>tidyr</code> package</h2>
+<p>Another package contained in the <code>tidyverse</code> is <code>tidyr</code>. This package, as you might suspect form the name, relates to the tidy data format <a href="https://vita.had.co.nz/papers/tidy-data.pdf">Wickham 2014</a>. The two functions that we will use are called <code>pivot_longer()</code> which takes a ‘wide’ data set and reformats it to the long format, and <code>pivot_wider()</code> which takes a long data format and reformats it to a wider version. To begin, we’ll create some pretend data in the wide format:</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">4070</span>)</a>
+<a class="sourceLine" id="cb60-2" data-line-number="2">df.wide &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb60-3" data-line-number="3">  <span class="dt">replicate =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>,</a>
+<a class="sourceLine" id="cb60-4" data-line-number="4">  <span class="dt">trt1 =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">1</span>),<span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">  <span class="dt">trt2 =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">6</span>, <span class="dv">13</span>, <span class="dv">1</span>),<span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb60-6" data-line-number="6">  <span class="dt">trt3 =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">1</span>),<span class="dv">1</span>))</a></code></pre></div>
+<p>To see what the data looks like in wide format, we can print the <code>df.wide</code> data frame we just created:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">df.wide</a></code></pre></div>
+<pre><code>##   replicate trt1 trt2 trt3
+## 1         1 11.2 13.9  4.8
+## 2         2  8.5 13.9  3.8
+## 3         3  8.4 13.1  3.7
+## 4         4  8.9 12.9  5.1
+## 5         5 10.7 13.5  3.0
+## 6         6 11.1 14.3  4.3</code></pre>
+<p>To convert this wide data into the long format that is typically preferred for statistical analysis, we can use the <code>pivot_longer()</code> function. For a simple data frame like this, there are four arguments we need to provide:</p>
+<ol style="list-style-type: decimal">
+<li>the <code>data</code> argument, which tells R which data frame we’ll be starting with;</li>
+<li>the <code>cols</code> argument, which a list of columns we don’t want to gather from wide to long format;</li>
+<li>the <code>names_to</code> argument, which is what we want the column that contains the treatment information to be named; and</li>
+<li>the <code>values_to</code> argument, which is what we want to name the column that contains the data.</li>
+</ol>
+<p>For this example, the data we are using is called ‘df.wide’. The columns we don’t want to include are any ‘housekeeping’ variables; in this case it is only one column, named ‘replicate’. We will store the treatment in a new column named ‘treatment’, and we will put the data into a new column named ‘weight’. So the <code>pivot_longer()</code> function would look like this:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1">df.long &lt;-<span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dt">data =</span> df.wide,</a>
+<a class="sourceLine" id="cb63-2" data-line-number="2">                        <span class="dt">cols =</span> <span class="op">-</span>replicate, </a>
+<a class="sourceLine" id="cb63-3" data-line-number="3">                        <span class="dt">names_to =</span> <span class="st">&quot;treatment&quot;</span>, </a>
+<a class="sourceLine" id="cb63-4" data-line-number="4">                        <span class="dt">values_to =</span> <span class="st">&quot;weight&quot;</span>)</a>
+<a class="sourceLine" id="cb63-5" data-line-number="5">df.long</a></code></pre></div>
+<pre><code>## # A tibble: 18 x 3
+##    replicate treatment weight
+##        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
+##  1         1 trt1        11.2
+##  2         1 trt2        13.9
+##  3         1 trt3         4.8
+##  4         2 trt1         8.5
+##  5         2 trt2        13.9
+##  6         2 trt3         3.8
+##  7         3 trt1         8.4
+##  8         3 trt2        13.1
+##  9         3 trt3         3.7
+## 10         4 trt1         8.9
+## 11         4 trt2        12.9
+## 12         4 trt3         5.1
+## 13         5 trt1        10.7
+## 14         5 trt2        13.5
+## 15         5 trt3         3  
+## 16         6 trt1        11.1
+## 17         6 trt2        14.3
+## 18         6 trt3         4.3</code></pre>
+<p>We could also use the ‘pipes’ from <code>dplyr</code> as in the previous example to achieve the same result:</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1">df.long &lt;-<span class="st"> </span>df.wide <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-2" data-line-number="2"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="op">-</span>replicate,</a>
+<a class="sourceLine" id="cb65-3" data-line-number="3">               <span class="dt">names_to =</span> <span class="st">&quot;treatment&quot;</span>,</a>
+<a class="sourceLine" id="cb65-4" data-line-number="4">               <span class="dt">values_to =</span> <span class="st">&quot;weight&quot;</span>)</a></code></pre></div>
+<p>In this example, there is no real benefit for using the pipes. However, if we wanted to do more operations on the same data, like filter or summarize the data, then the efficiency of pipes becomes substantial. For example, if we wanted to convert the weight from pounds to kilograms, and then summarize the data by treatment, we could use the following code:</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1">df.wide <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb66-2" data-line-number="2"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="op">-</span>replicate,</a>
+<a class="sourceLine" id="cb66-3" data-line-number="3">               <span class="dt">names_to =</span> <span class="st">&quot;treatment&quot;</span>,</a>
+<a class="sourceLine" id="cb66-4" data-line-number="4">               <span class="dt">values_to =</span> <span class="st">&quot;weight&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb66-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">weight.kg =</span> weight <span class="op">*</span><span class="st"> </span><span class="fl">0.4536</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb66-6" data-line-number="6"><span class="st">  </span><span class="kw">group_by</span>(treatment) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb66-7" data-line-number="7"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">meanWeight.kg =</span> <span class="kw">mean</span>(weight.kg))</a></code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##   treatment meanWeight.kg
+##   &lt;chr&gt;             &lt;dbl&gt;
+## 1 trt1               4.45
+## 2 trt2               6.17
+## 3 trt3               1.87</code></pre>
+<p>It is also possible to use pipes with base <code>R</code> functions. One useful implementation of this is to mutate (or group or summarize) data as part of the input process. For example, we can read the data file in with <code>read.csv</code>, then pipe various other functions so that the data is in the correct format for analysis right from the start. For example, the following code will get the data, use the <code>mutate()</code> function to convert a blocking variable to a factor and transform a response variable with a log transformation, then pass that to the <code>filter()</code> function to remove one year of data (2009):</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1">beanDat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/FlumiBeans.csv&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">factor</span>(block),</a>
+<a class="sourceLine" id="cb68-3" data-line-number="3">         <span class="dt">logDensity =</span> <span class="kw">log</span>(population<span class="fl">.4</span>wk)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-4" data-line-number="4"><span class="st">  </span><span class="kw">filter</span>(year <span class="op">!=</span><span class="st"> </span><span class="dv">2009</span>)</a>
+<a class="sourceLine" id="cb68-5" data-line-number="5"><span class="kw">glimpse</span>(beanDat)</a></code></pre></div>
+<pre><code>## Rows: 56
+## Columns: 5
+## $ year           &lt;int&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, …
+## $ treatment      &lt;chr&gt; &quot;Nontreated&quot;, &quot;Nontreated&quot;, &quot;Nontreated&quot;, &quot;Nontreated&quot;…
+## $ block          &lt;fct&gt; 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, …
+## $ population.4wk &lt;int&gt; 45302, 52272, 55757, 48787, 10454, 41818, 10454, 20909…
+## $ logDensity     &lt;dbl&gt; 10.721106, 10.864216, 10.928758, 10.795219, 9.254740, …</code></pre>
+<hr />
+<p><strong>Table of useful operators in the <code>R</code> language.</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">operator</th>
+<th align="left">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">==</td>
+<td align="left">equal to</td>
+</tr>
+<tr class="even">
+<td align="left">!=</td>
+<td align="left">not equal to</td>
+</tr>
+<tr class="odd">
+<td align="left">&gt;</td>
+<td align="left">greater than</td>
+</tr>
+<tr class="even">
+<td align="left">&gt;=</td>
+<td align="left">greater than or equal to</td>
+</tr>
+<tr class="odd">
+<td align="left">&lt;</td>
+<td align="left">less than</td>
+</tr>
+<tr class="even">
+<td align="left">&lt;=</td>
+<td align="left">less than or equal to</td>
+</tr>
+<tr class="odd">
+<td align="left">&amp;</td>
+<td align="left">and</td>
+</tr>
+<tr class="even">
+<td align="left">|</td>
+<td align="left">or</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="descriptive-statistics.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Analysis of Variance (ANOVA) | Statistical Analysis of Agricultural Experiments using R</title>
+  <meta name="description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Analysis of Variance (ANOVA) | Statistical Analysis of Agricultural Experiments using R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Rstats4agLogo76px.png" />
+  <meta property="og:description" content="Using the R language to analyze agricultural experiments." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Analysis of Variance (ANOVA) | Statistical Analysis of Agricultural Experiments using R" />
+  
+  <meta name="twitter:description" content="Using the R language to analyze agricultural experiments." />
+  <meta name="twitter:image" content="Rstats4agLogo76px.png" />
+
+<meta name="author" content="Andrew Kniss &amp; Jens Streibig" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="students-t-test.html"/>
+<link rel="next" href="linear-regression.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38934833-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38934833-2');
+</script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#help-files"><i class="fa fa-check"></i><b>1.1.1</b> Help files</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#online-help"><i class="fa fa-check"></i><b>1.1.2</b> Online help</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="intro.html"><a href="intro.html#install"><i class="fa fa-check"></i><b>1.2</b> Downloading and Installing R</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="intro.html"><a href="intro.html#cran"><i class="fa fa-check"></i><b>1.2.1</b> R packages - CRAN</a></li>
+<li class="chapter" data-level="1.2.2" data-path="intro.html"><a href="intro.html#rstudio"><i class="fa fa-check"></i><b>1.2.2</b> RStudio</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="intro.html"><a href="intro.html#conventions"><i class="fa fa-check"></i><b>1.3</b> Conventions</a></li>
+<li class="chapter" data-level="1.4" data-path="intro.html"><a href="intro.html#basics"><i class="fa fa-check"></i><b>1.4</b> Basics of using R</a></li>
+<li class="chapter" data-level="1.5" data-path="intro.html"><a href="intro.html#loading-data-from-external-sources"><i class="fa fa-check"></i><b>1.5</b> Loading Data from External Sources</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the Tidyverse</a><ul>
+<li class="chapter" data-level="2.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-package"><i class="fa fa-check"></i><b>2.1</b> The <code>dplyr</code> package</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-dplyr-pipe"><i class="fa fa-check"></i><b>2.1.1</b> The <code>dplyr</code> pipe (<code>%&gt;%</code>)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#group_by-and-summarize-functions"><i class="fa fa-check"></i><b>2.1.2</b> <code>group_by()</code> and <code>summarize()</code> functions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-mutate-function"><i class="fa fa-check"></i><b>2.1.3</b> The <code>mutate()</code> function</a></li>
+<li class="chapter" data-level="2.1.4" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#filter-and-select-functions"><i class="fa fa-check"></i><b>2.1.4</b> <code>filter()</code> and <code>select()</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="welcome-to-the-tidyverse.html"><a href="welcome-to-the-tidyverse.html#the-tidyr-package"><i class="fa fa-check"></i><b>2.2</b> The <code>tidyr</code> package</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html"><i class="fa fa-check"></i><b>3</b> Descriptive Statistics</a><ul>
+<li class="chapter" data-level="3.1" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-group-means"><i class="fa fa-check"></i><b>3.1</b> Calculating group means</a></li>
+<li class="chapter" data-level="3.2" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#calculating-other-group-statistics-with-tapply"><i class="fa fa-check"></i><b>3.2</b> Calculating other group statistics with tapply</a></li>
+<li class="chapter" data-level="3.3" data-path="descriptive-statistics.html"><a href="descriptive-statistics.html#using-dplyr-to-summarize-data"><i class="fa fa-check"></i><b>3.3</b> Using dplyr to summarize data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="simple-correlation.html"><a href="simple-correlation.html"><i class="fa fa-check"></i><b>4</b> Simple Correlation</a></li>
+<li class="chapter" data-level="5" data-path="students-t-test.html"><a href="students-t-test.html"><i class="fa fa-check"></i><b>5</b> Student’s t-test</a><ul>
+<li class="chapter" data-level="5.1" data-path="students-t-test.html"><a href="students-t-test.html#one-sample-t-test"><i class="fa fa-check"></i><b>5.1</b> One-sample t-test</a></li>
+<li class="chapter" data-level="5.2" data-path="students-t-test.html"><a href="students-t-test.html#two-sample-t-test"><i class="fa fa-check"></i><b>5.2</b> Two-sample t-Test</a></li>
+<li class="chapter" data-level="5.3" data-path="students-t-test.html"><a href="students-t-test.html#paired-t-test"><i class="fa fa-check"></i><b>5.3</b> Paired t-Test</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="anova.html"><a href="anova.html"><i class="fa fa-check"></i><b>6</b> Analysis of Variance (ANOVA)</a><ul>
+<li class="chapter" data-level="6.1" data-path="anova.html"><a href="anova.html#one-way-analysis-of-variance"><i class="fa fa-check"></i><b>6.1</b> One-Way Analysis of Variance</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="anova.html"><a href="anova.html#checking-anova-assumptions"><i class="fa fa-check"></i><b>6.1.1</b> Checking ANOVA assumptions</a></li>
+<li class="chapter" data-level="6.1.2" data-path="anova.html"><a href="anova.html#mean-separation---agricolae-package"><i class="fa fa-check"></i><b>6.1.2</b> Mean Separation - agricolae package</a></li>
+<li class="chapter" data-level="6.1.3" data-path="anova.html"><a href="anova.html#mean-separation---emmeans-and-multcomp-packages"><i class="fa fa-check"></i><b>6.1.3</b> Mean Separation - emmeans and multcomp packages</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="anova.html"><a href="anova.html#multi-factor-anova"><i class="fa fa-check"></i><b>6.2</b> Multi-Factor ANOVA</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="anova.html"><a href="anova.html#mean-separation"><i class="fa fa-check"></i><b>6.2.1</b> Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="linear-regression.html"><a href="linear-regression.html"><i class="fa fa-check"></i><b>7</b> Linear Regression</a><ul>
+<li class="chapter" data-level="7.1" data-path="linear-regression.html"><a href="linear-regression.html#simple-linear-regression"><i class="fa fa-check"></i><b>7.1</b> Simple Linear Regression</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="linear-regression.html"><a href="linear-regression.html#model-diagnostics"><i class="fa fa-check"></i><b>7.1.1</b> Model Diagnostics</a></li>
+<li class="chapter" data-level="7.1.2" data-path="linear-regression.html"><a href="linear-regression.html#model-interpretation"><i class="fa fa-check"></i><b>7.1.2</b> Model Interpretation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html"><i class="fa fa-check"></i><b>8</b> Analysis of Covariance (ANCOVA)</a><ul>
+<li class="chapter" data-level="8.1" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-1-mechanical-weed-control"><i class="fa fa-check"></i><b>8.1</b> Example 1: Mechanical Weed Control</a></li>
+<li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
+<li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#mixedregressionex1"><i class="fa fa-check"></i><b>10.1.1</b> Example 1: Sugarbeet yield</a></li>
+<li class="chapter" data-level="10.1.2" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#example-2-fungicide-toxicity"><i class="fa fa-check"></i><b>10.1.2</b> Example 2: Fungicide toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html"><i class="fa fa-check"></i><b>11</b> Logistic Regression (Binary Response)</a><ul>
+<li class="chapter" data-level="11.1" data-path="logistic-regression-binary-response.html"><a href="logistic-regression-binary-response.html#generalized-linear-model"><i class="fa fa-check"></i><b>11.1</b> Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="dose-response-curves.html"><a href="dose-response-curves.html"><i class="fa fa-check"></i><b>12</b> Dose-Response curves</a><ul>
+<li class="chapter" data-level="12.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#one-dose-response-curve"><i class="fa fa-check"></i><b>12.1</b> One Dose-Response Curve</a></li>
+<li class="chapter" data-level="12.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#note-on-use-of-r2"><i class="fa fa-check"></i><b>12.2</b> Note on use of <span class="math inline">\(R^2\)</span></a></li>
+<li class="chapter" data-level="12.3" data-path="dose-response-curves.html"><a href="dose-response-curves.html#which-dose-response-model"><i class="fa fa-check"></i><b>12.3</b> Which Dose-Response Model?</a></li>
+<li class="chapter" data-level="12.4" data-path="dose-response-curves.html"><a href="dose-response-curves.html#more-dose-response-curves"><i class="fa fa-check"></i><b>12.4</b> More Dose-Response Curves</a></li>
+<li class="chapter" data-level="12.5" data-path="dose-response-curves.html"><a href="dose-response-curves.html#when-upper-and-lower-limits-are-not-similar"><i class="fa fa-check"></i><b>12.5</b> When Upper and Lower Limits are not similar</a></li>
+<li class="chapter" data-level="12.6" data-path="dose-response-curves.html"><a href="dose-response-curves.html#remedy-for-heterogeneous-variance"><i class="fa fa-check"></i><b>12.6</b> Remedy for heterogeneous variance</a></li>
+<li class="chapter" data-level="12.7" data-path="dose-response-curves.html"><a href="dose-response-curves.html#dose-responses-with-binomial-data"><i class="fa fa-check"></i><b>12.7</b> Dose-responses with binomial data</a><ul>
+<li class="chapter" data-level="12.7.1" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-1-herbicide-susceptibility"><i class="fa fa-check"></i><b>12.7.1</b> Example 1: Herbicide susceptibility</a></li>
+<li class="chapter" data-level="12.7.2" data-path="dose-response-curves.html"><a href="dose-response-curves.html#example-2-earthworm-toxicity"><i class="fa fa-check"></i><b>12.7.2</b> Example 2: Earthworm toxicity</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html"><i class="fa fa-check"></i><b>13</b> Nonlinear Regression - Selectivity of Herbicides</a><ul>
+<li class="chapter" data-level="13.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#dose-response-curves-1"><i class="fa fa-check"></i><b>13.1</b> Dose-Response Curves</a></li>
+<li class="chapter" data-level="13.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#assessment-of-selectivity"><i class="fa fa-check"></i><b>13.2</b> Assessment of Selectivity</a></li>
+<li class="chapter" data-level="13.3" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#selectivity-index"><i class="fa fa-check"></i><b>13.3</b> Selectivity index</a></li>
+<li class="chapter" data-level="13.4" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-and-horizontal-assessment"><i class="fa fa-check"></i><b>13.4</b> Vertical and Horizontal Assessment</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#vertical-assessment"><i class="fa fa-check"></i><b>13.4.1</b> Vertical assessment</a></li>
+<li class="chapter" data-level="13.4.2" data-path="nonlinear-regression-selectivity-of-herbicides.html"><a href="nonlinear-regression-selectivity-of-herbicides.html#horizontal-assessment"><i class="fa fa-check"></i><b>13.4.2</b> Horizontal assessment</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html"><i class="fa fa-check"></i><b>14</b> Plant Competition Experiments</a><ul>
+<li class="chapter" data-level="14.1" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#yield-density-and-yield-loss"><i class="fa fa-check"></i><b>14.1</b> Yield, Density and Yield Loss</a></li>
+<li class="chapter" data-level="14.2" data-path="plant-competition-experiments.html"><a href="plant-competition-experiments.html#replacement-series"><i class="fa fa-check"></i><b>14.2</b> Replacement Series</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="seed-germination.html"><a href="seed-germination.html"><i class="fa fa-check"></i><b>15</b> Seed Germination</a><ul>
+<li class="chapter" data-level="15.1" data-path="seed-germination.html"><a href="seed-germination.html#example-1-chickweed"><i class="fa fa-check"></i><b>15.1</b> Example 1: Chickweed</a></li>
+<li class="chapter" data-level="15.2" data-path="seed-germination.html"><a href="seed-germination.html#example-2-bromus-tectorum"><i class="fa fa-check"></i><b>15.2</b> Example 2: <em>Bromus tectorum</em></a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="visualization.html"><a href="visualization.html"><i class="fa fa-check"></i><b>16</b> Visualization</a><ul>
+<li class="chapter" data-level="16.1" data-path="visualization.html"><a href="visualization.html#base-r-graphics"><i class="fa fa-check"></i><b>16.1</b> Base R Graphics</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="visualization.html"><a href="visualization.html#scatterplots"><i class="fa fa-check"></i><b>16.1.1</b> Scatterplots</a></li>
+<li class="chapter" data-level="16.1.2" data-path="visualization.html"><a href="visualization.html#box-and-whisker-plots"><i class="fa fa-check"></i><b>16.1.2</b> Box and Whisker Plots</a></li>
+<li class="chapter" data-level="16.1.3" data-path="visualization.html"><a href="visualization.html#more-than-two-variables"><i class="fa fa-check"></i><b>16.1.3</b> More than Two Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="visualization.html"><a href="visualization.html#ggplot2"><i class="fa fa-check"></i><b>16.2</b> ggplot2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis of Agricultural Experiments using R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="anova" class="section level1">
+<h1><span class="header-section-number">6</span> Analysis of Variance (ANOVA)</h1>
+<div id="one-way-analysis-of-variance" class="section level2">
+<h2><span class="header-section-number">6.1</span> One-Way Analysis of Variance</h2>
+<p>Some of the most often used experimental designs in weed science include completely randomized designs (CRD) and randomized complete block designs (RCBD). These experiments are typically analyzed using analysis of variance (ANOVA). The one-way ANOVA is used to determine the effect of a single factor (with at least three levels) on a response variable. Where only two levels of a single factor are of interest, the <code>t.test()</code> function will be more appropriate. There are several ways to conduct an ANOVA in the base R package. The <code>aov()</code> function requires a response variable and the explanatory variable separated with the <code>~</code> symbol. It is important when using the <code>aov()</code> function that your data are balanced, with no missing values. For data sets with missing values or unbalanced designs, please see the section on mixed effects models.</p>
+<p>The “FlumiBeans” data set is from a herbicide trial conducted in Wyoming during three different years (2009 through 2011). Five different herbicide treatments were applied, plus nontreated and handweeded controls for a total of seven treatments. The study was a randomized complete block design (RCBD) each year. There were 3 replicates in 2009, but 4 replicates in subsequent years. The response variable in this data set is dry bean (<em>Phaseolus vulgaris</em>) density 4 weeks after planting expressend in plants per acre.</p>
+<p>It is important to note that some of our factor variables have been expressed in the .csv file as numbers (e.g. ‘year’ and ‘block’), and consequently, R will recognized these factors as numeric variables. It is important for our ANOVA that these variables be included as factors, and not as numeric variables. We can use the <code>dplyr</code> package from the <code>tidyverse</code> to convert these variables to the proper form as we read them with the <code>mutate()</code> function.</p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb125-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb125-3" data-line-number="3">bean.dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/FlumiBeans.csv&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb125-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">population.4wk =</span> population<span class="fl">.4</span>wk <span class="op">*</span><span class="st"> </span><span class="fl">2.47</span>, <span class="co"># Convert to SI units</span></a>
+<a class="sourceLine" id="cb125-5" data-line-number="5">         <span class="dt">year =</span> <span class="kw">factor</span>(year),</a>
+<a class="sourceLine" id="cb125-6" data-line-number="6">         <span class="dt">block =</span> <span class="kw">factor</span>(block),</a>
+<a class="sourceLine" id="cb125-7" data-line-number="7">         <span class="dt">treatment =</span> <span class="kw">factor</span>(treatment))</a>
+<a class="sourceLine" id="cb125-8" data-line-number="8"><span class="kw">glimpse</span>(bean.dat)</a></code></pre></div>
+<pre><code>## Rows: 77
+## Columns: 4
+## $ year           &lt;fct&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 20…
+## $ treatment      &lt;fct&gt; Nontreated, Nontreated, Nontreated, flumioxazin + trifluralin, flumioxazin…
+## $ block          &lt;fct&gt; 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 4,…
+## $ population.4wk &lt;dbl&gt; 137719.79, 111895.94, 94682.51, 34429.33, 68858.66, 77466.61, 25821.38, 51…</code></pre>
+<p>For this analysis, we want to look at a One-Way analysis of variance, and so we will focus on the data from only one year. We can subset the data to include only this year using the <code>filter()</code> function from the <code>dplyr</code> package, and call this subsetted data <code>bean.09</code>.</p>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb127-1" data-line-number="1">bean<span class="fl">.09</span> &lt;-<span class="st"> </span>bean.dat <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb127-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2009</span>)</a></code></pre></div>
+<p>We will then use the <code>aov()</code> function to generate the One-way ANOVA to see if herbicide treatment had an effect on dry bean population (expressed in plants per hectare) in 2009.</p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb128-1" data-line-number="1"><span class="kw">aov</span>(population<span class="fl">.4</span>wk <span class="op">~</span><span class="st"> </span>block<span class="op">+</span>treatment, <span class="dt">data=</span>bean<span class="fl">.09</span>)-&gt;b09.aov</a></code></pre></div>
+<div id="checking-anova-assumptions" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Checking ANOVA assumptions</h3>
+<p>ANOVA assumes (1) errors are normally distributed, (2) variances are homogeneous, and (3) observations are independent of each other. ANOVA is fairly robust to violations of the normality assumption, and thus it typically requires a rather severe violation before remedial measures are warranted. However, it is still wise to check the normality assumption prior to interpreting the ANOVA results. Three methods are provided to check normality of the response variable of interest: the Shapiro-Wilks test, a stem and leaf plot, and a Normal Q-Q plot. The model residuals are automatically stored within the ANOVA model produced with the <code>aov()</code> function, and thus we can call upon the model to view and test the residuals for normality. We can get the residuals by using the <code>resid()</code> function, or by appending <code>$resid</code> onto the model fit. <code>resid(b09.aov)</code> and <code>b09.aov$resid</code> will provide the same result.</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb129-1" data-line-number="1"><span class="kw">shapiro.test</span>(b09.aov<span class="op">$</span>resid)</a></code></pre></div>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  b09.aov$resid
+## W = 0.9718, p-value = 0.7726</code></pre>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" data-line-number="1"><span class="kw">stem</span>(b09.aov<span class="op">$</span>resid)</a></code></pre></div>
+<pre><code>## 
+##   The decimal point is 4 digit(s) to the right of the |
+## 
+##   -2 | 690
+##   -0 | 88607431
+##    0 | 222599
+##    2 | 2787</code></pre>
+
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">3.2</span>,<span class="fl">3.2</span>,<span class="dv">2</span>,<span class="fl">0.5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb133-2" data-line-number="2"><span class="kw">qqnorm</span>(b09.aov<span class="op">$</span>resid)</a>
+<a class="sourceLine" id="cb133-3" data-line-number="3"><span class="kw">qqline</span>(b09.aov<span class="op">$</span>resid)</a></code></pre></div>
+<div class="figure"><span id="fig:fignormalqq"></span>
+<img src="Rstats4ag_files/figure-html/fignormalqq-1.png" alt="Normal Q-Q plot to check the assumption of normal distribution of residuals." width="672" />
+<p class="caption">
+Figure 6.1: <em>Normal Q-Q plot to check the assumption of normal distribution of residuals.</em>
+</p>
+</div>
+<p>It appears that the residuals in this case are at least close to normally distributed. The most common next step if residuals are not normally distributed would be to attempt a transformation. However, it is worth noting that there are other, more <a href="https://dl.sciencesocieties.org/publications/aj/articles/107/2/811">modern methods to deal with non-normality that should be strongly considered</a>.</p>
+<p>The next assumption to test is homogeneity of variance. Formal tests for homogeneity of variance include the Bartlett (parametric) and Fligner-Killeen (non-parametric) tests. These tests can be used in conjunction with box plots to determine the level of heterogeneity of variance between treatments.</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb134-1" data-line-number="1"><span class="kw">bartlett.test</span>(bean<span class="fl">.09</span><span class="op">$</span>population<span class="fl">.4</span>wk, bean<span class="fl">.09</span><span class="op">$</span>treatment)</a></code></pre></div>
+<pre><code>## 
+##  Bartlett test of homogeneity of variances
+## 
+## data:  bean.09$population.4wk and bean.09$treatment
+## Bartlett&#39;s K-squared = 3.7865, df = 6, p-value = 0.7055</code></pre>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1"><span class="kw">fligner.test</span>(bean<span class="fl">.09</span><span class="op">$</span>population<span class="fl">.4</span>wk, bean<span class="fl">.09</span><span class="op">$</span>treatment)</a></code></pre></div>
+<pre><code>## 
+##  Fligner-Killeen test of homogeneity of variances
+## 
+## data:  bean.09$population.4wk and bean.09$treatment
+## Fligner-Killeen:med chi-squared = 3.2494, df = 6, p-value = 0.777</code></pre>
+<p>Formal tests do not indicate a problem (p&gt;0.7), and box plots (Figure <a href="anova.html#fig:figbeanboxplots">6.2</a>) indicate that things are reasonable similar. Perhaps the handweeded and EPTC + ethalfluralin treatments have less variability than the others, but differences are not too dramatic, especially considering there were only 3 replicates per treatment in 2009.</p>
+
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">4.2</span>,<span class="dv">12</span>,<span class="fl">0.5</span>,<span class="fl">1.5</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb138-2" data-line-number="2"><span class="kw">boxplot</span>(bean<span class="fl">.09</span><span class="op">$</span>population<span class="fl">.4</span>wk<span class="op">/</span><span class="dv">1000</span> <span class="op">~</span><span class="st"> </span>bean<span class="fl">.09</span><span class="op">$</span>treatment, <span class="dt">horizontal=</span>T, </a>
+<a class="sourceLine" id="cb138-3" data-line-number="3">        <span class="dt">las=</span><span class="dv">1</span>, <span class="dt">xlab=</span><span class="st">&quot;Bean plants per hectare (thousands)&quot;</span>,</a>
+<a class="sourceLine" id="cb138-4" data-line-number="4">        <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figbeanboxplots"></span>
+<img src="Rstats4ag_files/figure-html/figbeanboxplots-1.png" alt="Boxplots showing the effect of weed control treatment on dry edible bean plants per hectare." width="672" />
+<p class="caption">
+Figure 6.2: <em>Boxplots showing the effect of weed control treatment on dry edible bean plants per hectare.</em>
+</p>
+</div>
+<p>Simply plotting the aov fit in R [e.g. Figure <a href="anova.html#fig:figanovadiagnostics">6.3</a>] will provide a series of diagnostic plots as well. The first two plots are the residuals vs fitted values, and the Normal Q-Q plot, which can be plotted at the same time with the following code:</p>
+
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="fl">4.2</span>,<span class="fl">4.2</span>,<span class="fl">2.2</span>,<span class="dv">1</span>), <span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb139-2" data-line-number="2"><span class="kw">plot</span>(b09.aov, <span class="dt">which=</span><span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:figanovadiagnostics"></span>
+<img src="Rstats4ag_files/figure-html/figanovadiagnostics-1.png" alt="Model diagnostic plots for the dry edible bean ANOVA model." width="672" />
+<p class="caption">
+Figure 6.3: <em>Model diagnostic plots for the dry edible bean ANOVA model.</em>
+</p>
+</div>
+<p>Since neither the normality nor homogeneity of variance assumptions were dramatically violated, and ANOVA is fairly robust to violations of these assumptions, it seems safe to proceed with interpretation of the ANOVA results. The third assumption (independence of observations) is not something we will test statistically; it is up to the researcher to ensure that they are collecting data in a way that does not violate this assumption.</p>
+<p>Finally, after the assumptions have been checked, and remedial measures taken if necessary, we will want to know whether there is a significant effect of herbicide treatment on dry bean population density. Once again, we can use the <code>summary()</code> function along with the stored model to obtain this information. The resulting ANOVA table indicates that we have pretty strong evidence that there are differences in dry bean plants per acre due to herbicide treatment (p = 0.019).</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" data-line-number="1"><span class="kw">summary</span>(b09.aov)</a></code></pre></div>
+<pre><code>##             Df    Sum Sq   Mean Sq F value Pr(&gt;F)  
+## block        2 5.574e+08 2.787e+08   0.432 0.6589  
+## treatment    6 1.569e+10 2.615e+09   4.055 0.0188 *
+## Residuals   12 7.740e+09 6.450e+08                 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="mean-separation---agricolae-package" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Mean Separation - agricolae package</h3>
+<p>The <code>agricolae</code> package has several functions for mean separation, including the <code>LSD.test()</code> function that will compare means using Fisher’s LSD. The LSD.test computes a lot of useful information that can be extracted for later use. You can use the <code>str(bean.lsd)</code> function to learn more about what is available. Below, we will look at the <code>$group</code> section which gives the treatment means and mean separation, and the <code>$statistics</code> section which provides the LSD value (among other things).</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb142-1" data-line-number="1"><span class="kw">library</span>(agricolae)</a>
+<a class="sourceLine" id="cb142-2" data-line-number="2">bean.lsd &lt;-<span class="st"> </span><span class="kw">LSD.test</span>(b09.aov, <span class="dt">trt=</span><span class="st">&quot;treatment&quot;</span>)</a>
+<a class="sourceLine" id="cb142-3" data-line-number="3">bean.lsd<span class="op">$</span>group</a></code></pre></div>
+<pre><code>##                             population.4wk groups
+## imazamox + bentazon              123373.21      a
+## EPTC + ethafluralin              120503.89      a
+## Nontreated                       114766.08      a
+## flumioxazin + ethafluralin        94682.51     ab
+## Handweeded                        86074.56    abc
+## flumioxazin + trifluralin         60251.53     bc
+## flumioxazin + pendimethalin       48775.09      c</code></pre>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb144-1" data-line-number="1">bean.lsd<span class="op">$</span>statistics</a></code></pre></div>
+<pre><code>##     MSerror Df     Mean       CV  t.value      LSD
+##   645034519 12 92632.41 27.41754 2.178813 45182.03</code></pre>
+<p>To get standard deviations and confidence limits, we could type <code>bean.lsd$means</code>. The <code>agricolae</code> package can also calculate Tukey’s HSD using the <code>HSD.test()</code> function. The syntax above is the same, simply changing <code>LSD.test</code> to <code>HSD.test</code>.</p>
+</div>
+<div id="mean-separation---emmeans-and-multcomp-packages" class="section level3">
+<h3><span class="header-section-number">6.1.3</span> Mean Separation - emmeans and multcomp packages</h3>
+<p>The <code>emmeans</code> and <code>multcomp</code> packages are also useful for separating means, and has the advantage that it can be used for linear, nonlinear, and mixed effects models.</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb146-1" data-line-number="1"><span class="kw">library</span>(emmeans)</a>
+<a class="sourceLine" id="cb146-2" data-line-number="2"><span class="kw">library</span>(multcomp)</a>
+<a class="sourceLine" id="cb146-3" data-line-number="3">b09.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(b09.aov, <span class="op">~</span><span class="st"> </span>treatment)</a>
+<a class="sourceLine" id="cb146-4" data-line-number="4"><span class="kw">pairs</span>(b09.emm) <span class="co"># prints out all Tukey-adjusted pairwise comparisons</span></a>
+<a class="sourceLine" id="cb146-5" data-line-number="5">multcomp<span class="op">::</span><span class="kw">cld</span>(b09.emm, <span class="dt">Letters=</span>LETTERS) <span class="co"># corresponding compact letter display (cld)</span></a>
+<a class="sourceLine" id="cb146-6" data-line-number="6"><span class="kw">pairs</span>(b09.emm, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>) <span class="co"># prints out all unadjusted pairwise comparisons</span></a>
+<a class="sourceLine" id="cb146-7" data-line-number="7">multcomp<span class="op">::</span><span class="kw">cld</span>(b09.emm, <span class="dt">Letters=</span>LETTERS, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>) <span class="co"># corresponding compact letter display (cld)</span></a></code></pre></div>
+</div>
+</div>
+<div id="multi-factor-anova" class="section level2">
+<h2><span class="header-section-number">6.2</span> Multi-Factor ANOVA</h2>
+<p>We’ll now look at the second and third year of the study, beginning by subsetting the data to include only these years.</p>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb147-1" data-line-number="1">bean2.dat &lt;-<span class="st"> </span>bean.dat <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb147-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(year<span class="op">==</span><span class="dv">2010</span> <span class="op">|</span><span class="st"> </span>year<span class="op">==</span><span class="dv">2011</span>)</a>
+<a class="sourceLine" id="cb147-3" data-line-number="3"><span class="kw">summary</span>(bean2.dat)</a></code></pre></div>
+<pre><code>##    year                          treatment block  population.4wk  
+##  2009: 0   EPTC + ethafluralin        :8   1:14   Min.   : 17216  
+##  2010:28   flumioxazin + ethafluralin :8   2:14   1st Qu.: 51645  
+##  2011:28   flumioxazin + pendimethalin:8   3:14   Median : 95761  
+##            flumioxazin + trifluralin  :8   4:14   Mean   : 86038  
+##            Handweeded                 :8          3rd Qu.:115665  
+##            imazamox + bentazon        :8          Max.   :163541  
+##            Nontreated                 :8</code></pre>
+<p>We’ll now incorporate year as a fixed effect in the analysis. We’re going to exclude the 2009 data because it does not have the same number of replicates as the other two years of data. The <code>aov()</code> function is not appropriate for unbalanced data. We will look at how to best handle this in a later section using mixed effects. We’re also going to incorporate the blocking design into the model using the <code>Error()</code> argument. Blocking was used in each year of the field study (in a randomized complete block design). Because the trial was located in a different field each year, there is no reason to think that block 1 would result in a similar impact from one year to the next. Therefore, the effect of block is nested within year. We can specify this structure in the <code>aov()</code> function by using the <code>/</code> operator.</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb149-1" data-line-number="1">bean2.aov&lt;-<span class="kw">aov</span>(population<span class="fl">.4</span>wk <span class="op">~</span><span class="st"> </span>year<span class="op">*</span>treatment <span class="op">+</span><span class="st"> </span><span class="kw">Error</span>(year<span class="op">/</span>block), </a>
+<a class="sourceLine" id="cb149-2" data-line-number="2">               <span class="dt">data=</span>bean2.dat)</a>
+<a class="sourceLine" id="cb149-3" data-line-number="3"><span class="kw">summary</span>(bean2.aov)</a></code></pre></div>
+<pre><code>## 
+## Error: year
+##      Df   Sum Sq  Mean Sq
+## year  1 5.46e+09 5.46e+09
+## 
+## Error: year:block
+##           Df    Sum Sq   Mean Sq F value Pr(&gt;F)
+## Residuals  6 1.363e+09 227216916               
+## 
+## Error: Within
+##                Df    Sum Sq   Mean Sq F value   Pr(&gt;F)    
+## treatment       6 6.588e+10 1.098e+10  51.925 2.91e-16 ***
+## year:treatment  6 5.422e+09 9.036e+08   4.273  0.00238 ** 
+## Residuals      36 7.612e+09 2.114e+08                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Adding the Error term into the model results in 3 separate sections of the ANOVA table, corresponding to the three separate error terms: year, year:block, and within. In this case no F or P-values are calculated for the year effect. We could do that manually by dividing the Mean Square for year by the Mean Square for year:block, but it is clear just by looking at the numbers that the F value will be quite high (greater than 23, in fact). However, if we want <code>aov()</code> to calculate the P-value for us, we can specify the year*block error term by creating a new variable that contains the combined information. We will do this below using the <code>with()</code> function.</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb151-1" data-line-number="1">bean2.dat<span class="op">$</span>yrblock  &lt;-<span class="st"> </span><span class="kw">with</span>(bean2.dat, <span class="kw">factor</span>(year)<span class="op">:</span><span class="kw">factor</span>(block))</a>
+<a class="sourceLine" id="cb151-2" data-line-number="2">bean2.aov2&lt;-<span class="kw">aov</span>(population<span class="fl">.4</span>wk <span class="op">~</span><span class="st"> </span>year<span class="op">*</span>treatment <span class="op">+</span><span class="st"> </span><span class="kw">Error</span>(yrblock), </a>
+<a class="sourceLine" id="cb151-3" data-line-number="3">                <span class="dt">data=</span>bean2.dat)</a>
+<a class="sourceLine" id="cb151-4" data-line-number="4"><span class="kw">summary</span>(bean2.aov2)</a></code></pre></div>
+<pre><code>## 
+## Error: yrblock
+##           Df    Sum Sq   Mean Sq F value  Pr(&gt;F)   
+## year       1 5.460e+09 5.460e+09   24.03 0.00271 **
+## Residuals  6 1.363e+09 2.272e+08                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Error: Within
+##                Df    Sum Sq   Mean Sq F value   Pr(&gt;F)    
+## treatment       6 6.588e+10 1.098e+10  51.925 2.91e-16 ***
+## year:treatment  6 5.422e+09 9.036e+08   4.273  0.00238 ** 
+## Residuals      36 7.612e+09 2.114e+08                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The Mean Square for year and the year:block interaction are the same as before, as expected, but now the F and P-values are provided. However, this is not as important in this case, as there is a significant year by treatment interaction effect, making the main effect of year less interesting.</p>
+<div id="mean-separation" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Mean Separation</h3>
+<p>Due to the different error terms, getting mean separation from the <code>LSD.test()</code> function in this case is not as straightforward as with only one factor. It can still be done by specifying the response, treatment, error degrees of freedom, and mean square error manually.</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb153-1" data-line-number="1">bean2.lsd&lt;-<span class="kw">LSD.test</span>(bean2.dat<span class="op">$</span>population<span class="fl">.4</span>wk,</a>
+<a class="sourceLine" id="cb153-2" data-line-number="2">                    <span class="kw">with</span>(bean2.dat, year<span class="op">:</span>treatment), </a>
+<a class="sourceLine" id="cb153-3" data-line-number="3">                    <span class="dv">36</span>, <span class="fl">2.11e+08</span>)</a>
+<a class="sourceLine" id="cb153-4" data-line-number="4">bean2.lsd<span class="op">$</span>groups</a></code></pre></div>
+<pre><code>##                                  bean2.dat$population.4wk groups
+## 2010:imazamox + bentazon                        142023.15      a
+## 2010:EPTC + ethafluralin                        139871.16      a
+## 2010:Handweeded                                 124807.87     ab
+## 2010:Nontreated                                 124807.87     ab
+## 2011:Handweeded                                 104369.23     bc
+## 2011:Nontreated                                  97375.43      c
+## 2011:imazamox + bentazon                         95761.28      c
+## 2011:EPTC + ethafluralin                         94147.76      c
+## 2011:flumioxazin + trifluralin                   57026.74      d
+## 2010:flumioxazin + trifluralin                   51644.61     de
+## 2010:flumioxazin + pendimethalin                 49493.24     de
+## 2011:flumioxazin + pendimethalin                 48956.64     de
+## 2010:flumioxazin + ethafluralin                  38733.92     de
+## 2011:flumioxazin + ethafluralin                  35506.87      e</code></pre>
+<p>Alternatively, we can use the <code>emmeans</code> package, to get the confidence intervals and pairwise comparisons.</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb155-1" data-line-number="1"><span class="kw">emmeans</span>(bean2.aov2, <span class="dt">specs =</span> pairwise <span class="op">~</span><span class="st"> </span>year<span class="op">:</span>treatment)</a></code></pre></div>
+<p>It seems there is general trend for treatments containing flumioxazin to have fewer bean plants. But having the different years mixed together makes it difficult to see, so an alternative approach would be to simply calculate the means using <code>tapply()</code> and print out the LSD value.</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" data-line-number="1"><span class="kw">round</span>(<span class="kw">tapply</span>(bean2.dat<span class="op">$</span>population<span class="fl">.4</span>wk, </a>
+<a class="sourceLine" id="cb156-2" data-line-number="2">             <span class="kw">list</span>(bean2.dat<span class="op">$</span>treatment, bean2.dat<span class="op">$</span>year), mean), <span class="dv">-3</span>)</a></code></pre></div>
+<pre><code>##                             2009   2010   2011
+## EPTC + ethafluralin           NA 140000  94000
+## flumioxazin + ethafluralin    NA  39000  36000
+## flumioxazin + pendimethalin   NA  49000  49000
+## flumioxazin + trifluralin     NA  52000  57000
+## Handweeded                    NA 125000 104000
+## imazamox + bentazon           NA 142000  96000
+## Nontreated                    NA 125000  97000</code></pre>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb158-1" data-line-number="1">bean2.lsd<span class="op">$</span>statistics</a></code></pre></div>
+<pre><code>##    MSerror Df     Mean       CV  t.value     LSD
+##   2.11e+08 36 86037.55 16.88314 2.028094 20831.2</code></pre>
+<p>Looking at the data in this way makes it appear that the year interaction was due to a higher bean population in 2010 compared to 2011 for most treatments. However, the flumioxazin treatments had similar bean populations in both years, much reduced compared to the nontreated or handweeded control treatments. The LSD value of 0 allows us to compare the same treatment between years, or compare between treatments within a year.</p>
+<hr />
+
+</div>
+</div>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://rstats4ag.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="students-t-test.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Rstats4ag.pdf", "Rstats4ag.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
