@@ -43,9 +43,7 @@ $$y = c+\frac{d-c}{1+exp(b(log(x)-log(ED50)))} .$$
 
 `y` is the response, `c` denotes the lower limit of the response when the dose `x` approaches infinity; `d` is the upper limit when the dose `x` approaches 0. `b` denotes the slope around the point of inflection, which is the $ED_{50}$, i.e. the dose required to reduce the response half-way between the upper and lower limit.
 
-```{r} 
-knitr::include_app("https://wyoweeds.shinyapps.io/Log-LogisticDemo/")
-```
+<iframe src="https://wyoweeds.shinyapps.io/Log-LogisticDemo/", style="border: 1px; height=600px"></iframe>
 
 Guessing the parameters of a sigmoid curve can, for the less experienced person, be tiresome and frustrating. This has now been overcome by the development of a package named `drc`, which was developed at the University of Copenhagen. The purpose of the `drc` package was to ease the analysis of dose-response curves from greenhouse and field experiments in Weed and Pesticide Science courses and to assess the selectivity of herbicides and efficacy of pesticides. Similar dose-response curves are commonly used in ecotoxicology and general toxicology, and  the `drc` package is used in various other disciplines. 
 
