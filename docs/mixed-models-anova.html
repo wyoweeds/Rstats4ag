@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>9 Mixed Models - ANOVA | Statistical Analysis of Agricultural Experiments using R</title>
   <meta name="description" content="Using the R language to analyze agricultural experiments." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="9 Mixed Models - ANOVA | Statistical Analysis of Agricultural Experiments using R" />
   <meta property="og:type" content="book" />
@@ -139,10 +139,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">Statistical Analysis of Agricultural Experiments using R</a></li>
 
 <li class="divider"></li>
-<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a></li>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#what-is-this-text"><i class="fa fa-check"></i>What is this text?</a></li>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
+<li><a href="index.html#section"><img src="Rstats4agLogo76px.png" /></a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>What is this text?</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#cite-this-text"><i class="fa fa-check"></i>Cite this text</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#help"><i class="fa fa-check"></i><b>1.1</b> How to get help?</a><ul>
@@ -199,9 +198,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
 <li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
-<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#model-comparison-and-obtaining-p-values"><i class="fa fa-check"></i><b>9.1.1</b> Model Comparison and Obtaining P-values</a></li>
-<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.2</b> Random Effects</a></li>
-<li class="chapter" data-level="9.1.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.3</b> Fixed Effects &amp; Mean Separation</a></li>
+<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.1</b> Random Effects</a></li>
+<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.2</b> Fixed Effects &amp; Mean Separation</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
@@ -272,163 +270,122 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="mixed-models---anova" class="section level1">
 <h1><span class="header-section-number">9</span> Mixed Models - ANOVA</h1>
-<p>There are many examples in agronomy and weed science where mixed effects models are appropriate. In ANOVA, everything except the intentional (fixed) treatment(s), reflect random variation. This includes soil variability, experimental locations, benches in the greenhouse, weather patterns between years; many things can affect experimental results that simply cannot be controlled. In many cases, we can try to account for these sources of variation by blocking. We can consider the selection of the blocks to take place at random in the sense that we usually cannot tell in advance whether or not the next block will exhibit a low, high, or more moderate response level. In this context, we can describe random effects as effects that cannot be controlled and therefore cannot be explained by the treatment structure of the experiment. In many designed experiments, we are not inherently interested in these random effects, but in an adequate analysis we need to acknowledge the variation that they contribute. We can do so using a mixed effects model that contains both fixed and random effects.</p>
-<p>To illustrate mixed effects ANOVA, we will use the same dry bean herbicide data set that was used in the ANOVA section to allow for comparison; please read the ANOVA section for details on the study. We will need to load the <code>lme4</code> and <code>multcomp</code> packages for this analysis.</p>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb198-1" data-line-number="1"><span class="kw">library</span>(lme4)</a>
-<a class="sourceLine" id="cb198-2" data-line-number="2"><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/FlumiBeans.csv&quot;</span>)-&gt;flum.dat</a>
-<a class="sourceLine" id="cb198-3" data-line-number="3">flum.dat<span class="op">$</span>yrblock  &lt;-<span class="st"> </span><span class="kw">with</span>(flum.dat, <span class="kw">factor</span>(year)<span class="op">:</span><span class="kw">factor</span>(block))</a></code></pre></div>
-<p>First, we can look at group means (in plants per acre, and plants per hectare) using the <code>dplyr</code> package.</p>
-<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb199-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb199-2" data-line-number="2">beansum &lt;-<span class="st"> </span>flum.dat <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb199-3" data-line-number="3"><span class="st">  </span><span class="kw">group_by</span>(year, treatment) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb199-4" data-line-number="4"><span class="st">  </span><span class="kw">summarize</span>( <span class="dt">Pop.plantsA  =</span> <span class="kw">round</span>(<span class="kw">mean</span>(population<span class="fl">.4</span>wk),<span class="op">-</span><span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb199-5" data-line-number="5">             <span class="dt">Pop.plantsHa =</span> <span class="kw">round</span>(<span class="kw">mean</span>(population<span class="fl">.4</span>wk<span class="op">*</span><span class="fl">2.47</span>),<span class="op">-</span><span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb199-6" data-line-number="6">beansum</a></code></pre></div>
-<pre><code>## # A tibble: 21 x 4
-## # Groups:   year [3]
-##     year treatment                   Pop.plantsA Pop.plantsHa
-##    &lt;int&gt; &lt;chr&gt;                             &lt;dbl&gt;        &lt;dbl&gt;
-##  1  2009 EPTC + ethafluralin               48800       120500
-##  2  2009 flumioxazin + ethafluralin        38300        94700
-##  3  2009 flumioxazin + pendimethalin       19700        48800
-##  4  2009 flumioxazin + trifluralin         24400        60300
-##  5  2009 Handweeded                        34800        86100
-##  6  2009 imazamox + bentazon               49900       123400
-##  7  2009 Nontreated                        46500       114800
-##  8  2010 EPTC + ethafluralin               56600       139900
-##  9  2010 flumioxazin + ethafluralin        15700        38700
-## 10  2010 flumioxazin + pendimethalin       20000        49500
-## # … with 11 more rows</code></pre>
+<p>There are many examples in agronomy and weed science where mixed effects models are appropriate. In basic ANOVA, all variation not attributable to the treatment(s) is considered random variation. This includes soil variability, experimental locations, benches in the greenhouse, weather patterns between years; many things can affect experimental results that simply cannot be controlled for as part of the study. In many cases, we can try to account for these sources of variation by blocking. We can consider the selection of the blocks to take place at random in the sense that we usually cannot tell in advance whether or not the next block will exhibit a low, high, or more moderate response level - but we can at least assume that differences between the blocks are likely. In this context, we can describe random effects as effects that cannot be controlled and therefore cannot be explained by the treatment structure of the experiment. In many designed experiments, we are not inherently interested in these random effects, but we should acknowledge and account for the variation that they contribute. We can do so using a mixed-effects model that contains both fixed and random effects.</p>
+<p>To illustrate mixed effects ANOVA, we will use the same dry bean herbicide data set that was used in the ANOVA section to allow for comparison; please read the ANOVA section for details on the study. We will also need to load several add-on packages for this analysis; most importantly the <code>lme4</code> and <code>emmeans</code> packages.</p>
+<p><em>Packages used in this chapter:</em><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(lmerTest)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(multcomp)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">library</span>(emmeans)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">library</span>(cowplot)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">flum.dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;http://rstats4ag.org/data/FlumiBeans.csv&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">plants.Ha =</span> <span class="kw">round</span>(population<span class="fl">.4</span>wk<span class="op">*</span><span class="fl">2.47</span>, <span class="dv">-2</span>),</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">         <span class="dt">treatment =</span> <span class="kw">factor</span>(treatment, </a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                            <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Nontreated&quot;</span>, </a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                                       <span class="st">&quot;Handweeded&quot;</span>, <span class="st">&quot;imazamox + bentazon&quot;</span>, </a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">                                       <span class="st">&quot;EPTC + ethafluralin&quot;</span>,</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                                       <span class="st">&quot;flumioxazin + ethafluralin&quot;</span>, </a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">                                       <span class="st">&quot;flumioxazin + trifluralin&quot;</span>,</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">                                       <span class="st">&quot;flumioxazin + pendimethalin&quot;</span>)))</a></code></pre></div>
 <div id="mixed-effects-model-using-the-lme4-package" class="section level2">
 <h2><span class="header-section-number">9.1</span> Mixed Effects Model using the lme4 Package</h2>
-<p>In the ANOVA section, we considered year, block, and treatment all as fixed effects. However, because the number of replicates was different by year, analyzing the combined data from all three years is problematic. The effect of year is unbalanced; we have more observations for 2010 and 2011 than for 2009. We can deal with the unbalanced nature of the data by using a mixed effects model. There are other good reasons for analyzing the data as a mixed effect model. The hope is that the results of this experiment can be generalized beyond the three years the study was conducted. The three years in which we conducted the experiment represent 3 possible years out of many when the experiment could have been done, and therefore, we can assume the impact of year to be a random variable. Same goes for the blocking criteria within a year. However, the treatments were selected specifically to determine their impact on the dry bean crop. Therefore, we will consider the treatments as fixed effects, but the year and blocking criteria within a year random effects.</p>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb201-1" data-line-number="1"><span class="co"># Mixed Effects ANOVA</span></a>
-<a class="sourceLine" id="cb201-2" data-line-number="2"><span class="kw">lmer</span>(population<span class="fl">.4</span>wk <span class="op">~</span><span class="st"> </span>treatment<span class="op">+</span>(<span class="dv">1</span><span class="op">|</span>year<span class="op">/</span>block), <span class="dt">data=</span>flum.dat, <span class="dt">REML=</span>F)-&gt;flum.lmer</a></code></pre></div>
+<p>In the ANOVA section, we considered year, block, and treatment all as fixed effects. However, because the number of replicates was different by year, analyzing the combined data from all three years is problematic. The effect of year is unbalanced; we have more observations for 2010 and 2011 than for 2009. We can better deal with the unbalanced nature of the data by using the <code>lmer()</code> function from the <code>lme4</code> package.</p>
+<p>There are other good reasons for analyzing the data as a mixed effect model. The hope is that the results of this experiment can be generalized beyond the three years the study was conducted. The three years in which we conducted the experiment represent 3 possible years out of many when the experiment could have been done, and therefore, we can assume the impact of year to be a random variable. Same goes for the blocking criteria within a year. However, the treatments were selected specifically to determine their impact on the dry bean crop. Therefore, we will consider the treatments as fixed effects, but the year and blocking criteria within a year random effects.</p>
+<p>Fixed effects are specified similarly as with the <code>lm()</code> function. Random effects are included in parentheses when specifying the model; we will specify that the block effect is nested within year using <code>year/block</code> as our random term.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Mixed Effects ANOVA</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">lmer</span>(plants.Ha <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>year<span class="op">/</span>block), </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">     <span class="dt">data =</span> flum.dat) -&gt;<span class="st"> </span>flum.lmer0</a></code></pre></div>
 <pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb203-1" data-line-number="1"><span class="kw">anova</span>(flum.lmer)</a></code></pre></div>
-<pre><code>## Analysis of Variance Table
-##           npar     Sum Sq    Mean Sq F value
-## treatment    6 1.1974e+10 1995718507  28.887</code></pre>
-<div id="model-comparison-and-obtaining-p-values" class="section level3">
-<h3><span class="header-section-number">9.1.1</span> Model Comparison and Obtaining P-values</h3>
-<p>One of the most frustrating things to many researchers analyzing mixed models in R is a lack of p-values provided by default. The calculation of P-values for complex models with random effects and multiple experimental unit sizes is not a trivial matter. Certain assumptions must be made, and it is difficult to generalize these assumptions from experiment to experiment. Therefore, the authors of the <code>lme4</code> package have chosen not to print P-values by default. We can get a P-value for the fixed effect of treatment in two different ways. First, we can compare our model with a reduced model that does not contain the treatment effect. The P-value that results, then, is effectively the P-value for the treatment effect. When comparing <code>lmer()</code> models, it is important to specify the argument <code>REML=F</code> in both models so that the model is fit using full maximum likelihood (rather than the default restricted maximum likelihood).</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb205-1" data-line-number="1"><span class="kw">lmer</span>(population<span class="fl">.4</span>wk <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>year<span class="op">/</span>block), <span class="dt">data=</span>flum.dat, <span class="dt">REML=</span>F)-&gt;flum.null <span class="co"># reduced model</span></a>
-<a class="sourceLine" id="cb205-2" data-line-number="2"><span class="kw">anova</span>(flum.null, flum.lmer) <span class="co"># anova function to compare the full and reduced models</span></a></code></pre></div>
-<pre><code>## Data: flum.dat
-## Models:
-## flum.null: population.4wk ~ (1 | year/block)
-## flum.lmer: population.4wk ~ treatment + (1 | year/block)
-##           npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)    
-## flum.null    4 1710.4 1719.8 -851.20   1702.4                         
-## flum.lmer   10 1633.0 1656.5 -806.52   1613.0 89.359  6  &lt; 2.2e-16 ***
+<p>Note the message about a singular fit - this typically means at least one of the random effects is estimated to be zero, meaning it does not expain sufficient variance and should probably be removed from the model. To view our random effects, we can look at the <code>varcor</code> part of the model summary:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">summary</span>(flum.lmer0)<span class="op">$</span>varcor</a></code></pre></div>
+<pre><code>##  Groups     Name        Std.Dev.  
+##  block:year (Intercept) 1.1156e-03
+##  year       (Intercept) 9.8214e+03
+##  Residual               2.1420e+04</code></pre>
+<p>The variance estimate for <code>block:year</code> is very close to zero, and it appears we can safely remove this term from the model. We can then run <code>anova()</code> on the fitted model.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">## re-fit without blocks</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">lmer</span>(plants.Ha <span class="op">~</span><span class="st"> </span>treatment <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>year), </a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">     <span class="dt">data =</span> flum.dat) -&gt;<span class="st"> </span>flum.lmer</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">anova</span>(flum.lmer)</a></code></pre></div>
+<pre><code>## Type III Analysis of Variance Table with Satterthwaite&#39;s method
+##               Sum Sq    Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
+## treatment 7.3046e+10 1.2174e+10     6 68.046  26.534 4.827e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>A second method for getting a p-value for fixed effects is to use the <code>Anova()</code> (note the different capitalization) from the <code>car</code> package. This will provide an anova table of the full model that is complete with p-values. By deault, the <code>Anova()</code> function will provide p-values from a Chi-square test.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb207-1" data-line-number="1"><span class="co"># Mixed Effects ANOVA - with p-values from Chisq test:</span></a>
-<a class="sourceLine" id="cb207-2" data-line-number="2"><span class="kw">library</span>(car)</a>
-<a class="sourceLine" id="cb207-3" data-line-number="3"><span class="kw">Anova</span>(flum.lmer) <span class="co"># Chi-square</span></a></code></pre></div>
-<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
-## 
-## Response: population.4wk
-##            Chisq Df Pr(&gt;Chisq)    
-## treatment 173.32  6  &lt; 2.2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>To get a p-value from an F-test, the model must be fit using restricted maximum likelihood.</p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb209-1" data-line-number="1"><span class="co"># re-fit the model with REML, and get F-test:</span></a>
-<a class="sourceLine" id="cb209-2" data-line-number="2"><span class="kw">lmer</span>(population<span class="fl">.4</span>wk <span class="op">~</span><span class="st"> </span>treatment<span class="op">+</span>(<span class="dv">1</span><span class="op">|</span>year<span class="op">/</span>block), </a>
-<a class="sourceLine" id="cb209-3" data-line-number="3">     <span class="dt">data=</span>flum.dat, <span class="dt">REML=</span>T)-&gt;flumREML.lmer <span class="co">#note REML = TRUE</span></a>
-<a class="sourceLine" id="cb209-4" data-line-number="4"><span class="kw">Anova</span>(flumREML.lmer, <span class="dt">test=</span><span class="st">&quot;F&quot;</span>) <span class="co"># F-test</span></a></code></pre></div>
-<pre><code>## Analysis of Deviance Table (Type II Wald F tests with Kenward-Roger df)
-## 
-## Response: population.4wk
-##                F Df Df.res    Pr(&gt;F)    
-## treatment 26.537  6     60 3.518e-15 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>For this example, treatment effect produces a very low p-valueregardless of method we use to get it, indicating there appears to be a strong effect of treatment on dry bean emergence Therefore, we will want to look at the treatment means to determine which treatments affected dry bean stand. First, though, it is often of interest to look at the random effects.</p>
-</div>
+<p>The herbicide treatment effect produces a very low p-value, indicating a strong effect on dry bean emergence. Therefore, we will want to look at the treatment means to determine <em>which</em> treatments affected dry bean stand. First, though, it is often of interest to look at the random effects.</p>
 <div id="random-effects" class="section level3">
-<h3><span class="header-section-number">9.1.2</span> Random Effects</h3>
-<p>The <code>summary()</code> function can be used to print most of the relevant information from the mixed model fit <code>summary(flum.lmer)</code>. We can selectively print only the certain parts of the model fit. Adding <code>$varcor</code> to the summary function of the fit will print out the variance components for the random terms as well as the residual variance.</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" data-line-number="1"><span class="kw">summary</span>(flum.lmer)<span class="op">$</span>varcor</a></code></pre></div>
-<pre><code>##  Groups     Name        Std.Dev.
-##  block:year (Intercept)    0.0  
-##  year       (Intercept) 3145.8  
-##  Residual               8311.9</code></pre>
-<p>The random ‘year’ effect appears to be contributing substantially to the model, but the blocking criteria within a year does not. When reporting results of a random effects model for publication, it is important that these results be included so that a full accounting of variability is provided. The <code>ranef()</code> function returns estimates for the random effects of year:</p>
-<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb213-1" data-line-number="1"><span class="kw">ranef</span>(flum.lmer)<span class="op">$</span>year</a></code></pre></div>
-<pre><code>##      (Intercept)
-## 2009    1364.249
-## 2010    2517.687
-## 2011   -3881.935</code></pre>
-<p>On average, bean populations were lowest in 2011, and highest in 2010. Using <code>tapply()</code> results in a similar conclusion, and helps put the random effects estimates into context.</p>
-<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" data-line-number="1"><span class="kw">tapply</span>(flum.dat<span class="op">$</span>population<span class="fl">.4</span>wk, flum.dat<span class="op">$</span>year, mean) </a></code></pre></div>
-<pre><code>##     2009     2010     2011 
-## 37503.00 38830.64 30835.39</code></pre>
+<h3><span class="header-section-number">9.1.1</span> Random Effects</h3>
+<p>The <code>summary()</code> function can be used to print most of the relevant information from the mixed model fit <code>summary(flum.lmer)</code>. We can selectively print only the certain parts of the model fit. As shown above, adding <code>$varcor</code> to the summary function of the fit will print out the variance components for the random terms as well as the residual variance.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">summary</span>(flum.lmer)<span class="op">$</span>varcor</a></code></pre></div>
+<pre><code>##  Groups   Name        Std.Dev.
+##  year     (Intercept)  9821.4 
+##  Residual             21420.3</code></pre>
+<p>The random ‘year’ effect appears to be contributing substantially to the model. When reporting results of a random effects model for publication, it is important that these results be included so that a full accounting of variability is provided. The <code>ranef()</code> function returns estimates for the random effects:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">ranef</span>(flum.lmer)</a></code></pre></div>
+<pre><code>## $year
+##      (Intercept)
+## 2009    3649.736
+## 2010    6611.581
+## 2011  -10261.317
+## 
+## with conditional variances for &quot;year&quot;</code></pre>
+<p>On average, bean populations were lower than the overall mean in 2011, and higher in 2009 and 2010. The random effects estimates are roughly the difference between the mean for that year and the grand mean for all years. However, the random effects are ajusted for other terms in the model (including unequal replication), so the exact numbers will be somewhat different.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">round</span>(<span class="kw">mean</span>(flum.dat<span class="op">$</span>plants.Ha), <span class="dv">-2</span>) <span class="co"># grand mean</span></a></code></pre></div>
+<pre><code>## [1] 87800</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">flum.dat <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">year.mean =</span> <span class="kw">round</span>(<span class="kw">mean</span>(plants.Ha), <span class="dv">-2</span>))</a></code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##    year year.mean
+##   &lt;int&gt;     &lt;dbl&gt;
+## 1  2009     92600
+## 2  2010     95900
+## 3  2011     76200</code></pre>
 </div>
 <div id="fixed-effects-mean-separation" class="section level3">
-<h3><span class="header-section-number">9.1.3</span> Fixed Effects &amp; Mean Separation</h3>
-<p>In most designed agricultural experiments, the fixed effects (and specifically differences between fixed effects treatments) are of most interest to the researcher. We can use the <code>glht()</code> function in the <code>multcomp</code> package to separate treatment means if we conclude there is a significant treatment effect. The p-values below are adjusted using Tukey’s method.</p>
-<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" data-line-number="1"><span class="kw">library</span>(multcomp)</a>
-<a class="sourceLine" id="cb217-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">glht</span>(flum.lmer, <span class="dt">linfct=</span><span class="kw">mcp</span>(<span class="dt">treatment=</span><span class="st">&quot;Tukey&quot;</span>)))-&gt;flum.glht</a>
-<a class="sourceLine" id="cb217-3" data-line-number="3">flum.glht <span class="co"># print all pairwise comparisons</span></a></code></pre></div>
-<p>Printing all pairwise comparisons is valuable to get P-values, estimates of differences, etc. for reporting (not shown here due to space). But we can also plot the 95% confidence intervals to allow better visualization of differences. In Figure <a href="mixed-models-anova.html#fig:figmixedglht">9.1</a>, the comparison is listed on the left in the format (treatment1 - treatment2). If the confidence interval bars do not include zero (the vertical dotted line) then one could conclude that difference between treatments is significantly different according to the Tukey adjusted p-values (at the 5% confidence level).</p>
-
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb218-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">22</span>,<span class="dv">3</span>,<span class="dv">1</span>), <span class="dt">mgp=</span><span class="kw">c</span>(<span class="dv">2</span>,.<span class="dv">7</span>,<span class="dv">0</span>)) <span class="co"># set wide left margin </span></a>
-<a class="sourceLine" id="cb218-2" data-line-number="2"><span class="kw">plot</span>(flum.glht)</a></code></pre></div>
-<div class="figure"><span id="fig:figmixedglht"></span>
-<img src="Rstats4ag_files/figure-html/figmixedglht-1.png" alt="Model estimates of treatment differences with 95% confidence intervals." width="672" />
-<p class="caption">
-Figure 9.1: <em>Model estimates of treatment differences with 95% confidence intervals.</em>
-</p>
-</div>
-<p>The <code>glht()</code> function will not allow for unadjusted comparisons, since multiple testing tends to inflate the likelihood of a Type I error. If for some reason unadjusted Fisher LSD p-values are required (similar to the default in SAS) the <code>emmeans()</code> function in the <code>emmeans</code> package can be used. The estimated mrginal means (or least-square means) cna be printed along with the mean separation groups using the <code>cld()</code> function from the <code>multcomp</code> package, and the pairwise comparisons of estimated marginal means can be printed by calling the ‘contrasts’ of the estimated marginal means.</p>
-<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1"><span class="kw">library</span>(emmeans)</a>
-<a class="sourceLine" id="cb219-2" data-line-number="2"><span class="kw">emmeans</span>(flum.lmer, pairwise <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>flum.dat, <span class="dt">adjust=</span><span class="st">&quot;none&quot;</span>) -&gt;<span class="st"> </span>flum.emm</a>
-<a class="sourceLine" id="cb219-3" data-line-number="3">multcomp<span class="op">::</span><span class="kw">cld</span>(flum.emm<span class="op">$</span>emmeans) </a></code></pre></div>
-<pre><code>##  treatment                   emmean   SE   df lower.CL upper.CL .group
-##  flumioxazin + pendimethalin  20003 3483 20.9    12757    27250  1    
-##  flumioxazin + ethafluralin   21508 3483 20.9    14262    28754  1    
-##  flumioxazin + trifluralin    22775 3483 20.9    15529    30022  1    
-##  Handweeded                   43368 3483 20.9    36122    50614   2   
-##  Nontreated                   45506 3483 20.9    38260    52752   2   
-##  EPTC + ethafluralin          47882 3483 20.9    40636    55128   2   
-##  imazamox + bentazon          48753 3483 20.9    41507    55999   2   
+<h3><span class="header-section-number">9.1.2</span> Fixed Effects &amp; Mean Separation</h3>
+<p>In most designed agricultural experiments, the fixed effects (and specifically differences between fixed effects treatments) are of most interest to the researcher. The estimated marginal means (also called ‘least-square means’) can be obtained from the model using the <code>emmeans()</code> function from the <code>emmeans</code> package. We can also use the <code>cld()</code> function from the <code>multcomp</code> package to obtain a compact letter display of treatment groupings.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">flum.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(flum.lmer, <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>flum.dat)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">flum.cld &lt;-<span class="st"> </span>multcomp<span class="op">::</span><span class="kw">cld</span>(flum.emm, <span class="dt">Letters =</span> LETTERS) </a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">flum.cld</a></code></pre></div>
+<pre><code>##  treatment                   emmean   SE  df lower.CL upper.CL .group
+##  flumioxazin + pendimethalin  49423 8602 7.3    29250    69596  A    
+##  flumioxazin + ethafluralin   53150 8602 7.3    32977    73323  A    
+##  flumioxazin + trifluralin    56277 8602 7.3    36104    76450  A    
+##  Handweeded                  107150 8602 7.3    86977   127323   B   
+##  Nontreated                  112423 8602 7.3    92250   132596   B   
+##  EPTC + ethafluralin         118286 8602 7.3    98113   138459   B   
+##  imazamox + bentazon         120423 8602 7.3   100250   140596   B   
 ## 
 ## Degrees-of-freedom method: kenward-roger 
 ## Confidence level used: 0.95 
 ## P value adjustment: tukey method for comparing a family of 7 estimates 
 ## significance level used: alpha = 0.05</code></pre>
-<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" data-line-number="1">flum.emm<span class="op">$</span>contrasts</a></code></pre></div>
-<pre><code>##  contrast                                                 estimate   SE   df t.ratio p.value
-##  EPTC + ethafluralin - flumioxazin + ethafluralin            26374 3698 71.1  7.132  &lt;.0001 
-##  EPTC + ethafluralin - flumioxazin + pendimethalin           27879 3698 71.1  7.539  &lt;.0001 
-##  EPTC + ethafluralin - flumioxazin + trifluralin             25107 3698 71.1  6.790  &lt;.0001 
-##  EPTC + ethafluralin - Handweeded                             4514 3698 71.1  1.221  0.2262 
-##  EPTC + ethafluralin - imazamox + bentazon                    -871 3698 71.1 -0.236  0.8144 
-##  EPTC + ethafluralin - Nontreated                             2376 3698 71.1  0.643  0.5226 
-##  flumioxazin + ethafluralin - flumioxazin + pendimethalin     1505 3698 71.1  0.407  0.6853 
-##  flumioxazin + ethafluralin - flumioxazin + trifluralin      -1267 3698 71.1 -0.343  0.7328 
-##  flumioxazin + ethafluralin - Handweeded                    -21859 3698 71.1 -5.911  &lt;.0001 
-##  flumioxazin + ethafluralin - imazamox + bentazon           -27245 3698 71.1 -7.368  &lt;.0001 
-##  flumioxazin + ethafluralin - Nontreated                    -23998 3698 71.1 -6.490  &lt;.0001 
-##  flumioxazin + pendimethalin - flumioxazin + trifluralin     -2772 3698 71.1 -0.750  0.4559 
-##  flumioxazin + pendimethalin - Handweeded                   -23364 3698 71.1 -6.318  &lt;.0001 
-##  flumioxazin + pendimethalin - imazamox + bentazon          -28750 3698 71.1 -7.775  &lt;.0001 
-##  flumioxazin + pendimethalin - Nontreated                   -25503 3698 71.1 -6.897  &lt;.0001 
-##  flumioxazin + trifluralin - Handweeded                     -20592 3698 71.1 -5.569  &lt;.0001 
-##  flumioxazin + trifluralin - imazamox + bentazon            -25978 3698 71.1 -7.025  &lt;.0001 
-##  flumioxazin + trifluralin - Nontreated                     -22731 3698 71.1 -6.147  &lt;.0001 
-##  Handweeded - imazamox + bentazon                            -5386 3698 71.1 -1.456  0.1497 
-##  Handweeded - Nontreated                                     -2138 3698 71.1 -0.578  0.5649 
-##  imazamox + bentazon - Nontreated                             3247 3698 71.1  0.878  0.3828 
-## 
-## Degrees-of-freedom method: kenward-roger</code></pre>
-<hr />
+<p>There are legitimate concerns about the use of compact letter displays when conducting post-hoc mean separation. From the <code>emmeans</code> documentation (<code>?cld.emmGrid</code>):</p>
+<blockquote>
+<p>We warn that such displays encourage a poor practice in interpreting significance tests. CLDs are misleading because they visually group means with comparisons P &gt; alpha as though they are equal, when in fact we have only failed to prove that they differ.</p>
+</blockquote>
+<p>We can also obtain all pairwise comparisons using the <code>pairs</code> function:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">pairs</span>(flum.emm)</a></code></pre></div>
+<p>By default, the <code>emmeans()</code> function provides confidence limits for the model estimates; we can use those subsequent plotting:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">ggplot</span>(flum.cld, <span class="kw">aes</span>(<span class="dt">x =</span> emmean, <span class="dt">y =</span> treatment,</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">                     <span class="dt">xmin =</span> lower.CL, <span class="dt">xmax =</span> upper.CL)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="st">  </span><span class="kw">geom_errorbarh</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="st">  </span><span class="kw">theme_minimal_hgrid</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Bean plants per hectare&quot;</span>,</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">       <span class="dt">y =</span> <span class="kw">element_blank</span>())</a></code></pre></div>
+<p><img src="Rstats4ag_files/figure-html/unnamed-chunk-11-1.png" width="624" />
+*****</p>
 
 </div>
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p><code>tidyverse</code> to modify and summarize data; <code>lmerTest</code> includes the <code>lme4</code> package, which is used to fit mixed-effects models and the <code>lmerTest</code> package provides complete ANOVA table; <code>emmeans</code> provides the ability to estimate marginal means (called least-square means in SAS) from the fitted mixed-effects model; <code>multcomp</code> to get a compact letter display for post-hoc mean separation; <code>cowplot</code> includes themes for use with <code>ggplot</code> that improve the default figures for visualizing differences<a href="mixed-models-anova.html#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
 <div id="disqus_thread"></div>
 <script>
