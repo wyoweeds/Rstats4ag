@@ -197,10 +197,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2" data-path="analysis-of-covariance-ancova.html"><a href="analysis-of-covariance-ancova.html#example-2-duration-of-competition"><i class="fa fa-check"></i><b>8.2</b> Example 2: Duration of competition</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html"><i class="fa fa-check"></i><b>9</b> Mixed Models - ANOVA</a><ul>
-<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a><ul>
-<li class="chapter" data-level="9.1.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.1.1</b> Random Effects</a></li>
-<li class="chapter" data-level="9.1.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.1.2</b> Fixed Effects &amp; Mean Separation</a></li>
-</ul></li>
+<li class="chapter" data-level="9.1" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#mixed-effects-model-using-the-lme4-package"><i class="fa fa-check"></i><b>9.1</b> Mixed Effects Model using the lme4 Package</a></li>
+<li class="chapter" data-level="9.2" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#random-effects"><i class="fa fa-check"></i><b>9.2</b> Random Effects</a></li>
+<li class="chapter" data-level="9.3" data-path="mixed-models-anova.html"><a href="mixed-models-anova.html#fixed-effects-mean-separation"><i class="fa fa-check"></i><b>9.3</b> Fixed Effects &amp; Mean Separation</a></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html"><i class="fa fa-check"></i><b>10</b> Mixed Models - Regression</a><ul>
 <li class="chapter" data-level="10.1" data-path="mixed-models-regression.html"><a href="mixed-models-regression.html#regression-models-with-mixed-effects"><i class="fa fa-check"></i><b>10.1</b> Regression Models with Mixed Effects</a><ul>
@@ -313,8 +312,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>The herbicide treatment effect produces a very low p-value, indicating a strong effect on dry bean emergence. Therefore, we will want to look at the treatment means to determine <em>which</em> treatments affected dry bean stand. First, though, it is often of interest to look at the random effects.</p>
-<div id="random-effects" class="section level3">
-<h3><span class="header-section-number">9.1.1</span> Random Effects</h3>
+</div>
+<div id="random-effects" class="section level2">
+<h2><span class="header-section-number">9.2</span> Random Effects</h2>
 <p>The <code>summary()</code> function can be used to print most of the relevant information from the mixed model fit <code>summary(flum.lmer)</code>. We can selectively print only the certain parts of the model fit. As shown above, adding <code>$varcor</code> to the summary function of the fit will print out the variance components for the random terms as well as the residual variance.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">summary</span>(flum.lmer)<span class="op">$</span>varcor</a></code></pre></div>
 <pre><code>##  Groups   Name        Std.Dev.
@@ -342,8 +342,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 2  2010     95900
 ## 3  2011     76200</code></pre>
 </div>
-<div id="fixed-effects-mean-separation" class="section level3">
-<h3><span class="header-section-number">9.1.2</span> Fixed Effects &amp; Mean Separation</h3>
+<div id="fixed-effects-mean-separation" class="section level2">
+<h2><span class="header-section-number">9.3</span> Fixed Effects &amp; Mean Separation</h2>
 <p>In most designed agricultural experiments, the fixed effects (and specifically differences between fixed effects treatments) are of most interest to the researcher. The estimated marginal means (also called ‘least-square means’) can be obtained from the model using the <code>emmeans()</code> function from the <code>emmeans</code> package. We can also use the <code>cld()</code> function from the <code>multcomp</code> package to obtain a compact letter display of treatment groupings.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">flum.emm &lt;-<span class="st"> </span><span class="kw">emmeans</span>(flum.lmer, <span class="op">~</span><span class="st"> </span>treatment, <span class="dt">data=</span>flum.dat)</a>
 <a class="sourceLine" id="cb17-2" data-line-number="2">flum.cld &lt;-<span class="st"> </span>multcomp<span class="op">::</span><span class="kw">cld</span>(flum.emm, <span class="dt">Letters =</span> LETTERS) </a>
@@ -378,7 +378,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="Rstats4ag_files/figure-html/unnamed-chunk-11-1.png" width="624" />
 *****</p>
 
-</div>
 </div>
 </div>
 <div class="footnotes">
