@@ -58,7 +58,7 @@ anova(flum.lmer)
 
 The herbicide treatment effect produces a very low p-value, indicating a strong effect on dry bean emergence. Therefore, we will want to look at the treatment means to determine *which* treatments affected dry bean stand. First, though, it is often of interest to look at the random effects. 
 
-### Random Effects
+## Random Effects
 
 The `summary()` function can be used to print most of the relevant information from the mixed model fit `summary(flum.lmer)`. We can selectively print only the certain parts of the model fit. As shown above, adding `$varcor` to the summary function of the fit will print out the variance components for the random terms as well as the residual variance.
 
@@ -82,7 +82,7 @@ flum.dat %>%
   summarize(year.mean = round(mean(plants.Ha), -2))
 ```
 
-### Fixed Effects & Mean Separation
+## Fixed Effects & Mean Separation
 
 In most designed agricultural experiments, the fixed effects (and specifically differences between fixed effects treatments) are of most interest to the researcher. The estimated marginal means (also called 'least-square means') can be obtained from the model using the `emmeans()` function from the `emmeans` package. We can also use the `cld()` function from the `multcomp` package to obtain a compact letter display of treatment groupings.
 
